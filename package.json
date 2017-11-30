@@ -3,15 +3,22 @@
   "version": "0.0.1",
   "description": "Expressen client testing framework",
   "main": "index.js",
+  "license": "BSD-3-Clause",
   "scripts": {
     "test": "mocha && eslint . --cache"
+  },
+  "engines": {
+    "node": ">=8.9.0"
   },
   "keywords": [
     "headless",
     "browser"
   ],
-  "author": "Pål Edman <pal.edman@expressen.se>",
-  "license": "MIT",
+  "author": "AB Kvällstidningen Expressen",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ExpressenAB/tallahassee.git"
+  },
   "dependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-node8": "^1.2.0",
@@ -27,8 +34,8 @@
     "mocha": "^4.0.1"
   },
   "files": [
-    "LICENCE",
     "lib/",
-    "index.js"
+    "index.js",
+    "LICENCE"
   ]
 }
