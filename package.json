@@ -1,5 +1,5 @@
 {
-  "name": "tallahassee",
+  "name": "@expressenab/tallahassee",
   "version": "0.0.1",
   "description": "Expressen client testing framework",
   "main": "index.js",
@@ -37,5 +37,13 @@
     "lib/",
     "index.js",
     "LICENCE"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/ExpressenAB/tallahassee/issues"
+  },
+  "homepage": "https://github.com/ExpressenAB/tallahassee#readme",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  }
 }
