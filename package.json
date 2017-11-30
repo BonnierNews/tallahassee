@@ -1,5 +1,5 @@
 {
-  "name": "tallahassee",
+  "name": "@expressen/tallahassee",
   "version": "0.0.1",
   "description": "Expressen client testing framework",
   "main": "index.js",
