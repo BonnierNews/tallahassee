@@ -5,14 +5,14 @@ Tallahassee
 
 [![Build Status](https://travis-ci.org/ExpressenAB/tallahassee.svg?branch=master)](https://travis-ci.org/ExpressenAB/tallahassee)
 
-Test your client scripts in a headless browser
+Test your client scripts in a headless browser.
 
 Example:
 
 ```javascript
-
 "use strict";
-const app = require("../express-js-app");
+
+const app = require("../app/express-js-app");
 const Browser = require("@expressen/tallahassee");
 const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
 
@@ -59,4 +59,4 @@ describe("Tallahassee", () => {
     });
   });
 });
-``
+```
