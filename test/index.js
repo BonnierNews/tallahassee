@@ -37,6 +37,41 @@ describe("Tallahassee", () => {
     });
   });
 
+  describe("document", () => {
+    it("doesn't expose classList on document", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      expect(browser.document.classList, "classList on document").to.be.undefined;
+    });
+
+    it("exposes classList on elements", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      const [elm] = browser.document.getElementsByTagName("h1");
+
+      expect(elm.classList).to.be.ok;
+      elm.classList.add("class-list");
+
+      expect(elm.classList._classes).to.contain("class-list");
+
+      elm.classList.toggle("class-list");
+      expect(elm.classList._classes).to.not.contain("class-list");
+
+      elm.classList.toggle("class-list", false);
+      expect(elm.classList._classes).to.not.contain("class-list");
+
+      elm.classList.toggle("class-list", true);
+      expect(elm.classList._classes).to.contain("class-list");
+
+      elm.classList.toggle("class-list");
+      expect(elm.classList._classes).to.not.contain("class-list");
+
+      elm.classList.add("class-list", "second-class");
+      expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+
+      elm.classList.remove("class-list", "second-class");
+      expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+    });
+  });
+
   describe("run script", () => {
     it("transpiles and runs es6 script", async () => {
       const browser = await Browser(app).navigateTo("/", {
@@ -47,7 +82,6 @@ describe("Tallahassee", () => {
 
       expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
-
     });
 
     it("again", async () => {
