@@ -2,6 +2,7 @@
 
 const app = require("../app/app");
 const Browser = require("../");
+const nock = require("nock");
 const {Compiler} = require("../lib/Compiler");
 
 describe("Tallahassee", () => {
@@ -70,6 +71,22 @@ describe("Tallahassee", () => {
       elm.classList.remove("class-list", "second-class");
       expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
     });
+
+    it("sets cookie on document", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        cookie: "_ga=12"
+      });
+
+      expect(browser.document).to.have.property("cookie", "_ga=12");
+    });
+
+    it("sets cookie on document disregarding casing", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        CookIe: "_ga=13"
+      });
+
+      expect(browser.document).to.have.property("cookie", "_ga=13");
+    });
   });
 
   describe("run script", () => {
@@ -91,6 +108,35 @@ describe("Tallahassee", () => {
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);
+    });
+  });
+
+  describe("window.fetch", () => {
+    it("external resource is supported", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      nock("http://example.com")
+        .get("/")
+        .reply(200, {data: 1});
+
+      const body = await browser.window.fetch("http://example.com/").then((res) => res.json());
+      expect(body).to.eql({data: 1});
+    });
+
+    it("local resource routes to app", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const body = await browser.window.fetch("/api").then((res) => res.json());
+      expect(body).to.eql({data: 1});
+    });
+
+    it("passes cookie to local resource", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        cookie: "_ga=1"
+      });
+
+      const body = await browser.window.fetch("/cookie").then((res) => res.json());
+      expect(body).to.eql({cookie: "_ga=1"});
     });
   });
 });

@@ -6,15 +6,10 @@ const Path = require("path");
 const app = express();
 
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
-
-// app.get("/", (req, res) => {
-//   res.sendFile("index.html", {
-//     root: Path.join(__dirname, "public"),
-//     headers: {
-//       "Content-Type": "text/html; charset=utf-8"
-//     }
-//   });
-// });
+app.get("/api", (req, res) => res.send({data: 1}));
+app.get("/cookie", (req, res) => {
+  res.send({cookie: req.get("cookie")});
+});
 
 app.use(errorHandler);
 

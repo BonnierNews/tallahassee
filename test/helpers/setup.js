@@ -11,3 +11,6 @@ chai.config.truncateThreshold = 0;
 chai.config.includeStack = true;
 
 global.expect = chai.expect;
+
+const nock = require("nock");
+nock.enableNetConnect("127.0.0.1");

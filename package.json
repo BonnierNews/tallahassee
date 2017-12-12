@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -31,7 +31,8 @@
     "chai-as-promised": "^7.1.1",
     "eslint": "^4.12.1",
     "express": "^4.16.2",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.1",
+    "nock": "^9.1.4"
   },
   "files": [
     "lib/",
