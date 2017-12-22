@@ -69,4 +69,43 @@ describe("elements", () => {
     });
   });
 
+  describe(".textContent", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test</h2>
+              <script>var a = 1;</script>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns null on document", () => {
+      expect(document).to.have.property("textContent", null);
+    });
+
+    it("returns text content of element", () => {
+      expect(document.getElementsByTagName("h2")[0]).to.have.property("textContent", "Test");
+    });
+
+    it("sets text content of element", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+      elm.textContent = "Modified test";
+      expect(elm).to.have.property("textContent", "Modified test");
+    });
+
+    it("returns text content of script element", () => {
+      expect(document.getElementsByTagName("script")[0]).to.have.property("textContent", "var a = 1;");
+    });
+
+    it("sets text content of script element", () => {
+      const elm = document.getElementsByTagName("script")[0];
+      elm.textContent = "var b = 2;";
+      expect(elm).to.have.property("textContent", "var b = 2;");
+    });
+
+  });
 });
