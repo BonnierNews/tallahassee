@@ -44,6 +44,18 @@ describe("Tallahassee", () => {
       expect(browser.document.classList, "classList on document").to.be.undefined;
     });
 
+    it("getElementById returns element if found", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      const elm = browser.document.getElementById("header-1");
+      expect(elm).to.be.ok;
+      expect(elm.getElementById, "getElementById on element").to.be.undefined;
+    });
+
+    it("getElementById returns null id element is not found", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      expect(browser.document.getElementById("header-2")).to.be.null;
+    });
+
     it("exposes classList on elements", async () => {
       const browser = await Browser(app).navigateTo("/");
       const [elm] = browser.document.getElementsByTagName("h1");
