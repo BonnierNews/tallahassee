@@ -2,7 +2,150 @@
 
 const Document = require("../lib/Document");
 
+const elementProperties = ["tagName",
+  "id",
+  "style",
+  "type",
+  "value",
+  "name",
+  "dataset",
+  "disabled",
+  "classList",
+  "children",
+  "lastElementChild",
+  "lastChild",
+  "outerHTML",
+];
+
+const elementApi = ["getElementsByTagName", "getElementsByClassName", "getBoundingClientRect"];
+
 describe("elements", () => {
+  describe("properties", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h1>Elements</h1>
+              <h2 id="headline">Test</h2>
+              <input type="button">
+              <script>var a = 1;</script>
+              <img style="display: none;height:0">
+            </body>
+          </html>`
+      });
+    });
+
+    it("element should have property tagName", () => {
+      const children = document.body.children;
+      expect(children).to.have.length.above(0);
+      children.forEach((elm) => {
+        expect(elm).to.have.property("tagName").that.match(/[A-Z]+/);
+      });
+    });
+
+    elementProperties.forEach((name) => {
+      it(`"${name}" should exist`, () => {
+        const children = document.body.children;
+        expect(children).to.have.length.above(0);
+        children.forEach((elm) => {
+          expect(elm, elm.tagName).to.have.property(name);
+        });
+      });
+    });
+
+    it("exposes classList with the expected behaviour", async () => {
+      const [elm] = document.getElementsByTagName("h1");
+
+      expect(elm.classList).to.be.ok;
+      elm.classList.add("class-list");
+
+      expect(elm.classList._classes).to.contain("class-list");
+
+      elm.classList.toggle("class-list");
+      expect(elm.classList._classes).to.not.contain("class-list");
+
+      elm.classList.toggle("class-list", false);
+      expect(elm.classList._classes).to.not.contain("class-list");
+
+      elm.classList.toggle("class-list", true);
+      expect(elm.classList._classes).to.contain("class-list");
+
+      elm.classList.toggle("class-list");
+      expect(elm.classList._classes).to.not.contain("class-list");
+
+      elm.classList.add("class-list", "second-class");
+      expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+
+      elm.classList.remove("class-list", "second-class");
+      expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+    });
+
+    it("exposes disabled with the expected behaviour on input element", async () => {
+      const [elm] = document.getElementsByTagName("input");
+      expect(elm).to.have.property("disabled").that.is.false;
+      elm.disabled = true;
+      expect(elm.outerHTML).to.equal("<input type=\"button\" disabled=\"disabled\">");
+      elm.disabled = false;
+      expect(elm.outerHTML).to.equal("<input type=\"button\">");
+    });
+
+    it("exposes disabled with the expected behaviour on non-input element", async () => {
+      const [elm] = document.getElementsByTagName("h2");
+      expect(elm).to.have.property("disabled").that.is.undefined;
+      elm.disabled = true;
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" disabled=\"disabled\">Test</h2>");
+      elm.disabled = false;
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
+    });
+
+    it("exposes style with the expected behaviour", async () => {
+      const [elm] = document.getElementsByTagName("h2");
+      expect(elm).to.have.property("style").that.eql({});
+      elm.style.display = "none";
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"display: none;\">Test</h2>");
+      elm.style.removeProperty("display");
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
+
+      const [img] = document.getElementsByTagName("img");
+      expect(img.style).to.eql({
+        display: "none",
+        height: "0"
+      });
+
+      img.style.height = "12px";
+      img.style.width = "0";
+      expect(img.getAttribute("style")).to.equal("display: none;height: 12px;width: 0;");
+    });
+  });
+
+  describe("api", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2 id="headline">Test</h2>
+              <input type="button">
+              <script>var a = 1;</script>
+            </body>
+          </html>`
+      });
+    });
+
+    elementApi.forEach((name) => {
+      it(`"${name}" should be a function`, () => {
+        const children = document.body.children;
+        expect(children).to.have.length.above(0);
+        children.forEach((elm) => {
+          expect(elm, elm.tagName).to.have.property(name).and.be.a("function");
+        });
+      });
+    });
+  });
+
   describe("input[type=radio]", () => {
     let document;
     beforeEach(() => {

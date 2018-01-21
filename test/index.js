@@ -44,60 +44,20 @@ describe("Tallahassee", () => {
       expect(browser.document.classList, "classList on document").to.be.undefined;
     });
 
-    it("getElementById returns element if found", async () => {
-      const browser = await Browser(app).navigateTo("/");
-      const elm = browser.document.getElementById("header-1");
-      expect(elm).to.be.ok;
-      expect(elm.getElementById, "getElementById on element").to.be.undefined;
-    });
-
-    it("getElementById returns null id element is not found", async () => {
-      const browser = await Browser(app).navigateTo("/");
-      expect(browser.document.getElementById("header-2")).to.be.null;
-    });
-
-    it("exposes classList on elements", async () => {
-      const browser = await Browser(app).navigateTo("/");
-      const [elm] = browser.document.getElementsByTagName("h1");
-
-      expect(elm.classList).to.be.ok;
-      elm.classList.add("class-list");
-
-      expect(elm.classList._classes).to.contain("class-list");
-
-      elm.classList.toggle("class-list");
-      expect(elm.classList._classes).to.not.contain("class-list");
-
-      elm.classList.toggle("class-list", false);
-      expect(elm.classList._classes).to.not.contain("class-list");
-
-      elm.classList.toggle("class-list", true);
-      expect(elm.classList._classes).to.contain("class-list");
-
-      elm.classList.toggle("class-list");
-      expect(elm.classList._classes).to.not.contain("class-list");
-
-      elm.classList.add("class-list", "second-class");
-      expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
-
-      elm.classList.remove("class-list", "second-class");
-      expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
-    });
-
     it("sets cookie on document", async () => {
       const browser = await Browser(app).navigateTo("/", {
         cookie: "_ga=12"
       });
 
-      expect(browser.document).to.have.property("cookie", "_ga=12");
+      expect(browser.document).to.have.property("cookie", "_ga=12;");
     });
 
     it("sets cookie on document disregarding casing", async () => {
       const browser = await Browser(app).navigateTo("/", {
-        CookIe: "_ga=13"
+        CookIe: "_ga=13;"
       });
 
-      expect(browser.document).to.have.property("cookie", "_ga=13");
+      expect(browser.document).to.have.property("cookie", "_ga=13;");
     });
   });
 
@@ -109,7 +69,7 @@ describe("Tallahassee", () => {
 
       require("../app/assets/scripts/main");
 
-      expect(browser.document.cookie).to.equal("_ga=1");
+      expect(browser.document.cookie).to.equal("_ga=1;");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
     });
 
@@ -148,7 +108,7 @@ describe("Tallahassee", () => {
       });
 
       const body = await browser.window.fetch("/cookie").then((res) => res.json());
-      expect(body).to.eql({cookie: "_ga=1"});
+      expect(body).to.eql({cookie: "_ga=1;"});
     });
   });
 });
