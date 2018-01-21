@@ -1,6 +1,6 @@
 "use strict";
 
-const Document = require("../lib/Document");
+const {Document} = require("../lib");
 
 describe("Document", () => {
   let document;

@@ -1,10 +1,8 @@
 "use strict";
 
-const Document = require("./lib/Document");
-const Fetch = require("./lib/Fetch");
 const supertest = require("supertest");
-const Window = require("./lib/Window");
-const {compile} = require("./lib/Compiler");
+const {Document, Fetch, Window, Compiler} = require("./lib");
+const {compile} = Compiler;
 
 module.exports = Tallahassee;
 
