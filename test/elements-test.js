@@ -2,19 +2,23 @@
 
 const Document = require("../lib/Document");
 
-const elementProperties = ["tagName",
-  "id",
-  "style",
-  "type",
-  "value",
-  "name",
+const elementProperties = [
+  "children",
+  "classList",
   "dataset",
   "disabled",
-  "classList",
-  "children",
-  "lastElementChild",
+  "firstChild",
+  "firstElementChild",
+  "id",
   "lastChild",
+  "lastElementChild",
+  "name",
+  "innerHTML",
   "outerHTML",
+  "style",
+  "tagName",
+  "type",
+  "value",
 ];
 
 const elementApi = ["getElementsByTagName", "getElementsByClassName", "getBoundingClientRect"];
@@ -250,5 +254,120 @@ describe("elements", () => {
       expect(elm).to.have.property("textContent", "var b = 2;");
     });
 
+  });
+
+  describe(".firstElementChild", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test</h2>
+              <p>
+                Some <strong>string</strong> text
+              </p>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns first element child", () => {
+      expect(document.body.firstElementChild).to.have.property("tagName", "H2");
+    });
+
+    it("returns null if no element children", () => {
+      expect(document.getElementsByTagName("h2")[0].firstElementChild).to.be.null;
+    });
+
+    it("ignores text content", () => {
+      expect(document.getElementsByTagName("p")[0].firstElementChild).to.have.property("tagName", "STRONG");
+    });
+  });
+
+  describe(".firstChild", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body><h2>Test</h2>
+              <p>Some <strong>string</strong> text</p>
+              <p class="empty"></p>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns first child", () => {
+      expect(document.body.firstChild).to.have.property("tagName", "H2");
+    });
+
+    it("returns text content", () => {
+      expect(document.getElementsByTagName("p")[0].firstChild).to.equal("Some ");
+    });
+
+    it("returns null if no element children", () => {
+      expect(document.getElementsByClassName("empty")[0].firstChild).to.be.null;
+    });
+  });
+
+  describe(".lastElementChild", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test</h2>
+              <p>
+                Some <strong>string</strong> <b>bold</b> text
+              </p>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns last element child", () => {
+      expect(document.body.lastElementChild).to.have.property("tagName", "P");
+    });
+
+    it("returns null if no element children", () => {
+      expect(document.getElementsByTagName("h2")[0].lastElementChild).to.be.null;
+    });
+
+    it("ignores text content", () => {
+      expect(document.getElementsByTagName("p")[0].lastElementChild).to.have.property("tagName", "B");
+    });
+  });
+
+  describe(".lastChild", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test <b>title</b></h2>
+              <p>Some <strong>string</strong> <b>bold</b> text</p>
+            <p class="empty"></p></body></html>`
+      });
+    });
+
+    it("returns last child", () => {
+      expect(document.body.lastChild).to.have.property("tagName", "P");
+    });
+
+    it("returns text content", () => {
+      expect(document.getElementsByTagName("p")[0].lastChild).to.equal(" text");
+    });
+
+    it("returns element if last", () => {
+      expect(document.getElementsByTagName("h2")[0].lastChild).to.have.property("tagName", "B");
+    });
+
+    it("returns null if no element children", () => {
+      expect(document.getElementsByClassName("empty")[0].lastChild).to.be.null;
+    });
   });
 });
