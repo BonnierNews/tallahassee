@@ -75,49 +75,41 @@ describe("Tallahassee", () => {
 
 const app = require("../app/express-js-app");
 const Browser = require("@expressen/tallahassee");
-const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
-const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
+const {Compiler, IntersectionObserver, ElementScroller} = require("@expressen/tallahassee/lib");
 
-describe("Tallahassee", () => {
+describe("IntersectionObserver", () => {
   before(() => {
-    Compiler([/assets\/scripts/]);
+    Compiler.Compiler([/assets\/scripts/]);
   });
 
-  describe("navigateTo()", () => {
-    it("navigates to url", async () => {
-      await Browser(app).navigateTo("/");
+  it("observes elements", async () => {
+    const browser = await Browser(app).navigateTo("/", {
+      Cookie: "_ga=1"
     });
+    const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    it("throws if not 200", async () => {
-      try {
-        await Browser(app).navigateTo("/../");
-      } catch (e) {
-        var err = e; // eslint-disable-line no-var
-      }
-      expect(err).to.be.ok;
-    });
+    require("../app/assets/scripts/main");
+
+    expect(intersectionObserver._getObserved()).to.have.length(1);
   });
 
-  describe("run script", () => {
-    it("transpiles and runs es6 script", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        Cookie: "_ga=1"
-      });
+  it("listens to window scroll", async () => {
+    const browser = await Browser(app).navigateTo("/", {
+      Cookie: "_ga=1"
+    });
+    browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-      require("../app/assets/scripts/main");
+    require("../app/assets/scripts/main");
 
-      expect(browser.document.cookie).to.equal("_ga=1;");
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
+    const scroller = ElementScroller(browser, () => {
+      return browser.document.getElementsByClassName("lazy-load");
     });
 
-    it("again", async () => {
-      const browser = await Browser(app).navigateTo("/");
+    scroller.scrollToTopOfElement(browser.document.getElementsByClassName("lazy-load")[0]);
 
-      require("../app/assets/scripts/main");
+    expect(browser.document.getElementsByClassName("lazy-load").length).to.equal(0);
 
-      expect(browser.document.cookie).to.equal("");
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);
-    });
+    expect(browser.document.getElementsByTagName("img")[1].src).to.be.ok;
   });
 });
 ```

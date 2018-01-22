@@ -6,6 +6,8 @@ const Path = require("path");
 const app = express();
 
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
+app.use("/", express.static(Path.join(__dirname, "assets/images")));
+
 app.get("/api", (req, res) => res.send({data: 1}));
 app.get("/cookie", (req, res) => {
   res.send({cookie: req.get("cookie")});

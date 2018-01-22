@@ -1,4 +1,5 @@
 import {getCookie} from "./cookies";
+import lazyLoad from "./lazy-load";
 
 (function IIFE() {
   const cookieVal = getCookie("_ga");
@@ -9,5 +10,7 @@ import {getCookie} from "./cookies";
     div.textContent = "some text";
     document.body.appendChild(div);
   }
+
+  lazyLoad();
 })();
 

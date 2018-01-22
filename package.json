@@ -12,7 +12,10 @@
   },
   "keywords": [
     "headless",
-    "browser"
+    "browser",
+    "fake",
+    "mock",
+    "IntersectionObserver"
   ],
   "author": "AB Kvällstidningen Expressen",
   "repository": {
