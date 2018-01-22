@@ -15,6 +15,7 @@ const elementProperties = [
   "name",
   "innerHTML",
   "outerHTML",
+  "src",
   "style",
   "tagName",
   "type",
