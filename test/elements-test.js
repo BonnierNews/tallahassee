@@ -22,7 +22,12 @@ const elementProperties = [
   "value",
 ];
 
-const elementApi = ["getElementsByTagName", "getElementsByClassName", "getBoundingClientRect"];
+const elementApi = [
+  "getElementsByTagName",
+  "getElementsByClassName",
+  "getBoundingClientRect",
+  "remove",
+];
 
 describe("elements", () => {
   describe("properties", () => {
@@ -369,6 +374,54 @@ describe("elements", () => {
 
     it("returns null if no element children", () => {
       expect(document.getElementsByClassName("empty")[0].lastChild).to.be.null;
+    });
+  });
+
+  describe("forms", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test <b>title</b></h2>
+              <form id="get-form" type="get" action="/">
+                <button type="submit">Submit</submit>
+              </form>
+            </body>
+          </html>`
+      });
+    });
+
+    it("has submit method", () => {
+      expect(document.getElementById("get-form")).to.have.property("submit").that.is.a("function");
+    });
+
+    it("submit button has associated form property", () => {
+      const [form] = document.getElementsByTagName("form");
+      const [button] = document.getElementsByTagName("button");
+
+      expect(form === button.form).to.be.true;
+    });
+
+    it("submit button click emits submit on document", (done) => {
+      const [button] = document.getElementsByTagName("button");
+
+      document.addEventListener("submit", () => done());
+
+      button.click();
+    });
+
+    it("submit sets event target to form", (done) => {
+      const [form] = document.getElementsByTagName("form");
+      const [button] = document.getElementsByTagName("button");
+
+      document.addEventListener("submit", (event) => {
+        expect(event.target === form).to.be.true;
+        done();
+      });
+
+      button.click();
     });
   });
 });

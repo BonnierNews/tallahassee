@@ -111,4 +111,26 @@ describe("Tallahassee", () => {
       expect(body).to.eql({cookie: "_ga=1;"});
     });
   });
+
+  describe("submit", () => {
+    it("submits get form on click", async () => {
+      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+
+      const form = browser.document.getElementById("get-form");
+      const [input] = form.getElementsByTagName("input");
+      const [button] = form.getElementsByTagName("button");
+
+      input.name = "q";
+      input.value = "12";
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newNavigation = await browser._pending;
+
+      expect(newNavigation.document.cookie).to.equal("_ga=2;");
+      expect(newNavigation.window.location).to.have.property("search", "?q=12");
+    });
+  });
 });

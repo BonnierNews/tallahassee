@@ -1,6 +1,7 @@
 "use strict";
 
 const supertest = require("supertest");
+const url = require("url");
 const {Document, Fetch, Window, Compiler} = require("./lib");
 const {compile} = Compiler;
 
@@ -9,7 +10,7 @@ module.exports = Tallahassee;
 function Tallahassee(app) {
   return {
     navigateTo,
-    load
+    load,
   };
 
   function navigateTo(linkUrl, headers = {}) {
@@ -24,6 +25,8 @@ function Tallahassee(app) {
   }
 
   function load(resp) {
+    let pending;
+
     compile();
 
     const window = Window(resp, {
@@ -34,12 +37,57 @@ function Tallahassee(app) {
     const browserContext = {
       window,
       document,
-      $: document.$
+      $: document.$,
     };
+
+    Object.defineProperty(browserContext, "_pending", {
+      get: () => pending
+    });
 
     global.window = window;
     global.document = document;
 
+    document.addEventListener("submit", onDocumentSubmit);
+
     return browserContext;
+
+    function onDocumentSubmit(event) {
+      if (event.target.tagName === "FORM") {
+        pending = new Promise((resolve) => {
+          process.nextTick(navigate, resolve);
+        });
+      }
+
+      function navigate(resolve) {
+        if (event.defaultPrevented) return resolve();
+
+        const form = event.target;
+        const qs = getFormInputAsQs(form);
+        const p = url.parse(form.getAttribute("action"), true);
+        Object.assign(p.query, qs);
+
+        const navigation = navigateTo(url.format(p), {
+          cookie: document.cookie
+        });
+        resolve(navigation);
+      }
+    }
   }
+}
+
+function getFormInputAsQs(form) {
+  const inputs = form.getElementsByTagName("input");
+
+  return inputs.reduce((acc, input) => {
+    if (input.name && input.value) {
+      if (input.type === "radio") {
+        if (input.checked) {
+          acc[input.name] = input.value;
+        }
+      } else {
+        acc[input.name] = input.value;
+      }
+    }
+    return acc;
+  }, {});
 }
