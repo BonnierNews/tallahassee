@@ -42,6 +42,10 @@ describe("Document", () => {
     it("doesn't expose classList on document", async () => {
       expect(document.classList, "classList on document").to.be.undefined;
     });
+
+    it("exposes documentElement with expected behaviour", async () => {
+      expect(document.documentElement).to.have.property("tagName", "HTML");
+    });
   });
 
   describe("api", () => {
