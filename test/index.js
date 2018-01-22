@@ -61,6 +61,14 @@ describe("Tallahassee", () => {
     });
   });
 
+  describe("window", () => {
+    it("exposes a document property", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      expect(browser.window.document === browser.document).to.be.true;
+    });
+  });
+
   describe("run script", () => {
     it("transpiles and runs es6 script", async () => {
       const browser = await Browser(app).navigateTo("/", {

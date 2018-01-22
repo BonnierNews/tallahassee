@@ -45,6 +45,7 @@ function Tallahassee(app) {
     });
 
     global.window = window;
+    window.document = document;
     global.document = document;
 
     document.addEventListener("submit", onDocumentSubmit);
