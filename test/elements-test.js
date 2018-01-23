@@ -14,6 +14,7 @@ const elementProperties = [
   "lastElementChild",
   "name",
   "innerHTML",
+  "offsetHeight",
   "outerHTML",
   "src",
   "style",
@@ -219,6 +220,39 @@ describe("elements", () => {
       const elms2 = document.getElementById("form2").getElementsByTagName("input");
       expect(elms2[0].checked).to.be.true;
       expect(elms2[1].checked).to.be.false;
+    });
+  });
+
+  describe("_setBoundingClientRect", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test</h2>
+              <p>Body text</p>
+            </body>
+          </html>`
+      });
+    });
+
+    it("sets result of getBoundingClientRect", () => {
+      const [elm] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect(10, 20);
+
+      expect(elm.getBoundingClientRect()).to.eql({
+        top: 10,
+        bottom: 20,
+        height: 10
+      });
+    });
+
+    it("sets offsetHeight as well", () => {
+      const [elm] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect(10, 200);
+
+      expect(elm.offsetHeight).to.equal(190);
     });
   });
 
