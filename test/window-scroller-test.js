@@ -2,7 +2,7 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler} = require("../lib");
+const {Compiler, IntersectionObserver} = require("../lib");
 
 describe("Window scroller", () => {
   before(() => {
@@ -142,6 +142,76 @@ describe("Window scroller", () => {
 
       expect(img1.getBoundingClientRect()).to.have.property("top", -20);
       expect(img2.getBoundingClientRect()).to.have.property("top", 180);
+    });
+  });
+
+  describe("stickElementToTop()", () => {
+    it("sets top of element to 0", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      browser.setElementsToScroll((document) => {
+        return document.getElementsByTagName("img");
+      });
+
+      const elements = browser.document.getElementsByTagName("img");
+      const [img1, img2] = elements;
+      img1._setBoundingClientRect(700, 720);
+      img2._setBoundingClientRect(900, 920);
+
+      browser.stickElementToTop(img1);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", 0);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 900);
+
+      browser.unstickElementFromTop(img1);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", 700);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 900);
+    });
+
+    it("unstickElementFromTop() resets top in regard to scroll", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      browser.setElementsToScroll((document) => {
+        return document.getElementsByTagName("img");
+      });
+
+      const elements = browser.document.getElementsByTagName("img");
+      const [img1, img2] = elements;
+      img1._setBoundingClientRect(700, 720);
+      img2._setBoundingClientRect(900, 920);
+
+      browser.stickElementToTop(img1);
+
+      browser.window.scroll(0, 100);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", 0);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 800);
+
+      browser.unstickElementFromTop(img1);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", 600);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 800);
+    });
+  });
+
+  describe("use with IntersectionObserver", () => {
+    it("listens to window scroll", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      browser.window.IntersectionObserver = IntersectionObserver(browser);
+
+      browser.setElementsToScroll((document) => {
+        return document.getElementsByTagName("img");
+      });
+
+      const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
+      lazyLoaded._setBoundingClientRect(300);
+
+      require("../app/assets/scripts/main");
+
+      browser.scrollToTopOfElement(lazyLoaded);
+
+      expect(lazyLoaded.classList.contains("lazy-load")).to.be.false;
     });
   });
 });
