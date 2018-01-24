@@ -22,9 +22,9 @@ Test you abundant sticky logic.
 ```javascript
 "use strict";
 
-const app = require("../app/express-js-app");
+const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
-const {Compiler} = require("@expressen/tallahassee/lib");
+const {Compiler, IntersectionObserver} = require("@expressen/tallahassee/lib");
 
 describe("Window scroller", () => {
   before(() => {
@@ -59,7 +59,7 @@ Scrolls so that element bottom matches `window.innerHeight`.
 
 ## `browser.stickElementToTop()`
 
-Set element sticky by fixing element top.
+Set element sticky by fixating element to top.
 
 ## `browser.unstickElementFromTop()`
 
@@ -70,7 +70,7 @@ Resets element top to wherever it was before sticked.
 ```javascript
 "use strict";
 
-const app = require("../app/express-js-app");
+const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const {Compiler, IntersectionObserver, ElementScroller} = require("@expressen/tallahassee/lib");
 
@@ -90,7 +90,7 @@ describe("IntersectionObserver", () => {
     expect(intersectionObserver._getObserved()).to.have.length(1);
   });
 
-  it("listens to window scroll", async () => {
+  it("acts on window scroll", async () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });
@@ -98,11 +98,11 @@ describe("IntersectionObserver", () => {
 
     require("../app/assets/scripts/main");
 
-    const scroller = ElementScroller(browser, () => {
-      return browser.document.getElementsByClassName("lazy-load");
+    browser.setElementsToScroll((document) => {
+      return document.getElementsByClassName("lazy-load");
     });
 
-    scroller.scrollToTopOfElement(browser.document.getElementsByClassName("lazy-load")[0]);
+    browser.scrollToTopOfElement(browser.document.getElementsByClassName("lazy-load")[0]);
 
     expect(browser.document.getElementsByClassName("lazy-load").length).to.equal(0);
 
