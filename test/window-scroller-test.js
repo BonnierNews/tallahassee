@@ -30,6 +30,11 @@ describe("Window scroller", () => {
 
     expect(img1.getBoundingClientRect()).to.have.property("top", -100);
     expect(img2.getBoundingClientRect()).to.have.property("top", 0);
+
+    browser.window.scroll(0, 50);
+
+    expect(img1.getBoundingClientRect()).to.have.property("top", 50);
+    expect(img2.getBoundingClientRect()).to.have.property("top", 150);
   });
 
   describe("scrollToTopOfElement()", () => {
@@ -54,6 +59,11 @@ describe("Window scroller", () => {
 
       expect(img1.getBoundingClientRect()).to.have.property("top", -100);
       expect(img2.getBoundingClientRect()).to.have.property("top", 0);
+
+      browser.scrollToTopOfElement(img1, -1);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", -1);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 99);
     });
 
     it("with offset set top to offset", async () => {
@@ -127,6 +137,11 @@ describe("Window scroller", () => {
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 390);
       expect(img2.getBoundingClientRect()).to.have.property("top", 590);
+
+      browser.scrollToBottomOfElement(img1, -browser.window.innerHeight);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", -20);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 180);
     });
   });
 });
