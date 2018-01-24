@@ -27,6 +27,7 @@ function Tallahassee(app) {
   function load(resp) {
     let pending, currentPageYOffset;
     let elementsToScroll = () => {};
+    const stickedElements = [];
 
     compile();
 
@@ -41,6 +42,8 @@ function Tallahassee(app) {
       setElementsToScroll,
       scrollToBottomOfElement,
       scrollToTopOfElement,
+      stickElementToTop,
+      unstickElementFromTop,
       window,
     };
 
@@ -94,6 +97,8 @@ function Tallahassee(app) {
       const delta = currentPageYOffset - pageYOffset;
 
       elms.slice().forEach((elm) => {
+        if (isElementSticky(elm)) return;
+
         const {top} = elm.getBoundingClientRect();
         elm._setBoundingClientRect((top || 0) + delta);
       });
@@ -112,6 +117,27 @@ function Tallahassee(app) {
       const {height} = element.getBoundingClientRect();
       const offsetFromBottom = window.innerHeight - height;
       return scrollToTopOfElement(element, offsetFromBottom + offset);
+    }
+
+    function stickElementToTop(element) {
+      if (isElementSticky(element)) return;
+
+      const {top} = element.getBoundingClientRect();
+      element._tallahasseePositionBeforeSticky = window.pageYOffset + top;
+      element._setBoundingClientRect(0);
+      stickedElements.push(element);
+    }
+
+    function unstickElementFromTop(element) {
+      const idx = stickedElements.indexOf(element);
+      if (idx < 0) return;
+      stickedElements.splice(idx, 1);
+      element._setBoundingClientRect(element._tallahasseePositionBeforeSticky - window.pageYOffset);
+      element._tallahasseePositionBeforeSticky = undefined;
+    }
+
+    function isElementSticky(element) {
+      return stickedElements.indexOf(element) > -1;
     }
   }
 }
