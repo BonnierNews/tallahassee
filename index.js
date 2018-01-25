@@ -2,6 +2,7 @@
 
 const supertest = require("supertest");
 const url = require("url");
+const vm = require("vm");
 const {Document, Fetch, Window, Compiler} = require("./lib");
 const {compile} = Compiler;
 
@@ -39,6 +40,7 @@ function Tallahassee(app) {
     const browserContext = {
       $: document.$,
       document,
+      runScripts,
       setElementsToScroll,
       scrollToBottomOfElement,
       scrollToTopOfElement,
@@ -82,6 +84,14 @@ function Tallahassee(app) {
         });
         resolve(navigation);
       }
+    }
+
+    function runScripts(context) {
+      context = context || document.documentElement;
+      context.$elm.find("script").each((idx, elm) => {
+        const scriptBody = document.$(elm).html();
+        if (scriptBody) vm.runInThisContext(scriptBody);
+      });
     }
 
     function setElementsToScroll(elmsToScrollFn) {
