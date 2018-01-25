@@ -1,6 +1,7 @@
 "use strict";
 
 const {Document} = require("../lib");
+const Element = require("../lib/Element");
 
 const elementProperties = [
   "children",
@@ -422,6 +423,28 @@ describe("elements", () => {
       });
 
       button.click();
+    });
+  });
+
+  describe("instanceof", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test <b>title</b></h2>
+              <form id="get-form" type="get" action="/">
+                <button type="submit">Submit</submit>
+              </form>
+            </body>
+          </html>`
+      });
+    });
+
+    it("instance has an instanceof Element", () => {
+      const element = document.getElementById("get-form");
+      expect(element instanceof Element).to.be.true;
     });
   });
 });

@@ -1,11 +1,12 @@
 "use strict";
 
-const {Window} = require("../lib");
+const {Window, Document} = require("../lib");
 
 describe("Window", () => {
-  let window;
+
+  let window, document;
   beforeEach(() => {
-    window = Window({
+    document = Document({
       request: {
         header: {
           cookie: "_ga=1"
@@ -21,11 +22,22 @@ describe("Window", () => {
           </body>
         </html>`
     });
+
+    window = Window({
+      request: {
+        header: {},
+        url: "https://www.expressen.se/nyheter/article-slug/"
+      }
+    },
+    {
+      document: document
+    }
+    );
   });
 
   describe("properties", () => {
     it("has Element", () => {
-      expect(window.Element).to.be.ok;
+      expect(window).to.have.property("Element");
     });
   });
 });
