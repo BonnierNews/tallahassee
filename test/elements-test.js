@@ -460,6 +460,32 @@ describe("elements", () => {
     });
   });
 
+  describe("video element", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test <b>title</b></h2>
+              <video id="video-element"></video>
+            </body>
+          </html>`
+      });
+    });
+
+    it("has a play method", () => {
+      const videoElement = document.getElementById("video-element");
+      expect(typeof videoElement.play === "function").to.be.true;
+    });
+
+    it("the play method returns a promise", () => {
+      const videoElement = document.getElementById("video-element");
+      const returnValue = videoElement.play();
+      expect(returnValue instanceof Promise).to.be.true;
+    });
+  });
+
   describe("instanceof", () => {
     let document;
     beforeEach(() => {
