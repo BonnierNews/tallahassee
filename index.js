@@ -25,7 +25,9 @@ function Tallahassee(app) {
   }
 
   function load(resp) {
-    let pending;
+    let pending, currentPageYOffset;
+    let elementsToScroll = () => {};
+    const stickedElements = [];
 
     compile();
 
@@ -35,9 +37,14 @@ function Tallahassee(app) {
     const document = Document(resp);
 
     const browserContext = {
-      window,
-      document,
       $: document.$,
+      document,
+      setElementsToScroll,
+      scrollToBottomOfElement,
+      scrollToTopOfElement,
+      stickElementToTop,
+      unstickElementFromTop,
+      window,
     };
 
     Object.defineProperty(browserContext, "_pending", {
@@ -48,7 +55,10 @@ function Tallahassee(app) {
     window.document = document;
     global.document = document;
 
+    currentPageYOffset = window.pageYOffset;
+
     document.addEventListener("submit", onDocumentSubmit);
+    window.addEventListener("scroll", onWindowScroll);
 
     return browserContext;
 
@@ -72,6 +82,62 @@ function Tallahassee(app) {
         });
         resolve(navigation);
       }
+    }
+
+    function setElementsToScroll(elmsToScrollFn) {
+      elementsToScroll = elmsToScrollFn;
+    }
+
+    function onWindowScroll() {
+      if (!elementsToScroll) return;
+      const elms = elementsToScroll(document);
+      if (!elms || !elms.length) return;
+
+      const pageYOffset = window.pageYOffset;
+      const delta = currentPageYOffset - pageYOffset;
+
+      elms.slice().forEach((elm) => {
+        if (isElementSticky(elm)) return;
+
+        const {top} = elm.getBoundingClientRect();
+        elm._setBoundingClientRect((top || 0) + delta);
+      });
+
+      currentPageYOffset = pageYOffset;
+    }
+
+    function scrollToTopOfElement(element, offset = 0) {
+      const {top} = element.getBoundingClientRect();
+
+      const pageYOffset = window.pageYOffset;
+      window.scroll(0, pageYOffset + top - offset);
+    }
+
+    function scrollToBottomOfElement(element, offset = 0) {
+      const {height} = element.getBoundingClientRect();
+      const offsetFromBottom = window.innerHeight - height;
+      return scrollToTopOfElement(element, offsetFromBottom + offset);
+    }
+
+    function stickElementToTop(element) {
+      if (isElementSticky(element)) return;
+
+      const {top} = element.getBoundingClientRect();
+      element._tallahasseePositionBeforeSticky = window.pageYOffset + top;
+      element._setBoundingClientRect(0);
+      stickedElements.push(element);
+    }
+
+    function unstickElementFromTop(element) {
+      const idx = stickedElements.indexOf(element);
+      if (idx < 0) return;
+      stickedElements.splice(idx, 1);
+      element._setBoundingClientRect(element._tallahasseePositionBeforeSticky - window.pageYOffset);
+      element._tallahasseePositionBeforeSticky = undefined;
+    }
+
+    function isElementSticky(element) {
+      return stickedElements.indexOf(element) > -1;
     }
   }
 }

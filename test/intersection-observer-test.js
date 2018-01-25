@@ -2,7 +2,7 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler, IntersectionObserver, ElementScroller} = require("../lib");
+const {Compiler, IntersectionObserver} = require("../lib");
 
 describe("IntersectionObserver", () => {
   before(() => {
@@ -28,11 +28,11 @@ describe("IntersectionObserver", () => {
 
     require("../app/assets/scripts/main");
 
-    const scroller = ElementScroller(browser, () => {
-      return browser.document.getElementsByClassName("lazy-load");
+    browser.setElementsToScroll((document) => {
+      return document.getElementsByClassName("lazy-load");
     });
 
-    scroller.scrollToTopOfElement(browser.document.getElementsByClassName("lazy-load")[0]);
+    browser.scrollToTopOfElement(browser.document.getElementsByClassName("lazy-load")[0]);
 
     expect(browser.document.getElementsByClassName("lazy-load").length).to.equal(0);
 
