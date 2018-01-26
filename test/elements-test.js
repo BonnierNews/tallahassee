@@ -111,6 +111,21 @@ describe("elements", () => {
       elm.disabled = false;
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
     });
+  });
+
+  describe(".style", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2 id="headline">Test</h2>
+              <img style="display: none;height:0; -moz-transition-duration: 12ms">
+            </body>
+          </html>`
+      });
+    });
 
     it("exposes style with the expected behaviour", async () => {
       const [elm] = document.getElementsByTagName("h2");
@@ -122,13 +137,29 @@ describe("elements", () => {
 
       const [img] = document.getElementsByTagName("img");
       expect(img.style).to.eql({
+        mozTransitionDuration: "12ms",
         display: "none",
         height: "0"
       });
 
       img.style.height = "12px";
       img.style.width = "0";
-      expect(img.getAttribute("style")).to.equal("display: none;height: 12px;width: 0;");
+      expect(img.getAttribute("style")).to.equal("display: none;height: 12px;-moz-transition-duration: 12ms;width: 0;");
+    });
+
+    it("handles setting camel cased properties", async () => {
+      const [elm] = document.getElementsByTagName("h2");
+
+      elm.style.mozTransitionDuration = "6s";
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-moz-transition-duration: 6s;\">Test</h2>");
+      elm.style.removeProperty("mozTransitionDuration");
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
+
+      elm.style.msGridColumns = "auto auto";
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-ms-grid-columns: auto auto;\">Test</h2>");
+
+      elm.style.marginTop = 0;
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-ms-grid-columns: auto auto;margin-top: 0;\">Test</h2>");
     });
   });
 
