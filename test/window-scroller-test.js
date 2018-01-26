@@ -51,16 +51,19 @@ describe("Window scroller", () => {
       img2._setBoundingClientRect(200, 220);
 
       browser.scrollToTopOfElement(img1);
+      expect(browser.window.pageYOffset).to.equal(100);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 0);
       expect(img2.getBoundingClientRect()).to.have.property("top", 100);
 
       browser.scrollToTopOfElement(img2);
+      expect(browser.window.pageYOffset).to.equal(200);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", -100);
       expect(img2.getBoundingClientRect()).to.have.property("top", 0);
 
       browser.scrollToTopOfElement(img1, -1);
+      expect(browser.window.pageYOffset).to.equal(101);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", -1);
       expect(img2.getBoundingClientRect()).to.have.property("top", 99);
@@ -79,15 +82,38 @@ describe("Window scroller", () => {
       img2._setBoundingClientRect(200, 220);
 
       browser.scrollToTopOfElement(img1, -10);
+      expect(browser.window.pageYOffset).to.equal(110);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", -10);
       expect(img2.getBoundingClientRect()).to.have.property("top", 90);
 
       browser.scrollToTopOfElement(img2, 10);
+      expect(browser.window.pageYOffset).to.equal(190);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", -90);
       expect(img2.getBoundingClientRect()).to.have.property("top", 10);
     });
+
+    it("offset cannot scroll above pageYOffset 0", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      browser.window.innerHeight = 600;
+
+      browser.setElementsToScroll((document) => {
+        return document.getElementsByTagName("img");
+      });
+
+      const elements = browser.document.getElementsByTagName("img");
+      const [img1, img2] = elements;
+      img1._setBoundingClientRect(700, 720);
+      img2._setBoundingClientRect(900, 920);
+
+      browser.scrollToTopOfElement(img1, 99999);
+      expect(browser.window.pageYOffset).to.equal(0);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", 700);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 900);
+    });
+
   });
 
   describe("scrollToBottomOfElement()", () => {
@@ -105,11 +131,13 @@ describe("Window scroller", () => {
       img2._setBoundingClientRect(900, 920);
 
       browser.scrollToBottomOfElement(img1);
+      expect(browser.window.pageYOffset).to.equal(120);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 580);
       expect(img2.getBoundingClientRect()).to.have.property("top", 780);
 
       browser.scrollToBottomOfElement(img2);
+      expect(browser.window.pageYOffset).to.equal(320);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 380);
       expect(img2.getBoundingClientRect()).to.have.property("top", 580);
@@ -129,19 +157,37 @@ describe("Window scroller", () => {
       img2._setBoundingClientRect(900, 920);
 
       browser.scrollToBottomOfElement(img1, -10);
+      expect(browser.window.pageYOffset).to.equal(130);
+
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 570);
       expect(img2.getBoundingClientRect()).to.have.property("top", 770);
 
       browser.scrollToBottomOfElement(img2, 10);
+      expect(browser.window.pageYOffset).to.equal(310);
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 390);
       expect(img2.getBoundingClientRect()).to.have.property("top", 590);
+    });
 
-      browser.scrollToBottomOfElement(img1, -browser.window.innerHeight);
+    it("offset cannot scroll above pageYOffset 0", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      browser.window.innerHeight = 600;
 
-      expect(img1.getBoundingClientRect()).to.have.property("top", -20);
-      expect(img2.getBoundingClientRect()).to.have.property("top", 180);
+      browser.setElementsToScroll((document) => {
+        return document.getElementsByTagName("img");
+      });
+
+      const elements = browser.document.getElementsByTagName("img");
+      const [img1, img2] = elements;
+      img1._setBoundingClientRect(700, 720);
+      img2._setBoundingClientRect(900, 920);
+
+      browser.scrollToBottomOfElement(img1, 99999);
+      expect(browser.window.pageYOffset).to.equal(0);
+
+      expect(img1.getBoundingClientRect()).to.have.property("top", 700);
+      expect(img2.getBoundingClientRect()).to.have.property("top", 900);
     });
   });
 
