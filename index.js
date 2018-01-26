@@ -117,6 +117,8 @@ function Tallahassee(app) {
     }
 
     function scrollToTopOfElement(element, offset = 0) {
+      if (isElementSticky(element)) throw new Error("Cannot scroll to sticky element");
+
       const {top} = element.getBoundingClientRect();
 
       const pageYOffset = window.pageYOffset;
@@ -124,6 +126,7 @@ function Tallahassee(app) {
     }
 
     function scrollToBottomOfElement(element, offset = 0) {
+      if (isElementSticky(element)) throw new Error("Cannot scroll to sticky element");
       const {height} = element.getBoundingClientRect();
       const offsetFromBottom = window.innerHeight - height;
       return scrollToTopOfElement(element, offsetFromBottom + offset);

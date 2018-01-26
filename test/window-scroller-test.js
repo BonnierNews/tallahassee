@@ -193,6 +193,21 @@ describe("Window scroller", () => {
       expect(img1.getBoundingClientRect()).to.have.property("top", 600);
       expect(img2.getBoundingClientRect()).to.have.property("top", 800);
     });
+
+    it("cannot scroll to sticky element", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      browser.setElementsToScroll((document) => {
+        return document.getElementsByTagName("img");
+      });
+
+      const elements = browser.document.getElementsByTagName("img");
+      const [img1] = elements;
+
+      browser.stickElementToTop(img1);
+      expect(() => browser.scrollToTopOfElement(img1)).to.throw("Cannot scroll to sticky element");
+      expect(() => browser.scrollToBottomOfElement(img1)).to.throw("Cannot scroll to sticky element");
+    });
   });
 
   describe("use with IntersectionObserver", () => {
