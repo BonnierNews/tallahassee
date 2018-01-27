@@ -78,7 +78,7 @@ function parseDoc(filePath) {
 
   function linting(filename, scriptBody, lineOffset) {
     return function lint() {
-      const result = linter.verify(scriptBody, require("../.eslintrc.json"), {
+      const result = linter.verify(scriptBody, lintConf, {
         filename: `${filename}@${lineOffset}`
       });
 
@@ -118,10 +118,7 @@ function displayLinting(result, filename, offset) {
   result.forEach(({severity, message, line, column, ruleId}) => {
     const log = severity === 2 ? err : warn;
     log(`  \x1b[90m${offset + line}:${column}`, severity === 2 ? "\x1b[31merror" : "  \x1b[33mwarning", `\x1b[0m${message}`, `\x1b[90m${ruleId}\x1b[0m`);
-    // log(`  \x1b[33m${offset + line}:${column}\x1b[0m`);
   });
-
-  /// 400:13  warning  Unexpected console statement  no-console
 }
 
 parseDoc(file);
