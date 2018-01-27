@@ -1,5 +1,5 @@
 <!-- version -->
-# 0.5.0 API Reference
+# 0.6.2 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -72,7 +72,7 @@ Resets element top to wherever it was before sticked.
 
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
-const {Compiler, IntersectionObserver, ElementScroller} = require("@expressen/tallahassee/lib");
+const {Compiler, IntersectionObserver} = require("@expressen/tallahassee/lib");
 
 describe("IntersectionObserver", () => {
   before(() => {

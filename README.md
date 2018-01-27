@@ -18,7 +18,7 @@ Supports just about everything except `querySelectorAll()` which we don´t want 
 ```javascript
 "use strict";
 
-const app = require("../app/express-js-app");
+const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
 
