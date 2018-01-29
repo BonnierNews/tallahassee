@@ -67,31 +67,62 @@ describe("elements", () => {
       });
     });
 
-    it("exposes classList with the expected behaviour", async () => {
-      const [elm] = document.getElementsByTagName("h1");
+    describe("classList", () => {
+      let elm;
 
-      expect(elm.classList).to.be.ok;
-      elm.classList.add("class-list");
+      beforeEach(() => {
+        [elm] = document.getElementsByTagName("h1");
+      });
 
-      expect(elm.classList._classes).to.contain("class-list");
+      it("exposes classList with the expected behaviour", async () => {
+        expect(elm.classList).to.be.ok;
+        elm.classList.add("class-list");
 
-      elm.classList.toggle("class-list");
-      expect(elm.classList._classes).to.not.contain("class-list");
+        expect(elm.classList._classes).to.contain("class-list");
 
-      elm.classList.toggle("class-list", false);
-      expect(elm.classList._classes).to.not.contain("class-list");
+        elm.classList.toggle("class-list");
+        expect(elm.classList._classes).to.not.contain("class-list");
 
-      elm.classList.toggle("class-list", true);
-      expect(elm.classList._classes).to.contain("class-list");
+        elm.classList.toggle("class-list", false);
+        expect(elm.classList._classes).to.not.contain("class-list");
 
-      elm.classList.toggle("class-list");
-      expect(elm.classList._classes).to.not.contain("class-list");
+        elm.classList.toggle("class-list", true);
+        expect(elm.classList._classes).to.contain("class-list");
 
-      elm.classList.add("class-list", "second-class");
-      expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+        elm.classList.toggle("class-list");
+        expect(elm.classList._classes).to.not.contain("class-list");
 
-      elm.classList.remove("class-list", "second-class");
-      expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+        elm.classList.add("class-list", "second-class");
+        expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+
+        elm.classList.remove("class-list", "second-class");
+        expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+      });
+
+      it("exposes hook for manipulating element when class is added", () => {
+        expect(elm.style).to.not.have.property("display");
+        elm.addEventListener("_classadded", (...classNames) => {
+          if (classNames.includes("hidden")) {
+            elm.style.display = "none";
+          }
+        });
+
+        elm.classList.add("hidden");
+        expect(elm.style).to.have.property("display", "none");
+      });
+
+      it("exposes hook for manipulating element when class is removed", () => {
+        elm.style.position = "fixed";
+
+        elm.addEventListener("_classremoved", (...classNames) => {
+          if (classNames.includes("sticky")) {
+            elm.style.position = "relative";
+          }
+        });
+
+        elm.classList.remove("sticky");
+        expect(elm.style).to.have.property("position", "relative");
+      });
     });
 
     it("exposes disabled with the expected behaviour on input element", async () => {
