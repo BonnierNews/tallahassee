@@ -67,31 +67,62 @@ describe("elements", () => {
       });
     });
 
-    it("exposes classList with the expected behaviour", async () => {
-      const [elm] = document.getElementsByTagName("h1");
+    describe("classList", () => {
+      let elm;
 
-      expect(elm.classList).to.be.ok;
-      elm.classList.add("class-list");
+      beforeEach(() => {
+        [elm] = document.getElementsByTagName("h1");
+      });
 
-      expect(elm.classList._classes).to.contain("class-list");
+      it("exposes classList with the expected behaviour", async () => {
+        expect(elm.classList).to.be.ok;
+        elm.classList.add("class-list");
 
-      elm.classList.toggle("class-list");
-      expect(elm.classList._classes).to.not.contain("class-list");
+        expect(elm.classList._classes).to.contain("class-list");
 
-      elm.classList.toggle("class-list", false);
-      expect(elm.classList._classes).to.not.contain("class-list");
+        elm.classList.toggle("class-list");
+        expect(elm.classList._classes).to.not.contain("class-list");
 
-      elm.classList.toggle("class-list", true);
-      expect(elm.classList._classes).to.contain("class-list");
+        elm.classList.toggle("class-list", false);
+        expect(elm.classList._classes).to.not.contain("class-list");
 
-      elm.classList.toggle("class-list");
-      expect(elm.classList._classes).to.not.contain("class-list");
+        elm.classList.toggle("class-list", true);
+        expect(elm.classList._classes).to.contain("class-list");
 
-      elm.classList.add("class-list", "second-class");
-      expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+        elm.classList.toggle("class-list");
+        expect(elm.classList._classes).to.not.contain("class-list");
 
-      elm.classList.remove("class-list", "second-class");
-      expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+        elm.classList.add("class-list", "second-class");
+        expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+
+        elm.classList.remove("class-list", "second-class");
+        expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+      });
+
+      it("exposes hook for manipulating element when class is added", () => {
+        expect(elm.style).to.not.have.property("display");
+        elm.addEventListener("_classadded", (...classNames) => {
+          if (classNames.includes("hidden")) {
+            elm.style.display = "none";
+          }
+        });
+
+        elm.classList.add("hidden");
+        expect(elm.style).to.have.property("display", "none");
+      });
+
+      it("exposes hook for manipulating element when class is removed", () => {
+        elm.style.position = "fixed";
+
+        elm.addEventListener("_classremoved", (...classNames) => {
+          if (classNames.includes("sticky")) {
+            elm.style.position = "relative";
+          }
+        });
+
+        elm.classList.remove("sticky");
+        expect(elm.style).to.have.property("position", "relative");
+      });
     });
 
     it("exposes disabled with the expected behaviour on input element", async () => {
@@ -111,6 +142,21 @@ describe("elements", () => {
       elm.disabled = false;
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
     });
+  });
+
+  describe(".style", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h2 id="headline">Test</h2>
+              <img style="display: none;height:0; -moz-transition-duration: 12ms">
+            </body>
+          </html>`
+      });
+    });
 
     it("exposes style with the expected behaviour", async () => {
       const [elm] = document.getElementsByTagName("h2");
@@ -122,13 +168,29 @@ describe("elements", () => {
 
       const [img] = document.getElementsByTagName("img");
       expect(img.style).to.eql({
+        mozTransitionDuration: "12ms",
         display: "none",
         height: "0"
       });
 
       img.style.height = "12px";
       img.style.width = "0";
-      expect(img.getAttribute("style")).to.equal("display: none;height: 12px;width: 0;");
+      expect(img.getAttribute("style")).to.equal("display: none;height: 12px;-moz-transition-duration: 12ms;width: 0;");
+    });
+
+    it("handles setting camel cased properties", async () => {
+      const [elm] = document.getElementsByTagName("h2");
+
+      elm.style.mozTransitionDuration = "6s";
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-moz-transition-duration: 6s;\">Test</h2>");
+      elm.style.removeProperty("mozTransitionDuration");
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
+
+      elm.style.msGridColumns = "auto auto";
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-ms-grid-columns: auto auto;\">Test</h2>");
+
+      elm.style.marginTop = 0;
+      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-ms-grid-columns: auto auto;margin-top: 0;\">Test</h2>");
     });
   });
 
