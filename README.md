@@ -34,7 +34,7 @@ describe("Tallahassee", () => {
 
     it("throws if not 200", async () => {
       try {
-        await Browser(app).navigateTo("/../");
+        await Browser(app).navigateTo("/404");
       } catch (e) {
         var err = e; // eslint-disable-line no-var
       }

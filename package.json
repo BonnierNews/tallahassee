@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -16,7 +16,8 @@
     "browser",
     "fake",
     "mock",
-    "IntersectionObserver"
+    "IntersectionObserver",
+    "iframe"
   ],
   "author": "AB Kvällstidningen Expressen",
   "repository": {
@@ -28,6 +29,7 @@
     "babel-preset-node8": "^1.2.0",
     "cheerio": "^1.0.0-rc.2",
     "node-fetch": "^1.7.3",
+    "request": "^2.83.0",
     "supertest": "^3.0.0"
   },
   "devDependencies": {

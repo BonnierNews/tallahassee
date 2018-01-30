@@ -3,6 +3,7 @@
 const app = require("../app/app");
 const Browser = require("../");
 const nock = require("nock");
+const Path = require("path");
 const {Compiler} = require("../lib/Compiler");
 
 describe("Tallahassee", () => {
@@ -30,7 +31,7 @@ describe("Tallahassee", () => {
 
     it("throws if not 200", async () => {
       try {
-        await Browser(app).navigateTo("/../");
+        await Browser(app).navigateTo("/404");
       } catch (e) {
         var err = e; // eslint-disable-line no-var
       }
@@ -167,6 +168,53 @@ describe("Tallahassee", () => {
 
       expect(newNavigation.document.cookie).to.equal("_ga=2;");
       expect(newNavigation.window.location).to.have.property("search", "?q=12");
+    });
+  });
+
+  describe("focusIframe()", () => {
+    it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
+      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2;"});
+
+      const element = browser.document.createElement("iframe");
+      element.id = "friendly-frame";
+      element.src = "/friendly/";
+      browser.document.body.appendChild(element);
+
+      const iframe = browser.document.getElementById("friendly-frame");
+      const iframeScope = await browser.focusIframe(iframe);
+
+      expect(iframeScope.window === browser.window, "scoped window").to.be.false;
+      expect(iframeScope.window.top === browser.window, "window.top").to.be.true;
+      expect(iframeScope.document === browser.document, "scoped document").to.be.false;
+      expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2;");
+      expect(iframeScope.window.frameElement === iframe, "window.frameElement property").to.be.true;
+    });
+
+    it("iframe from other host scopes window and document", async () => {
+      nock("http://example.com")
+        .get("/framed-content")
+        .replyWithFile(200, Path.join(__dirname, "../app/assets/public/index.html"), {
+          "Content-Type": "text/html"
+        });
+
+      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+
+      const element = browser.document.createElement("iframe");
+      element.id = "iframe";
+      element.src = "//example.com/framed-content";
+      browser.document.body.appendChild(element);
+
+      const iframe = browser.document.getElementById("iframe");
+      const iframeScope = await browser.focusIframe(iframe);
+
+      expect(iframeScope.window === browser.window, "scoped window").to.be.false;
+      expect(iframeScope.window.top, "window.top").to.be.ok;
+
+      expect(() => iframeScope.window.top.location.pathname).to.throw("Blocked a frame with origin \"http://example.com\" from accessing a cross-origin frame.");
+
+      expect(iframeScope.document === browser.document, "scoped document").to.be.false;
+      expect(iframeScope.document.cookie, "scoped document cookie").to.equal("");
+      expect(iframeScope.window.frameElement, "window.frameElement property").to.be.undefined;
     });
   });
 });

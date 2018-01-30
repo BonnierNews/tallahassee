@@ -1,5 +1,8 @@
 "use strict";
 
+const getHeaders = require("./lib/getHeaders");
+const makeAbsolute = require("./lib/makeAbsolute");
+const Request = require("request");
 const supertest = require("supertest");
 const url = require("url");
 const vm = require("vm");
@@ -32,6 +35,7 @@ function Tallahassee(app) {
 
     compile();
 
+    const headers = getHeaders(resp.request);
     const window = Window(resp, {
       fetch: Fetch(app, resp),
     });
@@ -42,6 +46,7 @@ function Tallahassee(app) {
       $: document.$,
       document,
       focus,
+      focusIframe,
       runScripts,
       setElementsToScroll,
       scrollToBottomOfElement,
@@ -164,6 +169,64 @@ function Tallahassee(app) {
 
     function isElementSticky(element) {
       return stickedElements.indexOf(element) > -1;
+    }
+
+    async function focusIframe(element, src) {
+      if (!element) return;
+      if (!element.tagName === "IFRAME") return;
+
+      src = src || element.src;
+
+      const srcUrl = makeAbsolute(browserContext.window.location, src);
+      const parsedUrl = url.parse(srcUrl);
+
+      if (parsedUrl.host !== browserContext.window.location.host) return requestExternalContent(srcUrl);
+
+      const iframeScope = await Tallahassee(app).navigateTo(parsedUrl.path, headers);
+      iframeScope.window.frameElement = element;
+      iframeScope.window.top = browserContext.window;
+
+      return iframeScope;
+
+      function requestExternalContent(externalUrl) {
+        const prom = new Promise((resolve, reject) => {
+          Request.get(externalUrl, (err, getResp) => {
+            if (err) return reject(err);
+
+            const {request, body: text} = getResp;
+            const {href} = request;
+            request.url = href;
+
+            resolve({request, text});
+          });
+        });
+
+        return prom.then((scopeResp) => {
+          return Tallahassee(app).load(scopeResp);
+        }).then((scopedBrowser) => {
+          scopedBrowser.window.top = getLockedWindow(scopedBrowser.window.location.href);
+          return scopedBrowser;
+        });
+      }
+    }
+
+    function getLockedWindow(frameSrc) {
+      const lockedWindow = {};
+      const location = {};
+
+      const origin = url.parse(frameSrc);
+
+      lockedWindow.location = new Proxy(location, {
+        set: unauth,
+        get: unauth,
+        deleteProperty: unauth
+      });
+
+      return lockedWindow;
+
+      function unauth() {
+        throw new Error(`Blocked a frame with origin "${origin.protocol}//${origin.host}" from accessing a cross-origin frame.`);
+      }
     }
   }
 }

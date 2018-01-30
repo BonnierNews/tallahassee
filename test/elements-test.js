@@ -36,6 +36,9 @@ describe("elements", () => {
     let document;
     beforeEach(() => {
       document = Document({
+        request: {
+          url: "https://www.expressen.se/"
+        },
         text: `
           <html>
             <body>
@@ -44,6 +47,14 @@ describe("elements", () => {
               <input type="button">
               <script>var a = 1;</script>
               <img style="display: none;height:0">
+
+              <a href="//example.com">Absolute link no protocol</a>
+              <a href="http://example.com">Absolute link with protocol</a>
+              <a href="/slug/">Relative link</a>
+
+              <img class="test-src" src="//example.com/img.png">Absolute link no protocol</iframe>
+              <iframe class="test-src" src="http://example.com">Absolute link with protocol</iframe>
+              <iframe class="test-src" src="/slug/">Relative link</iframe>
             </body>
           </html>`
       });
@@ -141,6 +152,23 @@ describe("elements", () => {
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\" disabled=\"disabled\">Test</h2>");
       elm.disabled = false;
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
+    });
+
+    it("exposes .href with the expected behaviour", async () => {
+      const [noprot, abs, rel] = document.getElementsByTagName("a");
+      expect(noprot).to.have.property("href", "https://example.com");
+      expect(abs).to.have.property("href", "http://example.com");
+      expect(rel).to.have.property("href", "https://www.expressen.se/slug/");
+    });
+
+    it("exposes .src with the expected behaviour", async () => {
+      const [noprot, abs, rel] = document.getElementsByClassName("test-src");
+      expect(noprot).to.have.property("src", "https://example.com/img.png");
+      expect(abs).to.have.property("src", "http://example.com");
+      expect(rel).to.have.property("src", "https://www.expressen.se/slug/");
+
+      noprot.src = "/img/set.gif";
+      expect(noprot).to.have.property("src", "https://www.expressen.se/img/set.gif");
     });
   });
 
