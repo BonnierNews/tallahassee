@@ -30,15 +30,6 @@ describe("Document", () => {
       expect(document.location).to.have.property("pathname", "/nyheter/article-slug/");
     });
 
-    it("has cookie", () => {
-      expect(document.cookie).to.be.ok;
-    });
-
-    it("can set cookie", () => {
-      document.cookie = "_new=2";
-      expect(document.cookie).to.equal("_ga=1;_new=2;");
-    });
-
     it("doesn't expose classList on document", async () => {
       expect(document.classList, "classList on document").to.be.undefined;
     });
@@ -68,6 +59,39 @@ describe("Document", () => {
       const call2 = document._getElement($("#headline"));
 
       expect(call1 === call2).to.be.true;
+    });
+  });
+
+  describe("cookie", () => {
+    it("has cookie", () => {
+      expect(document.cookie).to.be.ok;
+    });
+
+    it("can set cookie", () => {
+      document.cookie = "_new=2";
+      expect(document.cookie).to.equal("_ga=1;_new=2;");
+    });
+
+    it("overwrites cookie with same name", () => {
+      document.cookie = "_writable=2";
+      document.cookie = "_writable=3";
+      expect(document.cookie).to.equal("_ga=1;_writable=3;");
+    });
+
+    it("URI encodes when setting value", () => {
+      document.cookie = "_writable=2 3";
+      expect(document.cookie).to.equal("_ga=1;_writable=2%203;");
+    });
+
+    it("can set cookie value to blank", () => {
+      document.cookie = "_writable=4";
+      expect(document.cookie).to.equal("_ga=1;_writable=4;");
+
+      document.cookie = "_writable=";
+      expect(document.cookie).to.equal("_ga=1;_writable=;");
+
+      document.cookie = "_writable=44 ";
+      expect(document.cookie).to.equal("_ga=1;_writable=44;");
     });
   });
 });

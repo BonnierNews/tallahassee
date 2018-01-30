@@ -39,6 +39,8 @@ const testScript = new vm.Script(`
   displayErrors: true
 });
 
+parseDoc(file);
+
 function parseDoc(filePath) {
   fs.readFile(filePath, (err, fileContent) => {
     if (err) throw err;
@@ -120,5 +122,3 @@ function displayLinting(result, filename, offset) {
     log(`  \x1b[90m${offset + line}:${column}`, severity === 2 ? "\x1b[31merror" : "  \x1b[33mwarning", `\x1b[0m${message}`, `\x1b[90m${ruleId}\x1b[0m`);
   });
 }
-
-parseDoc(file);
