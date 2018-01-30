@@ -26,7 +26,7 @@ function Tallahassee(app) {
   }
 
   function load(resp) {
-    let pending, currentPageYOffset;
+    let initialized, pending, currentPageYOffset;
     let elementsToScroll = () => {};
     const stickedElements = [];
 
@@ -36,10 +36,12 @@ function Tallahassee(app) {
       fetch: Fetch(app, resp),
     });
     const document = Document(resp);
+    window.document = document;
 
     const browserContext = {
       $: document.$,
       document,
+      focus,
       runScripts,
       setElementsToScroll,
       scrollToBottomOfElement,
@@ -53,16 +55,24 @@ function Tallahassee(app) {
       get: () => pending
     });
 
-    global.window = window;
-    window.document = document;
-    global.document = document;
-
     currentPageYOffset = window.pageYOffset;
 
     document.addEventListener("submit", onDocumentSubmit);
     window.addEventListener("scroll", onWindowScroll);
 
+    focus();
+
     return browserContext;
+
+    function focus() {
+      if (initialized) {
+        compile();
+      }
+
+      initialized = true;
+      global.window = window;
+      global.document = document;
+    }
 
     function onDocumentSubmit(event) {
       if (event.target.tagName === "FORM") {
