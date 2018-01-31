@@ -140,7 +140,7 @@ function Tallahassee(app) {
       let newYOffset = pageYOffset + top - offset;
       if (newYOffset < 0) newYOffset = 0;
 
-      window.scroll(0, newYOffset);
+      window.scroll(window.pageXOffset, newYOffset);
     }
 
     function scrollToBottomOfElement(element, offset = 0) {
