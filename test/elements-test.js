@@ -569,10 +569,14 @@ describe("elements", () => {
       expect(typeof videoElement.play === "function").to.be.true;
     });
 
-    it("the play method returns a promise", () => {
+    it("the play method returns a resolved promise", (done) => {
       const videoElement = document.getElementById("video-element");
       const returnValue = videoElement.play();
       expect(returnValue instanceof Promise).to.be.true;
+      returnValue.then((value) => {
+        expect(value).to.be.undefined;
+        done();
+      });
     });
 
     it("has a pause method", () => {
@@ -580,10 +584,10 @@ describe("elements", () => {
       expect(typeof videoElement.pause === "function").to.be.true;
     });
 
-    it("the pause method returns a promise", () => {
+    it("the pause method returns undefined", () => {
       const videoElement = document.getElementById("video-element");
       const returnValue = videoElement.pause();
-      expect(returnValue instanceof Promise).to.be.true;
+      expect(returnValue).to.be.undefined;
     });
   });
 
