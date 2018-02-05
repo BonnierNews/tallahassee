@@ -574,6 +574,17 @@ describe("elements", () => {
       const returnValue = videoElement.play();
       expect(returnValue instanceof Promise).to.be.true;
     });
+
+    it("has a pause method", () => {
+      const videoElement = document.getElementById("video-element");
+      expect(typeof videoElement.pause === "function").to.be.true;
+    });
+
+    it("the pause method returns a promise", () => {
+      const videoElement = document.getElementById("video-element");
+      const returnValue = videoElement.pause();
+      expect(returnValue instanceof Promise).to.be.true;
+    });
   });
 
   describe("instanceof", () => {
