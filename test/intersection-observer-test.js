@@ -26,15 +26,20 @@ describe("IntersectionObserver", () => {
     });
     browser.window.IntersectionObserver = IntersectionObserver(browser);
 
+    const lazyLoadElements = browser.document.getElementsByClassName("lazy-load");
+
+    expect(lazyLoadElements.length).to.equal(1);
+
+
     require("../app/assets/scripts/main");
 
-    browser.setElementsToScroll((document) => {
-      return document.getElementsByClassName("lazy-load");
+    browser.setElementsToScroll(() => {
+      return lazyLoadElements;
     });
 
-    browser.scrollToTopOfElement(browser.document.getElementsByClassName("lazy-load")[0]);
-
-    expect(browser.document.getElementsByClassName("lazy-load").length).to.equal(0);
+    const [lazyLoadElement] = lazyLoadElements;
+    browser.scrollToTopOfElement(lazyLoadElement);
+    expect(lazyLoadElement.classList.contains("lazy-load")).to.be.false;
 
     expect(browser.document.getElementsByTagName("img")[1].src).to.be.ok;
   });
