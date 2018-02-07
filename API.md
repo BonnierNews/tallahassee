@@ -42,7 +42,7 @@ describe("Window scroller", () => {
       });
 
       const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
-      lazyLoaded._setBoundingClientRect(300);
+      lazyLoaded._setBoundingClientRect({top: 300});
 
       require("../app/assets/scripts/main");
 
