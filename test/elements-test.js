@@ -347,6 +347,22 @@ describe("elements", () => {
       });
     });
 
+    it("sets height to 0 if there is only top", () => {
+      const [elm] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect({
+        top: 0,
+      });
+
+      expect(elm.getBoundingClientRect()).to.eql({
+        top: 0,
+        left: 0,
+        right: 0,
+        width: 0,
+        bottom: 0,
+        height: 0
+      });
+    });
+
     it("sets offsetHeight as well", () => {
       const [elm] = document.getElementsByTagName("p");
       elm._setBoundingClientRect({
