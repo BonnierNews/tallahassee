@@ -347,19 +347,19 @@ describe("elements", () => {
       });
     });
 
-    it("sets height to 0 if there is only top", () => {
+    it("sets height to 0 and sets bottom value to top value if there is only top", () => {
       const [elm] = document.getElementsByTagName("p");
       elm._setBoundingClientRect({
-        top: 0,
+        top: 10,
       });
 
       expect(elm.getBoundingClientRect()).to.eql({
-        top: 0,
+        top: 10,
         left: 0,
         right: 0,
         width: 0,
-        bottom: 99999,
-        height: 99999
+        bottom: 10,
+        height: 0
       });
     });
 

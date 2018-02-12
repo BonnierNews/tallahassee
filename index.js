@@ -169,8 +169,11 @@ function Tallahassee(app) {
       const idx = stickedElements.indexOf(element);
       if (idx < 0) return;
       stickedElements.splice(idx, 1);
+      const top = element._tallahasseePositionBeforeSticky - window.pageYOffset;
+      const {height} = element.getBoundingClientRect();
       element._setBoundingClientRect({
-        top: element._tallahasseePositionBeforeSticky - window.pageYOffset
+        top: top,
+        bottom: height ? top + height : top
       });
       element._tallahasseePositionBeforeSticky = undefined;
     }
