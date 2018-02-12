@@ -156,10 +156,11 @@ function Tallahassee(app) {
     function stickElementToTop(element) {
       if (isElementSticky(element)) return;
 
-      const {top} = element.getBoundingClientRect();
+      const {top, height} = element.getBoundingClientRect();
       element._tallahasseePositionBeforeSticky = window.pageYOffset + top;
       element._setBoundingClientRect({
-        top: 0
+        top: 0,
+        bottom: (height || 0)
       });
       stickedElements.push(element);
     }
