@@ -18,6 +18,12 @@ describe("Document", () => {
             <h2 id="headline">Test</h2>
             <input type="button"
             <script>var a = 1;</script>
+            <template id="schablon">
+              <div id="insert">
+                <p>Template</p>
+              </div>
+            </template>
+            <div id="lazy"></div>
           </body>
         </html>`
     });
@@ -48,6 +54,30 @@ describe("Document", () => {
 
     it("getElementById returns null id element is not found", async () => {
       expect(document.getElementById("non-existing")).to.be.null;
+    });
+
+    it("importNode() returns element content", async () => {
+      const elm = document.getElementById("schablon");
+      expect(document.importNode(elm, true)).to.be.ok;
+      expect(document.importNode(elm, true).firstChild.tagName).to.equal("DIV");
+    });
+
+    it("importNode() combined with appendChild() inserts element content", async () => {
+      const elm = document.getElementById("schablon");
+      const template = document.importNode(elm, true);
+      document.getElementById("lazy").appendChild(template);
+
+      expect(document.getElementById("insert")).to.be.ok;
+      expect(document.getElementById("insert").parentElement.id).to.equal("lazy");
+    });
+
+    it("template element.content importNode() combined with appendChild() inserts element content", async () => {
+      const elm = document.getElementById("schablon");
+      const template = document.importNode(elm.content, true);
+      document.getElementById("lazy").appendChild(template);
+
+      expect(document.getElementById("insert")).to.be.ok;
+      expect(document.getElementById("insert").parentElement.id).to.equal("lazy");
     });
   });
 

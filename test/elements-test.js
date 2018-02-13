@@ -617,6 +617,31 @@ describe("elements", () => {
     });
   });
 
+  describe("template element", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <h1>Template</h1>
+              <template><h2>Test <b>title</b></h2></template>
+            </body>
+          </html>`
+      });
+    });
+
+    it("has content property", () => {
+      const [element] = document.getElementsByTagName("template");
+      expect(element.content === element).to.be.true;
+    });
+
+    it("non-template element returns undefined", () => {
+      const [element] = document.getElementsByTagName("h1");
+      expect(element.content).to.be.undefined;
+    });
+  });
+
   describe("instanceof", () => {
     let document;
     beforeEach(() => {
