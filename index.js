@@ -124,8 +124,11 @@ function Tallahassee(app) {
       elms.slice().forEach((elm) => {
         if (isElementSticky(elm)) return;
 
-        const {top} = elm.getBoundingClientRect();
-        elm._setBoundingClientRect((top || 0) + delta);
+        const {top, bottom} = elm.getBoundingClientRect();
+        elm._setBoundingClientRect({
+          top: (top || 0) + delta,
+          bottom: (bottom || 0) + delta
+        });
       });
 
       currentPageYOffset = pageYOffset;
@@ -153,9 +156,12 @@ function Tallahassee(app) {
     function stickElementToTop(element) {
       if (isElementSticky(element)) return;
 
-      const {top} = element.getBoundingClientRect();
+      const {top, height} = element.getBoundingClientRect();
       element._tallahasseePositionBeforeSticky = window.pageYOffset + top;
-      element._setBoundingClientRect(0);
+      element._setBoundingClientRect({
+        top: 0,
+        bottom: (height || 0)
+      });
       stickedElements.push(element);
     }
 
@@ -163,7 +169,12 @@ function Tallahassee(app) {
       const idx = stickedElements.indexOf(element);
       if (idx < 0) return;
       stickedElements.splice(idx, 1);
-      element._setBoundingClientRect(element._tallahasseePositionBeforeSticky - window.pageYOffset);
+      const top = element._tallahasseePositionBeforeSticky - window.pageYOffset;
+      const {height} = element.getBoundingClientRect();
+      element._setBoundingClientRect({
+        top: top,
+        bottom: height ? top + height : top
+      });
       element._tallahasseePositionBeforeSticky = undefined;
     }
 

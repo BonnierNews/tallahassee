@@ -18,8 +18,14 @@ describe("Window scroller", () => {
 
     const elements = browser.document.getElementsByTagName("img");
     const [img1, img2] = elements;
-    img1._setBoundingClientRect(100, 120);
-    img2._setBoundingClientRect(200, 220);
+    img1._setBoundingClientRect({
+      top: 100,
+      bottom: 120
+    });
+    img2._setBoundingClientRect({
+      top: 200,
+      bottom: 220
+    });
 
     browser.window.scroll(0, 100);
 
@@ -47,8 +53,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(100, 120);
-      img2._setBoundingClientRect(200, 220);
+      img1._setBoundingClientRect({top: 100, bottom: 120});
+      img2._setBoundingClientRect({top: 200, bottom: 220});
 
       browser.scrollToTopOfElement(img1);
       expect(browser.window.pageYOffset).to.equal(100);
@@ -78,8 +84,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(100, 120);
-      img2._setBoundingClientRect(200, 220);
+      img1._setBoundingClientRect({top: 100, bottom: 120});
+      img2._setBoundingClientRect({top: 200, bottom: 220});
 
       browser.scrollToTopOfElement(img1, -10);
       expect(browser.window.pageYOffset).to.equal(110);
@@ -104,8 +110,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(700, 720);
-      img2._setBoundingClientRect(900, 920);
+      img1._setBoundingClientRect({top: 700, bottom: 720});
+      img2._setBoundingClientRect({top: 900, bottom: 920});
 
       browser.scrollToTopOfElement(img1, 99999);
       expect(browser.window.pageYOffset).to.equal(0);
@@ -127,8 +133,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(700, 720);
-      img2._setBoundingClientRect(900, 920);
+      img1._setBoundingClientRect({top: 700, bottom: 720});
+      img2._setBoundingClientRect({top: 900, bottom: 920});
 
       browser.scrollToBottomOfElement(img1);
       expect(browser.window.pageYOffset).to.equal(120);
@@ -153,8 +159,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(700, 720);
-      img2._setBoundingClientRect(900, 920);
+      img1._setBoundingClientRect({top: 700, bottom: 720});
+      img2._setBoundingClientRect({top: 900, bottom: 920});
 
       browser.scrollToBottomOfElement(img1, -10);
       expect(browser.window.pageYOffset).to.equal(130);
@@ -180,8 +186,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(700, 720);
-      img2._setBoundingClientRect(900, 920);
+      img1._setBoundingClientRect({top: 700, bottom: 720});
+      img2._setBoundingClientRect({top: 900, bottom: 920});
 
       browser.scrollToBottomOfElement(img1, 99999);
       expect(browser.window.pageYOffset).to.equal(0);
@@ -201,8 +207,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(700, 720);
-      img2._setBoundingClientRect(900, 920);
+      img1._setBoundingClientRect({top: 700, bottom: 720});
+      img2._setBoundingClientRect({top: 900, bottom: 920});
 
       browser.stickElementToTop(img1);
 
@@ -224,8 +230,8 @@ describe("Window scroller", () => {
 
       const elements = browser.document.getElementsByTagName("img");
       const [img1, img2] = elements;
-      img1._setBoundingClientRect(700, 720);
-      img2._setBoundingClientRect(900, 920);
+      img1._setBoundingClientRect({top: 700, bottom: 720});
+      img2._setBoundingClientRect({top: 900, bottom: 920});
 
       browser.stickElementToTop(img1);
 
@@ -266,7 +272,7 @@ describe("Window scroller", () => {
       });
 
       const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
-      lazyLoaded._setBoundingClientRect(300);
+      lazyLoaded._setBoundingClientRect({top: 300});
 
       require("../app/assets/scripts/main");
 

@@ -330,18 +330,44 @@ describe("elements", () => {
 
     it("sets result of getBoundingClientRect", () => {
       const [elm] = document.getElementsByTagName("p");
-      elm._setBoundingClientRect(10, 20);
+      elm._setBoundingClientRect({
+        top: 10,
+        bottom: 20,
+        left: 10,
+        right: 20,
+      });
 
       expect(elm.getBoundingClientRect()).to.eql({
         top: 10,
         bottom: 20,
-        height: 10
+        height: 10,
+        left: 10,
+        right: 20,
+        width: 10,
+      });
+    });
+
+    it("sets height to 0 and sets bottom value to top value if there is only top", () => {
+      const [elm] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect({
+        top: 10,
+      });
+
+      expect(elm.getBoundingClientRect()).to.eql({
+        top: 10,
+        left: 0,
+        right: 0,
+        width: 0,
+        bottom: 10,
+        height: 0
       });
     });
 
     it("sets offsetHeight as well", () => {
       const [elm] = document.getElementsByTagName("p");
-      elm._setBoundingClientRect(10, 200);
+      elm._setBoundingClientRect({
+        top: 10, bottom: 200
+      });
 
       expect(elm.offsetHeight).to.equal(190);
     });
