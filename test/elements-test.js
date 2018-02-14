@@ -663,4 +663,34 @@ describe("elements", () => {
       expect(element instanceof Element).to.be.true;
     });
   });
+
+  describe("dataset", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div data-test-get="should be fetched"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should get the dataset attribute", () => {
+      const [elm] = document.getElementsByTagName("div");
+      expect(elm.dataset.testGet).to.equal("should be fetched");
+      expect(elm.dataset["testGet"]).to.equal("should be fetched"); // eslint-disable-line dot-notation
+    });
+
+    it("should set a dataset attribute", () => {
+      const [elm] = document.getElementsByTagName("div");
+      elm.dataset.testSetObjectLike = "bar";
+      elm.dataset["testSetArrayLike"] = "baz"; // eslint-disable-line dot-notation
+      expect(elm.$elm[0].attribs).to.have.property("data-test-set-object-like", "bar");
+      expect(elm.dataset.testSetObjectLike).to.equal("bar");
+      expect(elm.$elm[0].attribs).to.have.property("data-test-set-array-like", "baz");
+      expect(elm.dataset["testSetArrayLike"]).to.equal("baz"); // eslint-disable-line dot-notation
+    });
+  });
 });
