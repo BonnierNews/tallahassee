@@ -91,4 +91,33 @@ describe("Window", () => {
       expect(result).to.be.undefined;
     });
   });
+
+  describe("setTimeout", () => {
+    it("should execute callback immediately with arguments", () => {
+      let parameters;
+      const callback = (...args) => {
+        parameters = args;
+      };
+
+      window.setTimeout(callback, 0, "foo", "bar");
+
+      expect(parameters).to.eql(["foo", "bar"]);
+    });
+
+    it("should return arbitrary ID number", () => {
+      const result = window.setTimeout(() => {});
+
+      expect(result).to.be.a("number");
+      expect(isNaN(result)).to.be.false;
+    });
+  });
+
+  describe("clearTimeout", () => {
+    it("should do nothing", () => {
+      it("does nothing", () => {
+        const result = window.clearTimeout();
+        expect(result).to.be.undefined;
+      });
+    });
+  });
 });
