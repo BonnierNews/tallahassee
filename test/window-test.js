@@ -114,10 +114,8 @@ describe("Window", () => {
 
   describe("clearTimeout", () => {
     it("should do nothing", () => {
-      it("does nothing", () => {
-        const result = window.clearTimeout();
-        expect(result).to.be.undefined;
-      });
+      const result = window.clearTimeout();
+      expect(result).to.be.undefined;
     });
   });
 });
