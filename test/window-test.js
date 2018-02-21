@@ -63,4 +63,32 @@ describe("Window", () => {
       expect(window.location).to.have.property("search").to.be.null;
     });
   });
+
+  describe("requestAnimationFrame", () => {
+    it("executes callback with timestamp immediately", () => {
+      let called;
+      const callback = (timestamp) => {
+        called = timestamp;
+      };
+
+      window.requestAnimationFrame(callback);
+
+      expect(called).to.be.a("number");
+      expect(isNaN(called)).to.be.false;
+    });
+
+    it("returns arbitrary number", () => {
+      const result = window.requestAnimationFrame(() => {});
+
+      expect(result).to.be.a("number");
+      expect(isNaN(result)).to.be.false;
+    });
+  });
+
+  describe("cancelAnimationFrame", () => {
+    it("does nothing", () => {
+      const result = window.cancelAnimationFrame();
+      expect(result).to.be.undefined;
+    });
+  });
 });
