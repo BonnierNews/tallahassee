@@ -29,6 +29,15 @@ describe("Tallahassee", () => {
       expect(browser.window.location.host).to.equal("www.expressen.se");
     });
 
+    it("exposes http response", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      expect(browser.response).to.be.ok;
+      expect(browser.response).to.have.property("statusCode", 200);
+      expect(browser.response).to.have.property("headers").that.deep.include({
+        "content-type": "text/html; charset=UTF-8"
+      });
+    });
+
     it("throws if not 200", async () => {
       try {
         await Browser(app).navigateTo("/404");

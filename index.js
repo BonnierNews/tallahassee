@@ -54,6 +54,7 @@ function Tallahassee(app) {
       stickElementToTop,
       unstickElementFromTop,
       window,
+      response: resp
     };
 
     Object.defineProperty(browserContext, "_pending", {
