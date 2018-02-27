@@ -81,6 +81,24 @@ describe("Document", () => {
     });
   });
 
+  describe("createTextNode()", () => {
+    it("returns a text node", () => {
+      const textNode = document.createTextNode("test");
+      expect(textNode.textContent === "test");
+    });
+
+    it("TextNode is appended to parent element", () => {
+      const parent = document.createElement("span");
+      const textNode = document.createTextNode("test");
+      parent.appendChild(textNode);
+
+      document.body.appendChild(parent);
+      const span = document.getElementsByTagName("span")[0];
+
+      expect(span.outerHTML).to.equal("<span>test</span>");
+    });
+  });
+
   describe("_getElement()", () => {
 
     it("returns the same element when called twice", () => {
