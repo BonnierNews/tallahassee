@@ -703,6 +703,7 @@ describe("elements", () => {
           <html>
             <body>
               <div class="start-element"></div>
+              text
               <div class="next-element"></div>
             </body>
           </html>`
