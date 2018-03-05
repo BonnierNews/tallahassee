@@ -22,6 +22,7 @@ const elementProperties = [
   "tagName",
   "type",
   "value",
+  "nextElementSibling"
 ];
 
 const elementApi = [
@@ -691,6 +692,31 @@ describe("elements", () => {
       expect(elm.dataset.testSetObjectLike).to.equal("bar");
       expect(elm.$elm[0].attribs).to.have.property("data-test-set-array-like", "baz");
       expect(elm.dataset["testSetArrayLike"]).to.equal("baz"); // eslint-disable-line dot-notation
+    });
+  });
+
+  describe("nextElementSibling", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="start-element"></div>
+              <div class="next-element"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should get the next element sibling", () => {
+      const [elm] = document.getElementsByClassName("start-element");
+      expect(elm.nextElementSibling.attribs.class).to.equal("next-element");
+    });
+
+    it("should return null if no next sibling", () => {
+      const [elm] = document.getElementsByClassName("next-element");
+      expect(elm.nextElementSibling).to.equal(null);
     });
   });
 });
