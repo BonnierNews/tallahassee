@@ -17,14 +17,14 @@ function Tallahassee(app) {
     load,
   };
 
-  function navigateTo(linkUrl, headers = {}) {
+  function navigateTo(linkUrl, headers = {}, statusCode = 200) {
     const req = supertest(app).get(linkUrl);
     for (const key in headers) {
       req.set(key, headers[key]);
     }
     return req
       .expect("Content-Type", /text\/html/i)
-      .expect(200)
+      .expect(statusCode)
       .then(load);
   }
 
