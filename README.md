@@ -40,6 +40,11 @@ describe("Tallahassee", () => {
       }
       expect(err).to.be.ok;
     });
+
+    it("unless you override status code", async () => {
+      const browser = await Browser(app).navigateTo("/404", null, 404);
+      expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
+    });
   });
 
   describe("run script", () => {

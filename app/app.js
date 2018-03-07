@@ -5,6 +5,7 @@ const Path = require("path");
 
 const app = express();
 const index = Path.join(__dirname, "assets/public/index.html");
+const errorPage = Path.join(__dirname, "assets/public/error.html");
 
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
 app.use("/", express.static(Path.join(__dirname, "assets/images")));
@@ -14,7 +15,7 @@ app.get("/cookie", (req, res) => {
   res.send({cookie: req.get("cookie")});
 });
 
-app.get("/404", (req, res) => res.status(404).end());
+app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));
 
 app.use(errorHandler);
