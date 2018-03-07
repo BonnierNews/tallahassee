@@ -712,12 +712,12 @@ describe("elements", () => {
 
     it("should get the next element sibling", () => {
       const [elm] = document.getElementsByClassName("start-element");
-      expect(elm.nextElementSibling.attribs.class).to.equal("next-element");
+      expect(elm.nextElementSibling.classList.contains("next-element")).to.be.true;
     });
 
     it("should return null if no next sibling", () => {
       const [elm] = document.getElementsByClassName("next-element");
-      expect(elm.nextElementSibling).to.equal(null);
+      expect(elm.nextElementSibling).to.equal(undefined);
     });
   });
 });
