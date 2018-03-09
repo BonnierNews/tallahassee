@@ -6,6 +6,7 @@ const Element = require("../lib/Element");
 const elementProperties = [
   "children",
   "classList",
+  "className",
   "dataset",
   "disabled",
   "firstChild",
@@ -526,6 +527,29 @@ describe("elements", () => {
 
     it("returns null if no element children", () => {
       expect(document.getElementsByClassName("empty")[0].lastChild).to.be.null;
+    });
+  });
+
+  describe(".className", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html class="no-js">
+            <body>
+              <h2 id="h" class="header">Test <b>title</b></h2>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns class attribute", () => {
+      expect(document.getElementById("h").className).to.equal("header");
+    });
+
+    it("sets class attribute", () => {
+      document.body.className = "hidden no-js";
+      expect(document.body.className).to.equal("hidden no-js");
     });
   });
 
