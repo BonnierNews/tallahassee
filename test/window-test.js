@@ -30,7 +30,7 @@ describe("Window", () => {
       }
     },
     {
-      document: document
+      document
     }
     );
   });
@@ -116,6 +116,70 @@ describe("Window", () => {
     it("should do nothing", () => {
       const result = window.clearTimeout();
       expect(result).to.be.undefined;
+    });
+  });
+
+  describe("navigator", () => {
+    it(".userAgent returns Tallahassee by default", () => {
+      const wndw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      }, {document});
+
+      expect(wndw.navigator).to.have.property("userAgent", "Tallahassee");
+    });
+
+    it(".userAgent is returns User-Agent header", () => {
+      const wndw = Window({
+        request: {
+          header: {
+            "User-Agent": "Mozilla/5.0"
+          },
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      }, {document});
+
+      expect(wndw.navigator).to.have.property("userAgent", "Mozilla/5.0");
+    });
+
+    it(".userAgent is read only", () => {
+      const wndw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      }, {document});
+
+      wndw.navigator.userAgent = "Zombie";
+      expect(wndw.navigator).to.have.property("userAgent", "Tallahassee");
+    });
+
+    it(".geolocation is returns expected api", () => {
+      const wndw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      }, {document});
+
+      expect(wndw.navigator).to.have.property("geolocation");
+      expect(wndw.navigator.geolocation.getCurrentPosition).to.be.a("function");
+      expect(wndw.navigator.geolocation.watchPosition).to.be.a("function");
+      expect(wndw.navigator.geolocation.clearWatch).to.be.a("function");
+    });
+
+    it(".geolocation is read only", () => {
+      const wndw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      }, {document});
+
+      wndw.navigator.geolocation = () => {};
+      expect(wndw.navigator.geolocation.getCurrentPosition).to.be.a("function");
     });
   });
 });
