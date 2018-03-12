@@ -105,7 +105,11 @@ function Tallahassee(app) {
     function runScripts(context) {
       context = context || document.documentElement;
       context.$elm.find("script").each((idx, elm) => {
-        const scriptBody = document.$(elm).html();
+        const $script = document.$(elm);
+        const scriptType = $script.attr("type");
+        if (scriptType && !/javascript/i.test(scriptType)) return;
+
+        const scriptBody = $script.html();
         if (scriptBody) vm.runInThisContext(scriptBody);
       });
     }

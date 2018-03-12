@@ -1,5 +1,5 @@
 <!-- version -->
-# 2.5.0 API Reference
+# 2.6.1 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -114,6 +114,8 @@ describe("IntersectionObserver", () => {
 
 # iframe scope
 
+Switch scopes between iframe window and main window.
+
 ```javascript
 "use strict";
 
@@ -130,11 +132,14 @@ describe("Iframe", () => {
   it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
     const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2;"});
     const element = browser.document.createElement("iframe");
+
     element.id = "friendly-frame";
     element.src = "/friendly/";
     browser.document.body.appendChild(element);
+
     const iframe = browser.document.getElementById("friendly-frame");
     const iframeScope = await browser.focusIframe(iframe);
+
     expect(iframeScope.window === browser.window, "scoped window").to.be.false;
     expect(iframeScope.window.top === browser.window, "window.top").to.be.true;
     expect(iframeScope.document === browser.document, "scoped document").to.be.false;

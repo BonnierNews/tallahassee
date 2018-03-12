@@ -1,12 +1,13 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "mocha && eslint . --cache",
-    "test-md": "node ./scripts/test-md ./README.md && node ./scripts/test-md ./API.md"
+    "test-md": "node ./scripts/test-md ./README.md && node ./scripts/test-md ./API.md",
+    "toc": "node ./scripts/generate-api-toc"
   },
   "engines": {
     "node": ">=8.9.0"
@@ -34,7 +35,6 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
     "eslint": "^4.18.2",
     "express": "^4.16.2",
     "markdown-toc": "^1.2.0",
