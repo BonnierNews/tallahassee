@@ -723,7 +723,7 @@ describe("elements", () => {
 
     it("returns new attribute set by setAttribute", () => {
       const [elm] = document.getElementsByTagName("div");
-      elm.setAttribute("data-test-set-attribute", "1");
+      elm.setAttribute("data-test-set-attribute", 1);
 
       expect(elm.dataset).to.eql({
         testGet: "should be fetched",
