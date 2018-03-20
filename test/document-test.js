@@ -81,6 +81,15 @@ describe("Document", () => {
     });
   });
 
+  describe("createDocumentFragment", () => {
+    it("returns a document object with functions", () => {
+      const fragment = document.createDocumentFragment();
+
+      expect(fragment).to.be.ok;
+      expect(fragment).to.have.property("appendChild").that.is.a("function");
+    });
+  });
+
   describe("createTextNode()", () => {
     it("returns a text node", () => {
       const textNode = document.createTextNode("test");
