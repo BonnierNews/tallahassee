@@ -704,6 +704,9 @@ describe("elements", () => {
 
     it("should get the dataset attribute", () => {
       const [elm] = document.getElementsByTagName("div");
+      expect(elm.dataset).to.eql({
+        testGet: "should be fetched"
+      });
       expect(elm.dataset.testGet).to.equal("should be fetched");
       expect(elm.dataset["testGet"]).to.equal("should be fetched"); // eslint-disable-line dot-notation
     });
@@ -716,6 +719,16 @@ describe("elements", () => {
       expect(elm.dataset.testSetObjectLike).to.equal("bar");
       expect(elm.$elm[0].attribs).to.have.property("data-test-set-array-like", "baz");
       expect(elm.dataset["testSetArrayLike"]).to.equal("baz"); // eslint-disable-line dot-notation
+    });
+
+    it("returns new attribute set by setAttribute", () => {
+      const [elm] = document.getElementsByTagName("div");
+      elm.setAttribute("data-test-set-attribute", "1");
+
+      expect(elm.dataset).to.eql({
+        testGet: "should be fetched",
+        testSetAttribute: "1"
+      });
     });
   });
 
