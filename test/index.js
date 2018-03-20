@@ -130,6 +130,8 @@ describe("Tallahassee", () => {
   });
 
   describe("window.fetch", () => {
+    beforeEach(nock.cleanAll);
+
     it("external resource is supported", async () => {
       const browser = await Browser(app).navigateTo("/");
 
@@ -155,6 +157,27 @@ describe("Tallahassee", () => {
 
       const body = await browser.window.fetch("/cookie").then((res) => res.json());
       expect(body).to.eql({cookie: "_ga=1;"});
+    });
+
+    it("sends defined headers when calling external resource", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        cookie: "_ga=1"
+      });
+
+      nock("http://example.com", {
+        reqheaders: {
+          "X-My-Headers": "true"
+        }})
+        .get("/with-header")
+        .reply(200, {data: 1});
+
+      const body = await browser.window.fetch("http://example.com/with-header", {
+        headers: {
+          "X-My-Headers": "true"
+        }
+      }).then((res) => res.json());
+
+      expect(body).to.eql({data: 1});
     });
   });
 
