@@ -152,29 +152,67 @@ describe("Tallahassee", () => {
 
     it("passes cookie to local resource", async () => {
       const browser = await Browser(app).navigateTo("/", {
-        cookie: "_ga=1"
+        cookie: "_ga=1;"
       });
 
-      const body = await browser.window.fetch("/cookie").then((res) => res.json());
-      expect(body).to.eql({cookie: "_ga=1;"});
+      const body = await browser.window.fetch("/req").then((res) => res.json());
+      expect(body).to.have.property("cookie", "_ga=1;");
     });
 
-    it("sends defined headers when calling external resource", async () => {
+    it("passes the request headers to local resource", async () => {
       const browser = await Browser(app).navigateTo("/", {
+        "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "www.expressen.se"
+      });
+
+      const body = await browser.window.fetch("/req").then((res) => res.json());
+
+      expect(body).to.have.property("headers");
+      expect(body.headers).to.have.property("x-forwarded-host", "www.expressen.se");
+      expect(body.headers).to.have.property("x-forwarded-proto", "https");
+    });
+
+    it("sends fetch headers when calling local resource", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "www.expressen.se"
+      });
+
+      const body = await browser.window.fetch("/req", {
+        headers: {
+          "X-My-Headers": "true"
+        }
+      }).then((res) => res.json());
+
+      expect(body).to.have.property("headers");
+      expect(body.headers).to.have.property("x-my-headers", "true");
+      expect(body.headers).to.have.property("x-forwarded-host", "www.expressen.se");
+      expect(body.headers).to.have.property("x-forwarded-proto", "https");
+    });
+
+    it("sends fetch headers when calling external resource", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "www.expressen.se",
         cookie: "_ga=1"
       });
 
-      nock("http://example.com", {
-        reqheaders: {
-          "X-My-Headers": "true"
-        }})
+      nock("http://example.com")
         .get("/with-header")
-        .reply(200, {data: 1});
+        .reply(function () {
+          const {headers} = this.req;
+          if (headers.cookie) return [401, {}];
+          if (headers["x-forwarded-proto"]) return [403, {}];
+          return [200, {data: 1}];
+        });
 
       const body = await browser.window.fetch("http://example.com/with-header", {
         headers: {
           "X-My-Headers": "true"
         }
+      }).then((res) => {
+        if (res.status !== 200) throw new Error(res.status);
+        return res;
       }).then((res) => res.json());
 
       expect(body).to.eql({data: 1});
