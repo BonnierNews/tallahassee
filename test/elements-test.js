@@ -732,19 +732,31 @@ describe("elements", () => {
     });
   });
 
-  describe("nextElementSibling", () => {
+  describe("previous- and nextElementSibling", () => {
     let document;
     beforeEach(() => {
       document = Document({
         text: `
           <html>
             <body>
+              <div class="previous-element"></div>
+              text
               <div class="start-element"></div>
               text
               <div class="next-element"></div>
             </body>
           </html>`
       });
+    });
+
+    it("should get the previous element sibling", () => {
+      const [elm] = document.getElementsByClassName("start-element");
+      expect(elm.previousElementSibling.classList.contains("previous-element")).to.be.true;
+    });
+
+    it("should return null if no previous sibling", () => {
+      const [elm] = document.getElementsByClassName("previous-element");
+      expect(elm.previousElementSibling).to.equal(undefined);
     });
 
     it("should get the next element sibling", () => {
