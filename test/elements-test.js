@@ -1,5 +1,6 @@
 "use strict";
 
+const DOMException = require("domexception");
 const {Document} = require("../lib");
 const Element = require("../lib/Element");
 
@@ -767,6 +768,94 @@ describe("elements", () => {
     it("should return null if no next sibling", () => {
       const [elm] = document.getElementsByClassName("next-element");
       expect(elm.nextElementSibling).to.equal(undefined);
+    });
+  });
+
+  describe("insertBefore", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="element-10"></div>
+              text1
+              <div class="element-20"></div>
+              text2
+            </body>
+          </html>`
+      });
+    });
+
+    it("should insert node before reference node", () => {
+      const [parentElm] = document.getElementsByTagName("body");
+      const [beforeElm] = document.getElementsByClassName("element-20");
+
+      const newNode = document.createElement("div");
+      newNode.classList.add("element-15");
+
+      const returnValue = parentElm.insertBefore(newNode, beforeElm);
+
+      const divs = parentElm.getElementsByTagName("div");
+      expect(divs.length).to.equal(3);
+      expect(divs[1].classList.contains("element-15")).to.be.true;
+      expect(returnValue).to.eql(newNode);
+    });
+
+    it("should insert node as last child of parent when referenceNode is null", () => {
+      const [parentElm] = document.getElementsByTagName("body");
+
+      const newNode = document.createElement("div");
+      newNode.classList.add("element-30");
+
+      const returnValue = parentElm.insertBefore(newNode, null);
+
+      const divs = parentElm.getElementsByTagName("div");
+      expect(divs.length).to.equal(3);
+      expect(divs[2].classList.contains("element-30")).to.be.true;
+      expect(returnValue).to.eql(newNode);
+    });
+
+    it("should throw DOMException when referenceNode is not child of target", () => {
+      const [parentElm] = document.getElementsByClassName("element-10");
+      const [beforeElm] = document.getElementsByClassName("element-20");
+
+      const newNode = document.createElement("div");
+      newNode.classList.add("element-15");
+
+      expect(() => {
+        parentElm.insertBefore(newNode, beforeElm);
+      }).to.throw(DOMException);
+
+      const divs = document.getElementsByTagName("body")[0].getElementsByTagName("div");
+      expect(divs.length).to.equal(2);
+    });
+
+    it("should move existing nodes", () => {
+      const [parentElm] = document.getElementsByTagName("body");
+      const [beforeElm] = document.getElementsByClassName("element-10");
+      const [moveElm] = document.getElementsByClassName("element-20");
+
+      const returnValue = parentElm.insertBefore(moveElm, beforeElm);
+
+      const divs = parentElm.getElementsByTagName("div");
+      expect(divs.length).to.equal(2);
+      expect(divs[0].classList.contains("element-20")).to.be.true;
+      expect(divs[1].classList.contains("element-10")).to.be.true;
+      expect(returnValue).to.eql(moveElm);
+    });
+
+    it("should handle text nodes", () => {
+      const [parentElm] = document.getElementsByTagName("body");
+      const [beforeElm] = document.getElementsByClassName("element-20");
+
+      const newNode = document.createTextNode("Tordyveln flyger i skymningen");
+
+      const returnValue = parentElm.insertBefore(newNode, beforeElm);
+
+      const text = parentElm.textContent.replace(/\s/g, "");
+      expect(text).to.equal("text1Tordyvelnflygeriskymningentext2");
+      expect(returnValue).to.eql(newNode);
     });
   });
 });
