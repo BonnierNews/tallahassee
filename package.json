@@ -29,6 +29,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-node8": "^1.2.0",
     "cheerio": "^1.0.0-rc.2",
+    "domexception": "^1.0.1",
     "node-fetch": "^2.1.1",
     "request": "^2.85.0",
     "supertest": "^3.0.0"
