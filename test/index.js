@@ -217,6 +217,60 @@ describe("Tallahassee", () => {
 
       expect(body).to.eql({data: 1});
     });
+
+    it("resolves to object with ok property set to true when successfull external request", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      nock("http://example.com")
+        .get("/")
+        .reply(200, {data: 1});
+
+      const response = await browser.window.fetch("http://example.com/");
+      expect(response).to.have.property("ok", true);
+    });
+
+    it("resolves to object with ok property set to false when response is 404 to external request", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      nock("http://example.com")
+        .get("/")
+        .reply(404, {});
+
+      const response = await browser.window.fetch("http://example.com/");
+      expect(response).to.have.property("ok", false);
+    });
+
+    it("resolves to object with ok property set to false when response is 500 to external request", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      nock("http://example.com")
+        .get("/")
+        .reply(500, {});
+
+      const response = await browser.window.fetch("http://example.com/");
+      expect(response).to.have.property("ok", false);
+    });
+
+    it("resolves to object with ok property set to true when successfull local request", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const response = await browser.window.fetch("/req");
+      expect(response).to.have.property("ok", true);
+    });
+
+    it("resolves to object with ok property set to false when response is 404 to local request", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const response = await browser.window.fetch("/404");
+      expect(response).to.have.property("ok", false);
+    });
+
+    it("resolves to object with ok property set to false when response is 500 to local request", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const response = await browser.window.fetch("/err");
+      expect(response).to.have.property("ok", false);
+    });
   });
 
   describe("submit", () => {
