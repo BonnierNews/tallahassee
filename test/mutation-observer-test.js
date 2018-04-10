@@ -187,4 +187,71 @@ describe("MutationObserver", () => {
     targetNode.insertBefore(p, header);
     expect(childListMutation).to.be.ok;
   });
+
+  it("disconnect() stops listening for mutations", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const targetNode = browser.document.getElementsByTagName("body")[0];
+    const config = { attributes: true, childList: true };
+
+    let childMutationCount = 0;
+
+    const observer = new MutationObserver(() => {
+      ++childMutationCount;
+    });
+    observer.observe(targetNode, config);
+
+    const p1 = browser.document.createElement("p");
+    targetNode.appendChild(p1);
+
+    observer.disconnect();
+
+    const p2 = browser.document.createElement("p");
+    targetNode.appendChild(p2);
+
+    expect(childMutationCount).to.equal(1);
+  });
+
+  it("mutation callback (non-arrow) is called with mutation scope", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const targetNode = browser.document.getElementsByTagName("body")[0];
+    const config = { attributes: true, childList: true };
+
+    let scope;
+
+    const observer = new MutationObserver(function mutationCallback() {
+      scope = this;
+    });
+    observer.observe(targetNode, config);
+
+    const p1 = browser.document.createElement("p");
+    targetNode.appendChild(p1);
+
+    expect(scope === observer).to.be.true;
+  });
+
+
+  it("mutation callback this.disconnect() stops listening for mutations", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const targetNode = browser.document.getElementsByTagName("body")[0];
+    const config = { attributes: true, childList: true };
+
+    let childMutationCount = 0;
+
+    const observer = new MutationObserver(function mutated() {
+      ++childMutationCount;
+      this.disconnect();
+    });
+    observer.observe(targetNode, config);
+
+    const p1 = browser.document.createElement("p");
+    targetNode.appendChild(p1);
+
+    const p2 = browser.document.createElement("p");
+    targetNode.appendChild(p2);
+
+    expect(childMutationCount).to.equal(1);
+  });
 });

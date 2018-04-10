@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -30,17 +30,17 @@
     "babel-preset-node8": "^1.2.0",
     "cheerio": "^1.0.0-rc.2",
     "domexception": "^1.0.1",
-    "node-fetch": "^2.1.1",
+    "node-fetch": "^2.1.2",
     "request": "^2.85.0",
     "supertest": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^4.19.0",
+    "eslint": "^4.19.1",
     "express": "^4.16.3",
     "markdown-toc": "^1.2.0",
-    "mocha": "^5.0.4",
-    "nock": "^9.2.3"
+    "mocha": "^5.0.5",
+    "nock": "^9.2.4"
   },
   "files": [
     "lib/",
