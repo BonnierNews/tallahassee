@@ -28,6 +28,7 @@ const elementProperties = [
 ];
 
 const elementApi = [
+  "contains",
   "getElementsByTagName",
   "getElementsByClassName",
   "getBoundingClientRect",
@@ -528,6 +529,48 @@ describe("elements", () => {
 
     it("returns null if no element children", () => {
       expect(document.getElementsByClassName("empty")[0].lastChild).to.be.null;
+    });
+  });
+
+  describe(".contains", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+          <body>
+            <div id="container">
+              <h2>Test <b>title</b></h2>
+              <p>Some <strong>string</strong> <b>bold</b> text</p>
+              <p class="empty"></p>
+            </div>
+            <div id="outside"></div>
+          </body></html>`
+      });
+    });
+
+    it("should be defined on body element", () => {
+      expect(document.body.contains).to.exist;
+    });
+
+    it("should be defined on documentElement", () => {
+      expect(document.documentElement.contains).to.exist;
+    });
+
+    it("returns true if direct child element found", () => {
+      expect(document.documentElement.contains(document.body)).to.be.true;
+    });
+
+    it("returns true if child element found", () => {
+      expect(document.documentElement.contains(document.getElementsByTagName("h2")[0])).to.be.true;
+    });
+
+    it("returns false if child element is a sibling", () => {
+      expect(document.getElementById("container").contains(document.getElementById("outside"))).to.be.false;
+    });
+
+    it("returns false if element isn't a child element", () => {
+      expect(document.body.contains(document.documentElement)).to.be.false;
     });
   });
 
