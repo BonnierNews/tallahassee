@@ -61,14 +61,14 @@ describe("Intersection Calc", () => {
         expect(result).to.equal(1);
       });
 
-      it("returns 1 when partially inside window (above)", () => {
+      it("returns 0.5 when partially inside window (above)", () => {
         const result = getIntersectionRatio({top: -50, height: 100}, 400);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
-      it("returns 1 when partially inside window (below)", () => {
+      it("returns 0.5 when partially inside window (below)", () => {
         const result = getIntersectionRatio({top: 350, height: 100}, 400);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
       it("returns 0 when above window", () => {
@@ -94,14 +94,14 @@ describe("Intersection Calc", () => {
         expect(result).to.equal(1);
       });
 
-      it("returns 1 when partially inside window with margins (above)", () => {
+      it("returns 0.5 when partially inside window with margins (above)", () => {
         const result = getIntersectionRatio({top: -150, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
-      it("returns 1 when partially inside window with margins (below)", () => {
+      it("returns 0.5 when partially inside window with margins (below)", () => {
         const result = getIntersectionRatio({top: 350, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
       it("returns 0 when above window with margins", () => {
@@ -127,14 +127,14 @@ describe("Intersection Calc", () => {
         expect(result).to.equal(1);
       });
 
-      it("returns 1 when partially inside window (above)", () => {
+      it("returns 0.5 when partially inside window (above)", () => {
         const result = getIntersectionRatio({top: 50, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
-      it("returns 1 when partially inside window (below)", () => {
+      it("returns 0.5 when partially inside window (below)", () => {
         const result = getIntersectionRatio({top: 350, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
       it("returns 0 when above window", () => {
@@ -160,14 +160,14 @@ describe("Intersection Calc", () => {
         expect(result).to.equal(1);
       });
 
-      it("returns 1 when partially inside window with margins (above)", () => {
+      it("returns 0.5 when partially inside window with margins (above)", () => {
         const result = getIntersectionRatio({top: -50, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
-      it("returns 1 when partially inside window with margins (below)", () => {
+      it("returns 0.5 when partially inside window with margins (below)", () => {
         const result = getIntersectionRatio({top: 450, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
       it("returns 0 when above window with margins", () => {
@@ -193,14 +193,14 @@ describe("Intersection Calc", () => {
         expect(result).to.equal(1);
       });
 
-      it("returns 1 when partially inside window with margins (above)", () => {
-        const result = getIntersectionRatio({top: 50, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+      it("returns 0.5 when partially inside window with margins (above)", () => {
+        const result = getIntersectionRatio({top: -50, height: 100}, 400, rootMargin);
+        expect(result).to.equal(0.5);
       });
 
-      it("returns 1 when partially inside window with margins (below)", () => {
+      it("returns 0.5 when partially inside window with margins (below)", () => {
         const result = getIntersectionRatio({top: 250, height: 100}, 400, rootMargin);
-        expect(result).to.equal(1);
+        expect(result).to.equal(0.5);
       });
 
       it("returns 0 when above window with margins", () => {
