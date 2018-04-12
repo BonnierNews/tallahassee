@@ -262,5 +262,20 @@ describe("Window", () => {
 
       expect(window.localStorage).to.eql({ length: 0 });
     });
+
+    it("can be deleted for testing purposes", () => {
+      delete window.localStorage;
+      expect(window.localStorage).to.be.undefined;
+    });
+
+    it("can be overwritten for testing purposes", () => {
+      const mockStorage = {};
+      window.localStorage = mockStorage;
+      expect(window.localStorage === mockStorage).to.be.true;
+    });
+
+    it("is enumerable", () => {
+      expect(Object.keys(window)).to.include("localStorage");
+    });
   });
 });
