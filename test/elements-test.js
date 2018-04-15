@@ -901,4 +901,71 @@ describe("elements", () => {
       expect(returnValue).to.eql(newNode);
     });
   });
+
+  describe("Event listeners", () => {
+    let buttons;
+    beforeEach(() => {
+      const document = Document({
+        text: `<html>
+            <button id="button-1" type="button"></button>
+            <button id="button-2" type="button"></button>
+          </html>`
+      });
+      buttons = document.getElementsByTagName("button");
+    });
+
+    it("listens to event", () => {
+      let clickCount = 0;
+      buttons[0].addEventListener("click", increment);
+
+      buttons[0].click();
+      expect(clickCount).to.equal(1);
+
+      buttons[0].click();
+      expect(clickCount).to.equal(2);
+
+      buttons[0].removeEventListener("click", increment);
+      buttons[0].click();
+      expect(clickCount).to.equal(2);
+
+      function increment() {
+        ++clickCount;
+      }
+    });
+
+    it("listens to event once", () => {
+      let clickCount = 0;
+      buttons[0].addEventListener("click", increment, {once: true});
+
+      buttons[0].click();
+      expect(clickCount).to.equal(1);
+
+      buttons[0].click();
+      expect(clickCount).to.equal(1);
+
+      function increment() {
+        ++clickCount;
+      }
+    });
+
+    it("event listeners are invoked with element as this", () => {
+      let clickCount = 0;
+
+      buttons[0].addEventListener("click", increment);
+      buttons[1].addEventListener("click", increment);
+
+      buttons[0].click();
+      buttons[0].click();
+      buttons[1].click();
+
+      expect(clickCount).to.equal(3);
+      expect(buttons[0].clickCount).to.equal(2);
+      expect(buttons[1].clickCount).to.equal(1);
+
+      function increment() {
+        ++clickCount;
+        this.clickCount = !this.clickCount ? 1 : this.clickCount + 1;
+      }
+    });
+  });
 });
