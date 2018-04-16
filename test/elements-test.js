@@ -960,12 +960,19 @@ describe("elements", () => {
         buttons[0].addEventListener("click", increment, {capture: false});
         buttons[0].addEventListener("click", increment, {passive: true});
 
+        buttons[0].addEventListener("click", increment, true);
+        buttons[0].addEventListener("click", increment, {capture: true});
+
         buttons[0].click();
-        expect(clickCount).to.equal(1);
+        expect(clickCount).to.equal(2);
 
         buttons[0].removeEventListener("click", increment);
         buttons[0].click();
-        expect(clickCount).to.equal(1);
+        expect(clickCount).to.equal(3);
+
+        buttons[0].removeEventListener("click", increment, true);
+        buttons[0].click();
+        expect(clickCount).to.equal(3);
       });
     });
 
