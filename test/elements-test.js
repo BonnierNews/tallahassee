@@ -974,6 +974,29 @@ describe("elements", () => {
         buttons[0].click();
         expect(clickCount).to.equal(3);
       });
+
+      it("multiple listeners with different once option", () => {
+        buttons[0].addEventListener("click", increment, {once: false});
+        buttons[0].addEventListener("click", increment, {once: true}); // won't be once
+
+        buttons[1].addEventListener("click", increment, {once: true});
+        buttons[1].addEventListener("click", increment, {once: false}); // will be once
+
+        buttons[0].click();
+        buttons[0].click();
+        expect(clickCount).to.equal(2);
+
+        buttons[1].click();
+        buttons[1].click();
+        expect(clickCount).to.equal(3);
+
+        buttons[0].removeEventListener("click", increment);
+        buttons[1].removeEventListener("click", increment);
+
+        buttons[0].click();
+        buttons[1].click();
+        expect(clickCount).to.equal(3);
+      });
     });
 
     function increment() {
