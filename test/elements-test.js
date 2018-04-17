@@ -901,4 +901,107 @@ describe("elements", () => {
       expect(returnValue).to.eql(newNode);
     });
   });
+
+  describe("Event listeners", () => {
+    let buttons;
+    let clickCount;
+    beforeEach(() => {
+      const document = Document({
+        text: `<html>
+            <button id="button-1" type="button"></button>
+            <button id="button-2" type="button"></button>
+          </html>`
+      });
+      buttons = document.getElementsByTagName("button");
+      clickCount = 0;
+    });
+
+    it("listens to event", () => {
+      buttons[0].addEventListener("click", increment);
+
+      buttons[0].click();
+      expect(clickCount).to.equal(1);
+
+      buttons[0].click();
+      expect(clickCount).to.equal(2);
+
+      buttons[0].removeEventListener("click", increment);
+      buttons[0].click();
+      expect(clickCount).to.equal(2);
+    });
+
+    it("listens to event once", () => {
+      buttons[0].addEventListener("click", increment, {once: true});
+
+      buttons[0].click();
+      expect(clickCount).to.equal(1);
+
+      buttons[0].click();
+      expect(clickCount).to.equal(1);
+    });
+
+    it("event listeners are invoked with element as this", () => {
+      buttons[0].addEventListener("click", increment);
+      buttons[1].addEventListener("click", increment);
+
+      buttons[0].click();
+      buttons[0].click();
+      buttons[1].click();
+
+      expect(clickCount).to.equal(3);
+      expect(buttons[0].clickCount).to.equal(2);
+      expect(buttons[1].clickCount).to.equal(1);
+    });
+
+    describe("listener is 'identical' based on eventName, callback and useCapture", () => {
+      it("disregards multiple 'identical' event listeners", () => {
+        buttons[0].addEventListener("click", increment);
+        buttons[0].addEventListener("click", increment, false);
+        buttons[0].addEventListener("click", increment, {capture: false});
+        buttons[0].addEventListener("click", increment, {passive: true});
+
+        buttons[0].addEventListener("click", increment, true);
+        buttons[0].addEventListener("click", increment, {capture: true});
+
+        buttons[0].click();
+        expect(clickCount).to.equal(2);
+
+        buttons[0].removeEventListener("click", increment);
+        buttons[0].click();
+        expect(clickCount).to.equal(3);
+
+        buttons[0].removeEventListener("click", increment, true);
+        buttons[0].click();
+        expect(clickCount).to.equal(3);
+      });
+
+      it("multiple listeners with different once option", () => {
+        buttons[0].addEventListener("click", increment, {once: false});
+        buttons[0].addEventListener("click", increment, {once: true}); // won't be once
+
+        buttons[1].addEventListener("click", increment, {once: true});
+        buttons[1].addEventListener("click", increment, {once: false}); // will be once
+
+        buttons[0].click();
+        buttons[0].click();
+        expect(clickCount).to.equal(2);
+
+        buttons[1].click();
+        buttons[1].click();
+        expect(clickCount).to.equal(3);
+
+        buttons[0].removeEventListener("click", increment);
+        buttons[1].removeEventListener("click", increment);
+
+        buttons[0].click();
+        buttons[1].click();
+        expect(clickCount).to.equal(3);
+      });
+    });
+
+    function increment() {
+      ++clickCount;
+      this.clickCount = !this.clickCount ? 1 : this.clickCount + 1;
+    }
+  });
 });
