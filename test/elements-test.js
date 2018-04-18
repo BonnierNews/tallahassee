@@ -1,7 +1,7 @@
 "use strict";
 
 const DOMException = require("domexception");
-const {Document} = require("../lib");
+const { Document } = require("../lib");
 const Element = require("../lib/Element");
 
 const elementProperties = [
@@ -32,6 +32,7 @@ const elementApi = [
   "getElementsByTagName",
   "getElementsByClassName",
   "getBoundingClientRect",
+  "matches",
   "remove",
 ];
 
@@ -902,6 +903,44 @@ describe("elements", () => {
     });
   });
 
+  describe("matches", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body class="parent-element">
+              <div class="element" data-attr="value"></div>
+            </body>
+          </html>
+          `
+      });
+    });
+
+    it("should return true is element matches selector", () => {
+      const [element] = document.getElementsByClassName("element");
+      expect(element.matches(".element")).to.be.true;
+    });
+
+    it("should return true is element matches more complex selector", () => {
+      const [element] = document.getElementsByClassName("element");
+      expect(element.matches(".parent-element div.element[data-attr=value]:first-child")).to.be.true;
+    });
+
+    it("should return false is element doesn't match selector", () => {
+      const [element] = document.getElementsByClassName("element");
+      expect(element.matches(".random-element")).to.be.false;
+    });
+
+    it("should throw DOMException when passed an invalid selector", () => {
+      const [element] = document.getElementsByClassName("element");
+
+      expect(() => {
+        element.matches("$invalid");
+      }).to.throw(DOMException).with.property("code", 12);
+    });
+  });
+
   describe("Event listeners", () => {
     let buttons;
     let clickCount;
@@ -931,7 +970,7 @@ describe("elements", () => {
     });
 
     it("listens to event once", () => {
-      buttons[0].addEventListener("click", increment, {once: true});
+      buttons[0].addEventListener("click", increment, { once: true });
 
       buttons[0].click();
       expect(clickCount).to.equal(1);
@@ -957,11 +996,11 @@ describe("elements", () => {
       it("disregards multiple 'identical' event listeners", () => {
         buttons[0].addEventListener("click", increment);
         buttons[0].addEventListener("click", increment, false);
-        buttons[0].addEventListener("click", increment, {capture: false});
-        buttons[0].addEventListener("click", increment, {passive: true});
+        buttons[0].addEventListener("click", increment, { capture: false });
+        buttons[0].addEventListener("click", increment, { passive: true });
 
         buttons[0].addEventListener("click", increment, true);
-        buttons[0].addEventListener("click", increment, {capture: true});
+        buttons[0].addEventListener("click", increment, { capture: true });
 
         buttons[0].click();
         expect(clickCount).to.equal(2);
@@ -976,11 +1015,11 @@ describe("elements", () => {
       });
 
       it("multiple listeners with different once option", () => {
-        buttons[0].addEventListener("click", increment, {once: false});
-        buttons[0].addEventListener("click", increment, {once: true}); // won't be once
+        buttons[0].addEventListener("click", increment, { once: false });
+        buttons[0].addEventListener("click", increment, { once: true }); // won't be once
 
-        buttons[1].addEventListener("click", increment, {once: true});
-        buttons[1].addEventListener("click", increment, {once: false}); // will be once
+        buttons[1].addEventListener("click", increment, { once: true });
+        buttons[1].addEventListener("click", increment, { once: false }); // will be once
 
         buttons[0].click();
         buttons[0].click();
