@@ -1,7 +1,7 @@
 "use strict";
 
 const DOMException = require("domexception");
-const { Document } = require("../lib");
+const {Document} = require("../lib");
 const Element = require("../lib/Element");
 
 const elementProperties = [
@@ -970,7 +970,7 @@ describe("elements", () => {
     });
 
     it("listens to event once", () => {
-      buttons[0].addEventListener("click", increment, { once: true });
+      buttons[0].addEventListener("click", increment, {once: true});
 
       buttons[0].click();
       expect(clickCount).to.equal(1);
@@ -996,11 +996,11 @@ describe("elements", () => {
       it("disregards multiple 'identical' event listeners", () => {
         buttons[0].addEventListener("click", increment);
         buttons[0].addEventListener("click", increment, false);
-        buttons[0].addEventListener("click", increment, { capture: false });
-        buttons[0].addEventListener("click", increment, { passive: true });
+        buttons[0].addEventListener("click", increment, {capture: false});
+        buttons[0].addEventListener("click", increment, {passive: true});
 
         buttons[0].addEventListener("click", increment, true);
-        buttons[0].addEventListener("click", increment, { capture: true });
+        buttons[0].addEventListener("click", increment, {capture: true});
 
         buttons[0].click();
         expect(clickCount).to.equal(2);
@@ -1015,11 +1015,11 @@ describe("elements", () => {
       });
 
       it("multiple listeners with different once option", () => {
-        buttons[0].addEventListener("click", increment, { once: false });
-        buttons[0].addEventListener("click", increment, { once: true }); // won't be once
+        buttons[0].addEventListener("click", increment, {once: false});
+        buttons[0].addEventListener("click", increment, {once: true}); // won't be once
 
-        buttons[1].addEventListener("click", increment, { once: true });
-        buttons[1].addEventListener("click", increment, { once: false }); // will be once
+        buttons[1].addEventListener("click", increment, {once: true});
+        buttons[1].addEventListener("click", increment, {once: false}); // will be once
 
         buttons[0].click();
         buttons[0].click();
