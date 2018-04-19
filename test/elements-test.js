@@ -32,6 +32,7 @@ const elementApi = [
   "getElementsByTagName",
   "getElementsByClassName",
   "getBoundingClientRect",
+  "matches",
   "remove",
 ];
 
@@ -899,6 +900,44 @@ describe("elements", () => {
       const text = parentElm.textContent.replace(/\s/g, "");
       expect(text).to.equal("text1Tordyvelnflygeriskymningentext2");
       expect(returnValue).to.eql(newNode);
+    });
+  });
+
+  describe("matches", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body class="parent-element">
+              <div class="element" data-attr="value"></div>
+            </body>
+          </html>
+          `
+      });
+    });
+
+    it("should return true is element matches selector", () => {
+      const [element] = document.getElementsByClassName("element");
+      expect(element.matches(".element")).to.be.true;
+    });
+
+    it("should return true is element matches more complex selector", () => {
+      const [element] = document.getElementsByClassName("element");
+      expect(element.matches(".parent-element div.element[data-attr=value]:first-child")).to.be.true;
+    });
+
+    it("should return false is element doesn't match selector", () => {
+      const [element] = document.getElementsByClassName("element");
+      expect(element.matches(".random-element")).to.be.false;
+    });
+
+    it("should throw DOMException when passed an invalid selector", () => {
+      const [element] = document.getElementsByClassName("element");
+
+      expect(() => {
+        element.matches("$invalid");
+      }).to.throw(DOMException).with.property("code", 12);
     });
   });
 
