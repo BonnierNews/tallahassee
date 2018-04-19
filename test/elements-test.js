@@ -18,7 +18,9 @@ const elementProperties = [
   "name",
   "innerHTML",
   "offsetHeight",
+  "options",
   "outerHTML",
+  "selectedIndex",
   "src",
   "style",
   "tagName",
@@ -607,6 +609,10 @@ describe("elements", () => {
             <body>
               <h2>Test <b>title</b></h2>
               <form id="get-form" type="get" action="/">
+                <select>
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                </select>
                 <button type="submit">Submit</submit>
               </form>
             </body>
@@ -643,6 +649,33 @@ describe("elements", () => {
       });
 
       button.click();
+    });
+
+    it("returns options in select", () => {
+      const [form] = document.getElementsByTagName("form");
+      const [select] = form.getElementsByTagName("select");
+      const options = select.getElementsByTagName("option");
+
+      expect(select.options.length).to.equal(2);
+      expect(select.options[0] === options[0]).to.equal(true);
+      expect(select.options[1] === options[1]).to.equal(true);
+    });
+
+    it("returns selected index of options in select", () => {
+      const [form] = document.getElementsByTagName("form");
+      const [select] = form.getElementsByTagName("select");
+
+      expect(select.selectedIndex).to.equal(1);
+    });
+
+    it("should change selected index when changing selected option", () => {
+      const [form] = document.getElementsByTagName("form");
+      const [select] = form.getElementsByTagName("select");
+
+      select.options[0].selected = "selected";
+
+      expect(select.selectedIndex).to.equal(0);
+      expect(select.$elm.find("[selected]").length).to.equal(1);
     });
   });
 
