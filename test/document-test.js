@@ -162,4 +162,10 @@ describe("Document", () => {
       expect(document.referrer).to.equal("referer.url");
     });
   });
+
+  describe("nodeType", () => {
+    it("should return the correct node type", () => {
+      expect(document.nodeType).to.equal(9);
+    });
+  });
 });
