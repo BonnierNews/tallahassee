@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -39,7 +39,7 @@
     "eslint": "^4.19.1",
     "express": "^4.16.3",
     "markdown-toc": "^1.2.0",
-    "mocha": "^5.1.0",
+    "mocha": "^5.1.1",
     "nock": "^9.2.5"
   },
   "files": [
