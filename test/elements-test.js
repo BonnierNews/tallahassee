@@ -969,6 +969,38 @@ describe("elements", () => {
     });
   });
 
+  describe("insertAdjacentHTML", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="div-1"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should insert adjacent html inside element before first child", () => {
+      document.body.insertAdjacentHTML("afterbegin", "<p class='p-1'>Blahonga</p>");
+      const el = document.body.getElementsByClassName("p-1")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+      expect(el.previousElementSibling).to.be.undefined;
+      expect(el.nextElementSibling === document.getElementsByClassName("div-1")[0]).to.equal(true);
+    });
+
+    it("should insert adjacent html inside element after last child", () => {
+      document.body.insertAdjacentHTML("beforeend", "<p class='p-1'>Blahonga</p>");
+      const el = document.body.getElementsByClassName("p-1")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+      expect(el.previousElementSibling === document.getElementsByClassName("div-1")[0]).to.equal(true);
+      expect(el.nextElementSibling).to.be.undefined;
+    });
+  });
+
   describe("matches", () => {
     let document;
     beforeEach(() => {
