@@ -178,8 +178,8 @@ describe("elements", () => {
       img1.imageLoaded = "false";
       img2.imageLoaded = "false";
 
-      img1.addEventListener("load", () => img1.imageLoaded = "true");
-      img2.addEventListener("load", () => img2.imageLoaded = "true");
+      img1.addEventListener("load", () => (img1.imageLoaded = "true"));
+      img2.addEventListener("load", () => (img2.imageLoaded = "true"));
 
       img2.src = "/img/setImage2.gif";
       expect(img1).to.have.property("imageLoaded", "false");
