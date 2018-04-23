@@ -174,10 +174,24 @@ describe("elements", () => {
       expect(noprot).to.have.property("src", "https://example.com/img.png");
       expect(abs).to.have.property("src", "http://example.com");
       expect(rel).to.have.property("src", "https://www.expressen.se/slug/");
-
       noprot.src = "/img/set.gif";
       expect(noprot).to.have.property("src", "https://www.expressen.se/img/set.gif");
     });
+
+    it("triggers load event when setting .src", async () => {
+      const [img1, img2] = document.getElementsByTagName("img");
+      img1.imageLoaded = "false";
+      img2.imageLoaded = "false";
+
+      img1.addEventListener("load", () => (img1.imageLoaded = "true"));
+      img2.addEventListener("load", () => (img2.imageLoaded = "true"));
+
+      img2.src = "/img/setImage2.gif";
+      expect(img1).to.have.property("imageLoaded", "false");
+      expect(img2).to.have.property("imageLoaded", "true");
+    });
+
+
   });
 
   describe(".style", () => {
