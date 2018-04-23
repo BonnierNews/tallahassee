@@ -16,6 +16,7 @@ const elementProperties = [
   "lastChild",
   "lastElementChild",
   "name",
+  "nodeType",
   "innerHTML",
   "offsetHeight",
   "options",
@@ -597,6 +598,24 @@ describe("elements", () => {
     it("sets class attribute", () => {
       document.body.className = "hidden no-js";
       expect(document.body.className).to.equal("hidden no-js");
+    });
+  });
+
+  describe(".nodeType", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="element"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should return the correct node type", () => {
+      expect(document.getElementById("element").nodeType).to.equal(1);
     });
   });
 
