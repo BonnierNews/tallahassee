@@ -294,4 +294,22 @@ describe("MutationObserver", () => {
 
     expect(childMutationCount).to.equal(1);
   });
+
+  it("mutation when appendChild with script executes before mutation event", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const sequence = browser.window.sequence = [];
+    const config = { attributes: true, childList: true };
+    const observer = new MutationObserver(() => {
+      sequence.push("mutated");
+    });
+    observer.observe(browser.document.body, config);
+
+    const script = browser.document.createElement("script");
+    script.textContent = "window.sequence.push(\"executed\");";
+
+    browser.document.body.appendChild(script);
+
+    expect(sequence).to.eql(["executed", "mutated"]);
+  });
 });
