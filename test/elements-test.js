@@ -694,7 +694,12 @@ describe("elements", () => {
       elm.dataset.json = JSON.stringify({data: 1});
       elm.textContent = "åäö";
       document.body.appendChild(elm);
-      expect(document.body.firstElementChild.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
+
+      const newElm = document.body.firstElementChild;
+
+      expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
+      expect(newElm.dataset.json).to.equal("{\"data\":1}");
+      expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
     });
 
     it("executes if script", () => {
