@@ -1047,8 +1047,10 @@ describe("elements", () => {
       document = Document({
         text: `<html>
             <body>
-              <button id="button-1" type="button"></button>
-              <button id="button-2" type="button"></button>
+              <div>
+                <button id="button-1" type="button"></button>
+                <button id="button-2" type="button"></button>
+              </div>
             </body>
           </html>`
       });
@@ -1094,7 +1096,7 @@ describe("elements", () => {
     });
 
     it("should propagate click to parent", () => {
-      let result;
+      let result = false;
       document.body.addEventListener("click", () => {
         result = true;
       });
@@ -1102,6 +1104,22 @@ describe("elements", () => {
       buttons[0].click();
 
       expect(result).to.equal(true);
+    });
+
+    it("should NOT propagate click to parent when propagation stopped", () => {
+      let result = false;
+
+      document.body.addEventListener("click", () => {
+        result = true;
+      });
+
+      buttons[0].addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+
+      buttons[0].click();
+
+      expect(result).to.equal(false);
     });
 
     describe("listener is 'identical' based on eventName, callback and useCapture", () => {
