@@ -60,7 +60,7 @@ describe("Document", () => {
     it("importNode() returns element content", async () => {
       const elm = document.getElementById("schablon");
       expect(document.importNode(elm, true)).to.be.ok;
-      expect(document.importNode(elm, true).firstChild.tagName).to.equal("DIV");
+      expect(document.importNode(elm, true).firstElementChild.tagName).to.equal("DIV");
     });
 
     it("importNode() combined with appendChild() inserts element content", async () => {
@@ -84,13 +84,14 @@ describe("Document", () => {
     it("handles JSON in attributes in top document and sub documents", () => {
       const topDocChild = document.getElementById("schablon");
       const template = document.importNode(topDocChild.content, true);
+
       const lazyContainer = document.getElementById("lazy");
       lazyContainer.appendChild(template);
       const subDocChildInTopDoc = lazyContainer.lastElementChild;
 
       expect(() => JSON.parse(topDocChild.dataset.json)).not.to.throw();
       const topDocJSON = JSON.parse(topDocChild.dataset.json);
-      expect(topDocJSON).to.deep.equal({"json": "åäö in top document child"});
+      expect(topDocJSON).to.eql({"json": "åäö in top document child"});
 
       expect(() => JSON.parse(subDocChildInTopDoc.dataset.json)).not.to.throw();
       const subDocInTopDocJSON = JSON.parse(subDocChildInTopDoc.dataset.json);
