@@ -19,8 +19,8 @@ describe("Document", () => {
             <h2 id="headline">Test</h2>
             <input type="button"
             <script>var a = 1;</script>
-            <template id="schablon">
-              <div id="insert">
+            <template id="schablon" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in top document child&quot;}">
+              <div id="insert" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in sub document child&quot;}">
                 <p>Template</p>
               </div>
             </template>
@@ -79,6 +79,26 @@ describe("Document", () => {
 
       expect(document.getElementById("insert")).to.be.ok;
       expect(document.getElementById("insert").parentElement.id).to.equal("lazy");
+    });
+
+    it("handles JSON in attributes in top document and sub documents", () => {
+      const topDocChild = document.getElementById("schablon");
+      const template = document.importNode(topDocChild, true);
+      const lazyContainer = document.getElementById("lazy");
+      lazyContainer.appendChild(template);
+      const subDocChildInTopDoc = lazyContainer.lastElementChild;
+
+      expect(() => JSON.parse(topDocChild.dataset.json)).not.to.throw();
+      const topDocJSON = JSON.parse(topDocChild.dataset.json);
+      expect(topDocJSON).to.deep.equal({"json": "åäö in top document child"});
+      //
+      expect(() => JSON.parse(template.firstChild.dataset.json)).not.to.throw();
+      const subDocJSON = JSON.parse(template.firstChild.dataset.json);
+      expect(subDocJSON).to.deep.equal({"json": "åäö in sub document child"});
+
+      expect(() => JSON.parse(subDocChildInTopDoc.dataset.json)).not.to.throw();
+      const subDocInTopDocJSON = JSON.parse(subDocChildInTopDoc.dataset.json);
+      expect(subDocInTopDocJSON).to.deep.equal({"json": "åäö in sub document child"});
     });
   });
 
