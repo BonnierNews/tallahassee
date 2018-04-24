@@ -1042,11 +1042,14 @@ describe("elements", () => {
   describe("Event listeners", () => {
     let buttons;
     let clickCount;
+    let document;
     beforeEach(() => {
-      const document = Document({
+      document = Document({
         text: `<html>
-            <button id="button-1" type="button"></button>
-            <button id="button-2" type="button"></button>
+            <body>
+              <button id="button-1" type="button"></button>
+              <button id="button-2" type="button"></button>
+            </body>
           </html>`
       });
       buttons = document.getElementsByTagName("button");
@@ -1088,6 +1091,17 @@ describe("elements", () => {
       expect(clickCount).to.equal(3);
       expect(buttons[0].clickCount).to.equal(2);
       expect(buttons[1].clickCount).to.equal(1);
+    });
+
+    it("should propagate click to parent", () => {
+      let result;
+      document.body.addEventListener("click", () => {
+        result = true;
+      });
+
+      buttons[0].click();
+
+      expect(result).to.equal(true);
     });
 
     describe("listener is 'identical' based on eventName, callback and useCapture", () => {
