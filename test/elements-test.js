@@ -583,6 +583,10 @@ describe("elements", () => {
       expect(document.documentElement.contains(document.getElementsByTagName("h2")[0])).to.be.true;
     });
 
+    it("returns true if finding itself", () => {
+      expect(document.documentElement.contains(document.documentElement)).to.be.true;
+    });
+
     it("returns false if child element is a sibling", () => {
       expect(document.getElementById("container").contains(document.getElementById("outside"))).to.be.false;
     });
@@ -1108,7 +1112,6 @@ describe("elements", () => {
 
     it("should NOT propagate click to parent when propagation stopped", () => {
       let result = false;
-
       document.body.addEventListener("click", () => {
         result = true;
       });
