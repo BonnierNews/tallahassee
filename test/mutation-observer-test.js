@@ -208,6 +208,26 @@ describe("MutationObserver", () => {
     expect(childListMutation).to.be.ok;
   });
 
+  it("triggers when element has been inserted into the observed node using outerHTML", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const targetNode = browser.document.getElementsByTagName("body")[0];
+    const config = { attributes: true, childList: true };
+    let childListMutation = false;
+    const callback = function (mutationsList) {
+      for (const mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          childListMutation = true;
+        }
+      }
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+    targetNode.outerHTML = "<body><p>Foo</p></body>";
+    expect(childListMutation).to.be.ok;
+  });
+
   it("disconnect() stops listening for mutations", async () => {
     const browser = await Browser(app).navigateTo("/");
 
@@ -273,5 +293,23 @@ describe("MutationObserver", () => {
     targetNode.appendChild(p2);
 
     expect(childMutationCount).to.equal(1);
+  });
+
+  it("mutation when appendChild with script executes before mutation event", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const sequence = browser.window.sequence = [];
+    const config = { attributes: true, childList: true };
+    const observer = new MutationObserver(() => {
+      sequence.push("mutated");
+    });
+    observer.observe(browser.document.body, config);
+
+    const script = browser.document.createElement("script");
+    script.textContent = "window.sequence.push(\"executed\");";
+
+    browser.document.body.appendChild(script);
+
+    expect(sequence).to.eql(["executed", "mutated"]);
   });
 });

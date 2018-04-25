@@ -8,7 +8,8 @@ describe("Document", () => {
     document = Document({
       request: {
         header: {
-          cookie: "_ga=1"
+          cookie: "_ga=1",
+          referer: "referer.url"
         },
         url: "https://www.expressen.se/nyheter/article-slug/"
       },
@@ -149,6 +150,22 @@ describe("Document", () => {
 
       document.cookie = "_writable=44 ";
       expect(document.cookie).to.equal("_ga=1;_writable=44;");
+    });
+  });
+
+  describe("referrer", () => {
+    it("has referer", () => {
+      expect(document.referrer).to.be.ok;
+    });
+
+    it("has a url", () => {
+      expect(document.referrer).to.equal("referer.url");
+    });
+  });
+
+  describe("nodeType", () => {
+    it("should return the correct node type", () => {
+      expect(document.nodeType).to.equal(9);
     });
   });
 });

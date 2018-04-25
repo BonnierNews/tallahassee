@@ -16,6 +16,7 @@ const elementProperties = [
   "lastChild",
   "lastElementChild",
   "name",
+  "nodeType",
   "innerHTML",
   "offsetHeight",
   "options",
@@ -173,10 +174,24 @@ describe("elements", () => {
       expect(noprot).to.have.property("src", "https://example.com/img.png");
       expect(abs).to.have.property("src", "http://example.com");
       expect(rel).to.have.property("src", "https://www.expressen.se/slug/");
-
       noprot.src = "/img/set.gif";
       expect(noprot).to.have.property("src", "https://www.expressen.se/img/set.gif");
     });
+
+    it("triggers load event when setting .src", async () => {
+      const [img1, img2] = document.getElementsByTagName("img");
+      img1.imageLoaded = "false";
+      img2.imageLoaded = "false";
+
+      img1.addEventListener("load", () => (img1.imageLoaded = "true"));
+      img2.addEventListener("load", () => (img2.imageLoaded = "true"));
+
+      img2.src = "/img/setImage2.gif";
+      expect(img1).to.have.property("imageLoaded", "false");
+      expect(img2).to.have.property("imageLoaded", "true");
+    });
+
+
   });
 
   describe(".style", () => {
@@ -600,6 +615,103 @@ describe("elements", () => {
     });
   });
 
+  describe(".nodeType", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="element"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should return the correct node type", () => {
+      expect(document.getElementById("element").nodeType).to.equal(1);
+    });
+  });
+
+  describe(".outerHTML", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <span data-json="{&quot;var&quot;:1}">åäö</span>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should return the expected markup", () => {
+      const [elm] = document.getElementsByTagName("span");
+      expect(elm.outerHTML).to.equal("<span data-json=\"{\"var\":1}\">åäö</span>");
+    });
+  });
+
+  describe(".innerText", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <span>åäö</span>
+            </body>
+          </html>`
+      });
+    });
+
+    it("get returns text content", () => {
+      const [elm] = document.getElementsByTagName("span");
+      expect(elm.innerText).to.equal("åäö");
+    });
+
+    it("set replaces content should insert child", () => {
+      const [elm] = document.getElementsByTagName("span");
+      elm.innerText = "ÖÄÅ";
+      expect(elm.innerText).to.equal("ÖÄÅ");
+    });
+  });
+
+  describe(".appendChild", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should insert child", () => {
+      const elm = document.createElement("span");
+      elm.dataset.json = JSON.stringify({data: 1});
+      elm.textContent = "åäö";
+      document.body.appendChild(elm);
+
+      const newElm = document.body.firstElementChild;
+
+      expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
+      expect(newElm.dataset.json).to.equal("{\"data\":1}");
+      expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
+    });
+
+    it("executes if script", () => {
+      global.window = {};
+      const elm = document.createElement("script");
+      elm.innerText = "window.appended = true;";
+      document.body.appendChild(elm);
+
+      expect(global.window.appended).to.be.true;
+    });
+  });
+
   describe("forms", () => {
     let document;
     beforeEach(() => {
@@ -775,6 +887,7 @@ describe("elements", () => {
           <html>
             <body>
               <div data-test-get="should be fetched"></div>
+              <span data-json="{&quot;var&quot;:1}">åäö</span>
             </body>
           </html>`
       });
@@ -807,6 +920,11 @@ describe("elements", () => {
         testGet: "should be fetched",
         testSetAttribute: "1"
       });
+    });
+
+    it("returns attribute with encoded json", () => {
+      const [elm] = document.getElementsByTagName("span");
+      expect(elm.dataset.json).to.equal("{\"var\":1}");
     });
   });
 
@@ -933,6 +1051,48 @@ describe("elements", () => {
       const text = parentElm.textContent.replace(/\s/g, "");
       expect(text).to.equal("text1Tordyvelnflygeriskymningentext2");
       expect(returnValue).to.eql(newNode);
+    });
+  });
+
+  describe("insertAdjacentHTML", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="div-1"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should insert adjacent html inside element before first child", () => {
+      document.body.insertAdjacentHTML("afterbegin", "<p class='p-1'>Blahonga</p>");
+      const el = document.body.getElementsByClassName("p-1")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+      expect(el.previousElementSibling).to.be.undefined;
+      expect(el.nextElementSibling === document.getElementsByClassName("div-1")[0]).to.equal(true);
+    });
+
+    it("should insert adjacent html inside element after last child", () => {
+      document.body.insertAdjacentHTML("beforeend", "<p class='p-1'>Blahonga</p>");
+      const el = document.body.getElementsByClassName("p-1")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+      expect(el.previousElementSibling === document.getElementsByClassName("div-1")[0]).to.equal(true);
+      expect(el.nextElementSibling).to.be.undefined;
+    });
+
+    it("should insert adjacent html with encoded content", () => {
+      document.body.insertAdjacentHTML("beforeend", "<span data-json=\"{&quot;var&quot;:1}\">&#xE5;&#xE4;&#xF6;</span>");
+      const el = document.body.getElementsByTagName("span")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+
+      expect(el.innerText).to.equal("åäö");
+      expect(el.dataset.json).to.equal("{\"var\":1}");
     });
   });
 

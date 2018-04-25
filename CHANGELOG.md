@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+# 4.0.0
+
+## Breaking
+- Storage now stores everything as string in accordance to standard.
+
 # 3.0.0
 
 ## Features
