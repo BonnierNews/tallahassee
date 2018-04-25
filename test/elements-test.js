@@ -982,6 +982,7 @@ describe("elements", () => {
         text: `<html>
             <button id="button-1" type="button"></button>
             <button id="button-2" type="button"></button>
+            <button id="button-3" type="button" disabled="disabled"></button>
           </html>`
       });
       buttons = document.getElementsByTagName("button");
@@ -1010,6 +1011,13 @@ describe("elements", () => {
 
       buttons[0].click();
       expect(clickCount).to.equal(1);
+    });
+
+    it("does not fire event when disabled", () => {
+      buttons[2].addEventListener("click", increment);
+      buttons[2].click();
+
+      expect(clickCount).to.equal(0);
     });
 
     it("event listeners are invoked with element as this", () => {
