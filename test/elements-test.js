@@ -712,6 +712,45 @@ describe("elements", () => {
     });
   });
 
+  describe(".cloneNode", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="i-am-unique">
+                <!-- Comment node -->
+                Child text node
+                <span>Child element node</span>
+              </div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns an empty clone of itself", () => {
+      const elm = document.getElementById("i-am-unique");
+      const elmClone = elm.cloneNode();
+      expect(elmClone.outerHTML).to.equal("<div id=\"i-am-unique\"></div>");
+      expect(elmClone === elm).to.be.false;
+    });
+
+    it("returns an clone of itself and its content when deeply cloned", () => {
+      const elm = document.getElementById("i-am-unique");
+      const elmClone = elm.cloneNode(true);
+      expect(elmClone.outerHTML).to.equal(elm.outerHTML);
+      expect(elmClone === elm).to.be.false;
+
+      const elmChild = elm.getElementsByTagName("span")[0];
+      expect(elmChild).to.be.ok;
+      const elmCloneChild = elmClone.getElementsByTagName("span")[0];
+      expect(elmCloneChild).to.be.ok;
+
+      expect(elmCloneChild === elmChild).to.be.false;
+    });
+  });
+
   describe("forms", () => {
     let document;
     beforeEach(() => {
