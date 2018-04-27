@@ -21,7 +21,7 @@ describe("Document", () => {
             <script>var a = 1;</script>
             <template id="schablon" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in top document child&quot;}">
               <div id="insert" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in sub document child&quot;}">
-                <p>Template</p>
+                <p>In a template</p>
               </div>
             </template>
             <div id="lazy"></div>
@@ -56,37 +56,53 @@ describe("Document", () => {
     it("getElementById returns null id element is not found", async () => {
       expect(document.getElementById("non-existing")).to.be.null;
     });
+  });
 
-    it("importNode() returns element content", async () => {
-      const elm = document.getElementById("schablon");
-      expect(document.importNode(elm, true)).to.be.ok;
-      expect(document.importNode(elm, true).firstElementChild.tagName).to.equal("DIV");
+  describe("createDocumentFragment()", () => {
+    it("returns a document object with functions", () => {
+      const fragment = document.createDocumentFragment();
+
+      expect(fragment).to.be.ok;
+      expect(fragment).to.have.property("appendChild").that.is.a("function");
+    });
+  });
+
+  describe("importNode()", () => {
+    it("importNode() returns clone of element without content", () => {
+      const elm = document.getElementById("headline");
+      const elmClone = document.importNode(elm);
+      expect(elmClone.outerHTML).to.equal("<h2 id=\"headline\"></h2>");
+      expect(elm.outerHTML === elmClone.outerHTML).to.be.false;
+      expect(elm === elmClone).to.be.false;
     });
 
-    it("importNode() combined with appendChild() inserts element content", async () => {
-      const elm = document.getElementById("schablon");
-      const template = document.importNode(elm, true);
-      document.getElementById("lazy").appendChild(template);
-
-      expect(document.getElementById("insert")).to.be.ok;
-      expect(document.getElementById("insert").parentElement.id).to.equal("lazy");
+    it("importNode() with deep parameter returns clone of element with content", () => {
+      const elm = document.getElementById("headline");
+      const elmClone = document.importNode(elm, true);
+      expect(elmClone.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
+      expect(elm.outerHTML === elmClone.outerHTML).to.be.true;
+      expect(elm === elmClone).to.be.false;
     });
 
-    it("template element.content importNode() combined with appendChild() inserts element content", async () => {
-      const elm = document.getElementById("schablon");
-      const template = document.importNode(elm.content, true);
-      document.getElementById("lazy").appendChild(template);
+    it("importNode() on templateElement.content combined with appendChild() inserts element content", async () => {
+      const templateElement = document.getElementById("schablon");
+      const templateContentClone = document.importNode(templateElement.content, true);
 
+      expect(document.getElementById("insert")).not.to.be.ok;
+
+      document.getElementById("lazy").appendChild(templateContentClone);
+
+      console.log(document.getElementById("lazy").outerHTML);
       expect(document.getElementById("insert")).to.be.ok;
       expect(document.getElementById("insert").parentElement.id).to.equal("lazy");
     });
 
     it("handles JSON in attributes in top document and sub documents", () => {
       const topDocChild = document.getElementById("schablon");
-      const template = document.importNode(topDocChild.content, true);
+      const templateContentClone = document.importNode(topDocChild.content, true);
 
       const lazyContainer = document.getElementById("lazy");
-      lazyContainer.appendChild(template);
+      lazyContainer.appendChild(templateContentClone);
       const subDocChildInTopDoc = lazyContainer.lastElementChild;
 
       expect(() => JSON.parse(topDocChild.dataset.json)).not.to.throw();
@@ -96,15 +112,6 @@ describe("Document", () => {
       expect(() => JSON.parse(subDocChildInTopDoc.dataset.json)).not.to.throw();
       const subDocInTopDocJSON = JSON.parse(subDocChildInTopDoc.dataset.json);
       expect(subDocInTopDocJSON).to.deep.equal({"json": "åäö in sub document child"});
-    });
-  });
-
-  describe("createDocumentFragment", () => {
-    it("returns a document object with functions", () => {
-      const fragment = document.createDocumentFragment();
-
-      expect(fragment).to.be.ok;
-      expect(fragment).to.have.property("appendChild").that.is.a("function");
     });
   });
 
@@ -127,7 +134,6 @@ describe("Document", () => {
   });
 
   describe("_getElement()", () => {
-
     it("returns the same element when called twice", () => {
       const $ = document.$;
       const call1 = document._getElement($("#headline"));
