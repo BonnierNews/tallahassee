@@ -17,13 +17,13 @@ describe("MutationObserver", () => {
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
     let childListMutation = false;
-    const callback = function (mutationsList) {
+    function callback(mutationsList) {
       for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
           childListMutation = true;
         }
       }
-    };
+    }
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, config);
 

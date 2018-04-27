@@ -1,8 +1,9 @@
 "use strict";
 
 const DOMException = require("domexception");
-const {Document} = require("../lib");
 const Element = require("../lib/Element");
+const DocumentFragment = require("../lib/DocumentFragment");
+const {Document} = require("../lib");
 
 const elementProperties = [
   "children",
@@ -902,9 +903,9 @@ describe("elements", () => {
       });
     });
 
-    it("has content property", () => {
+    it("has content property that is a DocumentFragment", () => {
       const [element] = document.getElementsByTagName("template");
-      expect(element.content === element).to.be.true;
+      expect(element.content).to.be.instanceof(DocumentFragment);
     });
 
     it("non-template element returns undefined", () => {
