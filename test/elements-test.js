@@ -1,8 +1,9 @@
 "use strict";
 
 const DOMException = require("domexception");
-const {Document} = require("../lib");
 const Element = require("../lib/Element");
+const DocumentFragment = require("../lib/DocumentFragment");
+const {Document} = require("../lib");
 
 const elementProperties = [
   "children",
@@ -687,19 +688,36 @@ describe("elements", () => {
       document = Document({
         text: `
           <html>
-            <body>
+            <body id="grandparent">
+              <span class="child">åäö</span>
+              <div id="parent-1"></div>
+              <div id="parent-2"></div>
             </body>
           </html>`
       });
     });
 
-    it("should insert child", () => {
+    it("moves existing child", () => {
+      const child = document.getElementsByClassName("child")[0];
+      const parent1 = document.getElementById("parent-1");
+      const parent2 = document.getElementById("parent-2");
+
+      parent1.appendChild(child);
+      expect(document.getElementsByClassName("child").length).to.equal(1);
+      expect(child.parentElement).to.have.property("id", "parent-1");
+
+      parent2.appendChild(child);
+      expect(document.getElementsByClassName("child").length).to.equal(1);
+      expect(child.parentElement).to.have.property("id", "parent-2");
+    });
+
+    it("inserts new child", () => {
       const elm = document.createElement("span");
       elm.dataset.json = JSON.stringify({data: 1});
       elm.textContent = "åäö";
       document.body.appendChild(elm);
 
-      const newElm = document.body.firstElementChild;
+      const newElm = document.body.lastElementChild;
 
       expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
       expect(newElm.dataset.json).to.equal("{\"data\":1}");
@@ -713,6 +731,45 @@ describe("elements", () => {
       document.body.appendChild(elm);
 
       expect(global.window.appended).to.be.true;
+    });
+  });
+
+  describe(".cloneNode", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="block">
+                <!-- Comment node -->
+                Child text node
+                <span>Child element node</span>
+              </div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns an empty clone of itself", () => {
+      const elm = document.getElementsByClassName("block")[0];
+      const elmClone = elm.cloneNode();
+      expect(elmClone.outerHTML).to.equal("<div class=\"block\"></div>");
+      expect(elmClone === elm).to.be.false;
+    });
+
+    it("returns an clone of itself and its content when deeply cloned", () => {
+      const elm = document.getElementsByClassName("block")[0];
+      const elmClone = elm.cloneNode(true);
+      expect(elmClone.outerHTML).to.equal(elm.outerHTML);
+      expect(elmClone === elm).to.be.false;
+
+      const elmChild = elm.getElementsByTagName("span")[0];
+      expect(elmChild).to.be.ok;
+      const elmCloneChild = elmClone.getElementsByTagName("span")[0];
+      expect(elmCloneChild).to.be.ok;
+
+      expect(elmCloneChild === elmChild).to.be.false;
     });
   });
 
@@ -850,9 +907,9 @@ describe("elements", () => {
       });
     });
 
-    it("has content property", () => {
+    it("has content property that is a DocumentFragment", () => {
       const [element] = document.getElementsByTagName("template");
-      expect(element.content === element).to.be.true;
+      expect(element.content).to.be.instanceof(DocumentFragment);
     });
 
     it("non-template element returns undefined", () => {
