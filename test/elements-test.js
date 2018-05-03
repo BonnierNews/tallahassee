@@ -584,6 +584,10 @@ describe("elements", () => {
       expect(document.documentElement.contains(document.getElementsByTagName("h2")[0])).to.be.true;
     });
 
+    it("returns true if finding itself", () => {
+      expect(document.documentElement.contains(document.documentElement)).to.be.true;
+    });
+
     it("returns false if child element is a sibling", () => {
       expect(document.getElementById("container").contains(document.getElementById("outside"))).to.be.false;
     });
@@ -1124,6 +1128,13 @@ describe("elements", () => {
       });
     });
 
+    it("should insert adjacent html before the element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      targetElement.insertAdjacentHTML("beforebegin", "<p class='p-1'>Blahonga</p>");
+
+      expect(targetElement.previousElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
     it("should insert adjacent html inside element before first child", () => {
       document.body.insertAdjacentHTML("afterbegin", "<p class='p-1'>Blahonga</p>");
       const el = document.body.getElementsByClassName("p-1")[0];
@@ -1142,6 +1153,13 @@ describe("elements", () => {
       expect(el.nextElementSibling).to.be.undefined;
     });
 
+    it("should insert adjacent html after the element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      targetElement.insertAdjacentHTML("afterend", "<p class='p-1'>Blahonga</p>");
+
+      expect(targetElement.nextElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
     it("should insert adjacent html with encoded content", () => {
       document.body.insertAdjacentHTML("beforeend", "<span data-json=\"{&quot;var&quot;:1}\">&#xE5;&#xE4;&#xF6;</span>");
       const el = document.body.getElementsByTagName("span")[0];
@@ -1150,6 +1168,13 @@ describe("elements", () => {
 
       expect(el.innerText).to.equal("åäö");
       expect(el.dataset.json).to.equal("{\"var\":1}");
+    });
+
+    it("should throw if the position is wrong", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      expect(() => {
+        targetElement.insertAdjacentHTML("wrong", "<p></p>");
+      }).to.throw(DOMException);
     });
   });
 
@@ -1194,11 +1219,17 @@ describe("elements", () => {
   describe("Event listeners", () => {
     let buttons;
     let clickCount;
+    let document;
     beforeEach(() => {
-      const document = Document({
+      document = Document({
         text: `<html>
-            <button id="button-1" type="button"></button>
-            <button id="button-2" type="button"></button>
+            <body>
+              <div>
+                <button id="button-1" type="button"></button>
+                <button id="button-2" type="button"></button>
+                <button id="button-3" type="button" disabled="disabled"></button>
+              </div>
+            </body>
           </html>`
       });
       buttons = document.getElementsByTagName("button");
@@ -1229,6 +1260,13 @@ describe("elements", () => {
       expect(clickCount).to.equal(1);
     });
 
+    it("does not fire event when disabled", () => {
+      buttons[2].addEventListener("click", increment);
+      buttons[2].click();
+
+      expect(clickCount).to.equal(0);
+    });
+
     it("event listeners are invoked with element as this", () => {
       buttons[0].addEventListener("click", increment);
       buttons[1].addEventListener("click", increment);
@@ -1240,6 +1278,32 @@ describe("elements", () => {
       expect(clickCount).to.equal(3);
       expect(buttons[0].clickCount).to.equal(2);
       expect(buttons[1].clickCount).to.equal(1);
+    });
+
+    it("should propagate click to parent", () => {
+      let result = false;
+      document.body.addEventListener("click", () => {
+        result = true;
+      });
+
+      buttons[0].click();
+
+      expect(result).to.equal(true);
+    });
+
+    it("should NOT propagate click to parent when propagation stopped", () => {
+      let result = false;
+      document.body.addEventListener("click", () => {
+        result = true;
+      });
+
+      buttons[0].addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+
+      buttons[0].click();
+
+      expect(result).to.equal(false);
     });
 
     describe("listener is 'identical' based on eventName, callback and useCapture", () => {
