@@ -60,13 +60,10 @@ describe("Document", () => {
   });
 
   describe("createDocumentFragment()", () => {
-    it("returns a document object with functions", () => {
+    it("returns a document fragment", () => {
       const fragment = document.createDocumentFragment();
-
       expect(fragment).to.be.ok;
       expect(fragment).to.be.instanceof(DocumentFragment);
-      expect(fragment).to.have.property("querySelector").that.is.a("function");
-      expect(fragment).to.have.property("querySelectorAll").that.is.a("function");
     });
   });
 
