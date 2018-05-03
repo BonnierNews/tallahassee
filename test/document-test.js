@@ -99,7 +99,7 @@ describe("Document", () => {
       expect(document.getElementById("insert").parentElement.id).to.equal("lazy");
     });
 
-    it("handles JSON in attributes in top document and sub documents", () => {
+    it("handles JSON in attributes in sub documents", () => {
       const templateElement = document.getElementById("schablon");
       const templateContentClone = document.importNode(templateElement.content, true);
 
@@ -108,12 +108,10 @@ describe("Document", () => {
 
       const subDocChildInTopDoc = lazyContainer.lastElementChild;
 
-      // const topDocJSON = JSON.parse(topDocChild.dataset.json);
-      // expect(topDocJSON).to.eql({"json": "åäö in top document child"});
-
       expect(document.getElementById("insert")).to.be.ok;
 
-      expect(() => JSON.parse(subDocChildInTopDoc.dataset.json)).not.to.throw();
+      const topDocJSON = JSON.parse(templateElement.dataset.json);
+      expect(topDocJSON).to.deep.equal({"json": "åäö in top document child"});
       const subDocInTopDocJSON = JSON.parse(subDocChildInTopDoc.dataset.json);
       expect(subDocInTopDocJSON).to.deep.equal({"json": "åäö in sub document child"});
     });
