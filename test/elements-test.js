@@ -1071,6 +1071,13 @@ describe("elements", () => {
       });
     });
 
+    it("should insert adjacent html before the element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      targetElement.insertAdjacentHTML("beforebegin", "<p class='p-1'>Blahonga</p>");
+
+      expect(targetElement.previousElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
     it("should insert adjacent html inside element before first child", () => {
       document.body.insertAdjacentHTML("afterbegin", "<p class='p-1'>Blahonga</p>");
       const el = document.body.getElementsByClassName("p-1")[0];
@@ -1089,6 +1096,13 @@ describe("elements", () => {
       expect(el.nextElementSibling).to.be.undefined;
     });
 
+    it("should insert adjacent html after the element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      targetElement.insertAdjacentHTML("afterend", "<p class='p-1'>Blahonga</p>");
+
+      expect(targetElement.nextElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
     it("should insert adjacent html with encoded content", () => {
       document.body.insertAdjacentHTML("beforeend", "<span data-json=\"{&quot;var&quot;:1}\">&#xE5;&#xE4;&#xF6;</span>");
       const el = document.body.getElementsByTagName("span")[0];
@@ -1097,6 +1111,13 @@ describe("elements", () => {
 
       expect(el.innerText).to.equal("åäö");
       expect(el.dataset.json).to.equal("{\"var\":1}");
+    });
+
+    it("should throw if the position is wrong", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      expect(() => {
+        targetElement.insertAdjacentHTML("wrong", "<p></p>");
+      }).to.throw(DOMException);
     });
   });
 
