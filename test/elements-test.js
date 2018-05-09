@@ -191,8 +191,6 @@ describe("elements", () => {
       expect(img1).to.have.property("imageLoaded", "false");
       expect(img2).to.have.property("imageLoaded", "true");
     });
-
-
   });
 
   describe(".style", () => {
@@ -308,6 +306,12 @@ describe("elements", () => {
       const elms = document.getElementsByTagName("input");
       elms[1].checked = true;
       expect(elms[0].checked).to.be.false;
+    });
+
+    it("emits change when checked", (done) => {
+      const elm = document.getElementsByTagName("input")[1];
+      elm.addEventListener("change", () => done());
+      elm.checked = true;
     });
 
     it("unsets checked on siblings in same form", () => {
@@ -890,6 +894,16 @@ describe("elements", () => {
       const videoElement = document.getElementById("video-element");
       const returnValue = videoElement.pause();
       expect(returnValue).to.be.undefined;
+    });
+
+    it("has a canPlayType function", () => {
+      const videoElement = document.getElementById("video-element");
+      expect(videoElement.canPlayType).to.be.a("function");
+    });
+
+    it("canPlayType function returns maybe", () => {
+      const videoElement = document.getElementById("video-element");
+      expect(videoElement.canPlayType("application/mp4")).to.be.equal("maybe");
     });
   });
 

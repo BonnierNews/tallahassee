@@ -271,7 +271,6 @@ describe("MutationObserver", () => {
     expect(scope === observer).to.be.true;
   });
 
-
   it("mutation callback this.disconnect() stops listening for mutations", async () => {
     const browser = await Browser(app).navigateTo("/");
 
@@ -311,5 +310,65 @@ describe("MutationObserver", () => {
     browser.document.body.appendChild(script);
 
     expect(sequence).to.eql(["executed", "mutated"]);
+  });
+
+  describe("MutationObserverInit options", () => {
+    let browser;
+    beforeEach(async () => {
+      browser = await Browser(app).navigateTo("/");
+    });
+
+    it("observer with attributes option calls callback when element class changes", () => {
+      const records = [];
+      const observer = new MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true});
+
+      browser.document.body.classList.add("mutate");
+
+      expect(records).to.have.length(1);
+
+      const record = records[0];
+      expect(record).to.have.property("type", "attributes");
+      expect(record).to.have.property("attributeName", "class");
+      expect(record.target === browser.document.body).to.be.true;
+    });
+
+    it("observer with attributes and subtree option calls callback when element child src changes", () => {
+      const records = [];
+      const observer = new MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true, subtree: true});
+
+      const img = browser.document.getElementsByTagName("img")[0];
+      img.src = "/images/tallahassee-2.png";
+
+      expect(records).to.have.length(1);
+
+      const record = records[0];
+      expect(record).to.have.property("type", "attributes");
+      expect(record).to.have.property("attributeName", "src");
+      expect(record.target === img).to.be.true;
+    });
+
+    it("observer with attributes and subtree option calls callback when element child src changes", () => {
+      const records = [];
+      const observer = new MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true, subtree: true});
+
+      const img = browser.document.getElementsByTagName("img")[0];
+      img.src = "/images/tallahassee-2.png";
+
+      expect(records).to.have.length(1);
+
+      const record = records[0];
+      expect(record).to.have.property("type", "attributes");
+      expect(record).to.have.property("attributeName", "src");
+      expect(record.target === img).to.be.true;
+    });
   });
 });

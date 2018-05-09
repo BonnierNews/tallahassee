@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 4.8.0
+- Mutation observer listens for attribute change
+- Add function `canPlayType` to video element, always returns "maybe"
+
 # 4.0.0
 
 ## Breaking
