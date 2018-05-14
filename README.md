@@ -70,3 +70,12 @@ describe("Tallahassee", () => {
   });
 });
 ```
+
+# Compiler
+
+To make compiler ignore test directory you can use a version of this negative look-ahead pattern:
+
+```js
+const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
+Compiler([/^(?!.*\/test\/assets).*\/assets\/scripts/]);
+```
