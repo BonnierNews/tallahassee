@@ -2,7 +2,7 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler, CustomEvent} = require("../lib");
+const {Compiler} = require("../lib");
 
 describe("CustomEvent", () => {
   before(() => {
@@ -13,8 +13,6 @@ describe("CustomEvent", () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });
-
-    browser.window.CustomEvent = CustomEvent;
 
     const daEvent = new browser.window.CustomEvent("myEvent", {
       detail: "Blahonga!"
@@ -40,11 +38,11 @@ describe("CustomEvent", () => {
       dispatchedEvent = arg;
     });
     browser.window.document.createEvent = () => {
-      return new CustomEvent();
+      return new browser.window.CustomEvent();
     };
 
     const evt = browser.window.document.createEvent("CustomEvent");
-    evt.initCustomEvent("myEvent", false, false, { detail: "Blahonga!" });
+    evt.initCustomEvent("myEvent", false, false, "Blahonga!");
     browser.window.dispatchEvent(evt);
 
     expect(dispatchedEvent).to.be.ok;
