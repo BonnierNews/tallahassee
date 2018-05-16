@@ -294,6 +294,38 @@ describe("MutationObserver", () => {
     expect(childMutationCount).to.equal(1);
   });
 
+  it("mutation when insertAdjacentHTML afterend triggers mutation on parent", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const sequence = [];
+    const observer = new MutationObserver(() => {
+      sequence.push("mutated");
+    });
+    observer.observe(browser.document.body, {childList: true });
+
+    const div = browser.document.createElement("div");
+
+    browser.document.body.lastElementChild.insertAdjacentHTML("afterend", div);
+
+    expect(sequence).to.eql(["mutated"]);
+  });
+
+  it("mutation when insertAdjacentHTML beforebegin triggers mutation on parent", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const sequence = [];
+    const observer = new MutationObserver(() => {
+      sequence.push("mutated");
+    });
+    observer.observe(browser.document.body, {childList: true });
+
+    const div = browser.document.createElement("div");
+
+    browser.document.body.lastElementChild.insertAdjacentHTML("beforebegin", div);
+
+    expect(sequence).to.eql(["mutated"]);
+  });
+
   it("mutation when appendChild with script executes before mutation event", async () => {
     const browser = await Browser(app).navigateTo("/");
 
