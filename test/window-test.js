@@ -205,7 +205,7 @@ describe("Window", () => {
 
     it("can dispatch window.Event", (done) => {
       window.addEventListener("test-event", (arg) => {
-        expect(arg).to.eql({type: "test-event"});
+        expect(arg).to.have.property("type", "test-event");
         done();
       });
       window.dispatchEvent(new window.Event("test-event"));
