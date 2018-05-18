@@ -211,4 +211,27 @@ describe("Window", () => {
       window.dispatchEvent(new window.Event("test-event"));
     });
   });
+
+  describe("matchMedia", () => {
+    it("should throw with no arguments passed", () => {
+      expect(() => window.matchMedia()).to.throw(TypeError);
+    });
+
+    it("should check towards default media object which is 'screen'", () => {
+      const media = window.matchMedia("screen");
+      expect(media).to.eql({ media: "screen", matches: true });
+    });
+
+    it("should return media object that does not match", () => {
+      window.styleMedia = { type: "print" };
+      const media = window.matchMedia("screen");
+      expect(media).to.eql({ media: "screen", matches: false });
+    });
+
+    it("should return media object that does match", () => {
+      window.styleMedia = { type: "print" };
+      const media = window.matchMedia("print");
+      expect(media).to.eql({ media: "print", matches: true });
+    });
+  });
 });
