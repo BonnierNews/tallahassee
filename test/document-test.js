@@ -196,6 +196,18 @@ describe("Document", () => {
       expect(document.fullscreenElement).to.equal(null);
     });
 
+    it("should emit a fullscreenchange event", () => {
+      let calledCB = false;
+
+      document.addEventListener("fullscreenchange", () => {
+        calledCB = true;
+      });
+
+      const headline = document.getElementById("headline");
+      headline.requestFullscreen();
+      expect(calledCB).to.equal(true);
+    });
+
     it("should be set to target element when in fullscreen mode", () => {
       const headline = document.getElementById("headline");
       headline.requestFullscreen();
@@ -210,6 +222,43 @@ describe("Document", () => {
       const schablon = document.getElementById("schablon");
       schablon.requestFullscreen();
       expect(document.fullscreenElement).to.eql(headline);
+    });
+  });
+
+  describe("exitFullscreen", () => {
+    it("should set document.fullscreenElement to null", () => {
+      const headline = document.getElementById("headline");
+      headline.requestFullscreen();
+      expect(document.fullscreenElement).to.eql(headline);
+
+      document.exitFullscreen();
+      expect(document.fullscreenElement).to.equal(null);
+    });
+
+    it("should emit a fullscreenchange event", () => {
+      const headline = document.getElementById("headline");
+      headline.requestFullscreen();
+      expect(document.fullscreenElement).to.eql(headline);
+
+
+      let calledCB = false;
+      document.addEventListener("fullscreenchange", () => {
+        calledCB = true;
+      });
+      document.exitFullscreen();
+      expect(document.fullscreenElement).to.eql(null);
+      expect(calledCB).to.equal(true);
+    });
+
+    it("should return if called when not in fullscreen", () => {
+      let calledCB = false;
+      document.addEventListener("fullscreenchange", () => {
+        calledCB = true;
+      });
+
+      document.exitFullscreen();
+      expect(document.fullscreenElement).to.eql(null);
+      expect(calledCB).to.equal(false);
     });
   });
 });
