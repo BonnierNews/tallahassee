@@ -190,4 +190,26 @@ describe("Document", () => {
       expect(document.nodeType).to.equal(9);
     });
   });
+
+  describe("fullscreenElement", () => {
+    it("should be null when not in fullscreen", () => {
+      expect(document.fullscreenElement).to.equal(null);
+    });
+
+    it("should be set to target element when in fullscreen mode", () => {
+      const headline = document.getElementById("headline");
+      headline.requestFullscreen();
+      expect(document.fullscreenElement).to.eql(headline);
+    });
+
+    it("should return if document.fullscreenElement is not null and does not equal target element", () => {
+      const headline = document.getElementById("headline");
+      headline.requestFullscreen();
+      expect(document.fullscreenElement).to.eql(headline);
+
+      const schablon = document.getElementById("schablon");
+      schablon.requestFullscreen();
+      expect(document.fullscreenElement).to.eql(headline);
+    });
+  });
 });
