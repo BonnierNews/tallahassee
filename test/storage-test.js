@@ -35,7 +35,7 @@ describe("Storage", () => {
     window.localStorage.setItem("null", null);
 
     expect(window.localStorage.getItem("number")).to.eql("1");
-    expect(window.localStorage.getItem("date")).to.equal("Wed Apr 18 2018 00:00:00 GMT+0200 (CEST)");
+    expect(window.localStorage.getItem("date")).to.equal(new Date(2018, 3, 18).toString());
     expect(window.localStorage.getItem("array")).to.equal("1,2");
     expect(window.localStorage.getItem("obj")).to.equal("[object Object]");
     expect(window.localStorage.getItem("undef")).to.equal("undefined");

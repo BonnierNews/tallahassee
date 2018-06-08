@@ -1371,4 +1371,28 @@ describe("elements", () => {
       this.clickCount = !this.clickCount ? 1 : this.clickCount + 1;
     }
   });
+
+  describe("requestFullscreen", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="element-10"></div>
+              text1
+              <div class="element-20"></div>
+              text2
+            </body>
+          </html>`
+      });
+    });
+
+    it("should set document.fullscreenElement to element", () => {
+      const element10 = document.getElementsByClassName("element-10")[0];
+      element10.requestFullscreen();
+
+      expect(document.fullscreenElement).to.eql(element10);
+    });
+  });
 });
