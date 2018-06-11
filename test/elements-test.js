@@ -392,11 +392,11 @@ describe("elements", () => {
 
     it("sets offsetHeight as well", () => {
       const [elm] = document.getElementsByTagName("p");
-      elm._setBoundingClientRect({
-        top: 10, bottom: 200
-      });
-
+      elm._setBoundingClientRect({top: 10, bottom: 200});
       expect(elm.offsetHeight).to.equal(190);
+
+      elm._setBoundingClientRect({top: -300, bottom: 0});
+      expect(elm.offsetHeight).to.equal(300);
     });
   });
 
