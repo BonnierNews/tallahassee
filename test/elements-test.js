@@ -601,6 +601,36 @@ describe("elements", () => {
     });
   });
 
+  describe(".closest", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="parent element">
+                <span class="element"></span>
+              </div>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should get parent element", () => {
+      const [element] = document.getElementsByTagName("span");
+      const closest = element.closest(".parent");
+
+      expect(closest).to.equal(document.getElementsByClassName("parent")[0]);
+    });
+
+    it("should get itself", () => {
+      const [element] = document.getElementsByTagName("span");
+      const closest = element.closest(".element");
+
+      expect(closest).to.equal(element);
+    });
+  });
+
   describe(".className", () => {
     let document;
     beforeEach(() => {
