@@ -23,6 +23,33 @@ describe("window.fetch", () => {
     expect(body).to.eql({data: 1});
   });
 
+  it("external post is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const json = JSON.stringify({ foo: "bar" });
+    nock("http://example.com")
+      .post("/", json)
+      .reply(200, {data: 1});
+
+    const body = await browser.window.fetch("http://example.com/", {
+      method: "POST",
+      body: json
+    }).then((res) => res.json());
+    expect(body).to.eql({data: 1});
+  });
+
+  it("local post is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const json = JSON.stringify({ foo: "bar" });
+
+    const body = await browser.window.fetch("/post", {
+      method: "POST",
+      body: json
+    }).then((res) => res.json());
+    expect(body).to.eql({data: 1});
+  });
+
   it("local resource routes to app", async () => {
     const browser = await Browser(app).navigateTo("/");
 

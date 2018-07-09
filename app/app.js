@@ -10,6 +10,7 @@ const errorPage = Path.join(__dirname, "assets/public/error.html");
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
 app.use("/", express.static(Path.join(__dirname, "assets/images")));
 
+app.post("/post", (req, res) => res.send({data: 1}));
 app.get("/api", (req, res) => res.send({data: 1}));
 app.get("/req", (req, res) => {
   res.send({cookie: req.get("cookie"), headers: {...req.headers}});
