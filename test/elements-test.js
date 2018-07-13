@@ -341,6 +341,70 @@ describe("elements", () => {
     });
   });
 
+  describe("input[type=checkbox]", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <input type="checkbox" name="test" value="1" checked="checked">
+              <input type="checkbox" name="test" value="2">
+            </body>
+          </html>`
+      });
+    });
+
+    it("has checked true if checked", () => {
+      expect(document.getElementsByTagName("input")[0].checked).to.be.true;
+    });
+
+    it("has checked false if not checked", () => {
+      expect(document.getElementsByTagName("input")[1].checked).to.be.false;
+    });
+
+    it("has value", () => {
+      expect(document.getElementsByTagName("input")[0].value).to.equal("1");
+      expect(document.getElementsByTagName("input")[1].value).to.equal("2");
+    });
+
+    it("can set checked", () => {
+      const elm = document.getElementsByTagName("input")[1];
+      elm.checked = true;
+      expect(elm.checked).to.be.true;
+    });
+
+    it("can set unchecked", () => {
+      const elm = document.getElementsByTagName("input")[0];
+      elm.checked = false;
+      expect(elm.checked).to.be.false;
+    });
+
+    it("emits change when checked", () => {
+      const elm = document.getElementsByTagName("input")[1];
+      let result = 0;
+      elm.addEventListener("change", () => (result = 1));
+      elm.checked = true;
+      expect(result).to.equal(1);
+    });
+
+    it("emits change when unchecked", () => {
+      const elm = document.getElementsByTagName("input")[0];
+      let result = 0;
+      elm.addEventListener("change", () => (result = 1));
+      elm.checked = false;
+      expect(result).to.equal(1);
+    });
+
+    it("emits no change when state is unchanged", () => {
+      const elm = document.getElementsByTagName("input")[0];
+      let result = 0;
+      elm.addEventListener("change", () => (result = 1));
+      elm.checked = true;
+      expect(result).to.equal(0);
+    });
+  });
+
   describe("_setBoundingClientRect", () => {
     let document;
     beforeEach(() => {
