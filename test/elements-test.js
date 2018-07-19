@@ -880,11 +880,14 @@ describe("elements", () => {
             <body>
               <h2>Test <b>title</b></h2>
               <form id="get-form" type="get" action="/">
+                <input type="checkbox" value="1">
+                <input type="checkbox" value="2" checked="checked">
                 <select>
                   <option value="1">1</option>
-                  <option value="2" selected>2</option>
+                  <option value="2" selected="selected">2</option>
                 </select>
                 <button type="submit">Submit</submit>
+                <button type="reset">Submit</submit>
               </form>
             </body>
           </html>`
@@ -893,6 +896,10 @@ describe("elements", () => {
 
     it("has submit method", () => {
       expect(document.getElementById("get-form")).to.have.property("submit").that.is.a("function");
+    });
+
+    it("has reset method", () => {
+      expect(document.getElementById("get-form")).to.have.property("reset").that.is.a("function");
     });
 
     it("submit button has associated form property", () => {
@@ -910,6 +917,15 @@ describe("elements", () => {
       button.click();
     });
 
+    it("submit button click emits submit on form", (done) => {
+      const [form] = document.getElementsByTagName("form");
+      const [button] = document.getElementsByTagName("button");
+
+      form.addEventListener("submit", () => done());
+
+      button.click();
+    });
+
     it("submit sets event target to form", (done) => {
       const [form] = document.getElementsByTagName("form");
       const [button] = document.getElementsByTagName("button");
@@ -922,9 +938,57 @@ describe("elements", () => {
       button.click();
     });
 
-    it("returns options in select", () => {
+    it("reset button click emits reset on form", (done) => {
+      const [form] = document.getElementsByTagName("form");
+      const [, button] = form.getElementsByTagName("button");
+
+      form.addEventListener("reset", () => done());
+
+      button.click();
+    });
+
+    it("reset form resets form elements", () => {
       const [form] = document.getElementsByTagName("form");
       const [select] = form.getElementsByTagName("select");
+      const checkboxes = form.getElementsByTagName("input[type='checkbox']");
+
+      select.options[0].selected = true;
+
+      checkboxes[0].checked = true;
+      checkboxes[1].checked = false;
+
+      form.reset();
+
+      expect(select.options[0].selected).to.be.false;
+      expect(select.options[1].selected).to.be.true;
+
+      expect(checkboxes[0].checked).to.be.false;
+      expect(checkboxes[1].checked).to.be.true;
+    });
+  });
+
+  describe("select", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <select>
+                <option value="1">1</option>
+                <option value="2" selected="selected">2</option>
+              </select>
+              <select multiple="multiple">
+                <option value="1">1</option>
+                <option value="2" selected="selected">2</option>
+              </select>
+            </body>
+          </html>`
+      });
+    });
+
+    it("returns options in select", () => {
+      const [select] = document.getElementsByTagName("select");
       const options = select.getElementsByTagName("option");
 
       expect(select.options.length).to.equal(2);
@@ -933,20 +997,36 @@ describe("elements", () => {
     });
 
     it("returns selected index of options in select", () => {
-      const [form] = document.getElementsByTagName("form");
-      const [select] = form.getElementsByTagName("select");
+      const [select] = document.getElementsByTagName("select");
 
       expect(select.selectedIndex).to.equal(1);
     });
 
     it("should change selected index when changing selected option", () => {
-      const [form] = document.getElementsByTagName("form");
-      const [select] = form.getElementsByTagName("select");
+      const [select] = document.getElementsByTagName("select");
 
-      select.options[0].selected = "selected";
+      select.options[0].selected = true;
 
       expect(select.selectedIndex).to.equal(0);
-      expect(select.$elm.find("[selected]").length).to.equal(1);
+      expect(select.options[0].selected).to.be.true;
+      expect(select.options[1].selected).to.be.false;
+    });
+
+    it("should not de-select other options when selecting in multiple select", () => {
+      const [, select] = document.getElementsByTagName("select");
+
+      select.options[0].selected = true;
+
+      expect(select.options[0].selected).to.be.true;
+      expect(select.options[1].selected).to.be.true;
+    });
+
+    it("should emit change on select when changing selected option", (done) => {
+      const [select] = document.getElementsByTagName("select");
+
+      select.addEventListener("change", () => done());
+
+      select.options[0].selected = true;
     });
   });
 
