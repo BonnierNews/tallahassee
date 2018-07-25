@@ -383,7 +383,7 @@ describe("elements", () => {
     it("emits change when checked", () => {
       const elm = document.getElementsByTagName("input")[1];
       let result = 0;
-      elm.addEventListener("change", () => (result = 1));
+      elm.addEventListener("change", () => (result++));
       elm.checked = true;
       expect(result).to.equal(1);
     });
@@ -391,7 +391,7 @@ describe("elements", () => {
     it("emits change when unchecked", () => {
       const elm = document.getElementsByTagName("input")[0];
       let result = 0;
-      elm.addEventListener("change", () => (result = 1));
+      elm.addEventListener("change", () => (result++));
       elm.checked = false;
       expect(result).to.equal(1);
     });
@@ -399,7 +399,7 @@ describe("elements", () => {
     it("emits no change when state is unchanged", () => {
       const elm = document.getElementsByTagName("input")[0];
       let result = 0;
-      elm.addEventListener("change", () => (result = 1));
+      elm.addEventListener("change", () => (result++));
       elm.checked = true;
       expect(result).to.equal(0);
     });
