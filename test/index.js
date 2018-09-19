@@ -87,7 +87,7 @@ describe("Tallahassee", () => {
         cookie: "_ga=12"
       });
 
-      expect(browser.document).to.have.property("cookie", "_ga=12;");
+      expect(browser.document).to.have.property("cookie", "_ga=12");
     });
 
     it("sets cookie on document disregarding casing", async () => {
@@ -95,7 +95,7 @@ describe("Tallahassee", () => {
         CookIe: "_ga=13;"
       });
 
-      expect(browser.document).to.have.property("cookie", "_ga=13;");
+      expect(browser.document).to.have.property("cookie", "_ga=13");
     });
   });
 
@@ -115,7 +115,7 @@ describe("Tallahassee", () => {
 
       require("../app/assets/scripts/main");
 
-      expect(browser.document.cookie).to.equal("_ga=1;");
+      expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
     });
 
@@ -146,7 +146,7 @@ describe("Tallahassee", () => {
 
       const newNavigation = await browser._pending;
 
-      expect(newNavigation.document.cookie).to.equal("_ga=2;");
+      expect(newNavigation.document.cookie).to.equal("_ga=2");
       expect(newNavigation.window.location).to.have.property("search", "?q=12");
     });
   });
@@ -166,7 +166,7 @@ describe("Tallahassee", () => {
       expect(iframeScope.window === browser.window, "scoped window").to.be.false;
       expect(iframeScope.window.top === browser.window, "window.top").to.be.true;
       expect(iframeScope.document === browser.document, "scoped document").to.be.false;
-      expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2;");
+      expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2");
       expect(iframeScope.window.frameElement === iframe, "window.frameElement property").to.be.true;
     });
 

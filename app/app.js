@@ -18,6 +18,12 @@ app.get("/req", (req, res) => {
 app.get("/err", (req, res) => {
   res.sendStatus(500);
 });
+app.get("/setcookie", (req, res) => {
+  res
+    .cookie("regular_cookie", "regular_cookie_value")
+    .cookie("http_only_cookie", "http_only_cookie_value", { httpOnly: true })
+    .sendFile(index);
+});
 
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));

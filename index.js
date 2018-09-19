@@ -12,15 +12,20 @@ const {compile} = Compiler;
 module.exports = Tallahassee;
 
 function Tallahassee(app) {
+  const agent = supertest.agent(app);
   return {
     navigateTo,
     load,
   };
 
   function navigateTo(linkUrl, headers = {}, statusCode = 200) {
-    const req = supertest(app).get(linkUrl);
+    const req = agent.get(linkUrl);
     for (const key in headers) {
-      req.set(key, headers[key]);
+      if (key.toLowerCase() === "cookie") {
+        agent.jar.setCookies(headers[key]);
+      } else {
+        req.set(key, headers[key]);
+      }
     }
     return req
       .expect("Content-Type", /text\/html/i)
@@ -37,9 +42,9 @@ function Tallahassee(app) {
 
     const headers = getHeaders(resp.request);
     const window = Window(resp, {
-      fetch: Fetch(app, resp),
+      fetch: Fetch(agent, resp),
     });
-    const document = Document(resp);
+    const document = Document(resp, agent.jar);
     window.document = document;
 
     const browserContext = {
@@ -198,7 +203,7 @@ function Tallahassee(app) {
 
       if (parsedUrl.host !== browserContext.window.location.host) return requestExternalContent(srcUrl);
 
-      const iframeScope = await Tallahassee(app).navigateTo(parsedUrl.path, headers);
+      const iframeScope = await navigateTo(parsedUrl.path, headers);
       iframeScope.window.frameElement = element;
       iframeScope.window.top = browserContext.window;
 

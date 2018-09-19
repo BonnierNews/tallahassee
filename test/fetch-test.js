@@ -63,7 +63,7 @@ describe("window.fetch", () => {
     });
 
     const body = await browser.window.fetch("/req").then((res) => res.json());
-    expect(body).to.have.property("cookie", "_ga=1;");
+    expect(body).to.have.property("cookie", "_ga=1");
   });
 
   it("passes the request headers to local resource", async () => {
