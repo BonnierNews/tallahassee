@@ -46,6 +46,11 @@ describe("Tallahassee", () => {
       }
       expect(err).to.be.ok;
     });
+
+    it("passes along cookies", async () => {
+      const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
   });
 
   describe("runScripts()", () => {
@@ -87,15 +92,15 @@ describe("Tallahassee", () => {
         cookie: "_ga=12"
       });
 
-      expect(browser.document).to.have.property("cookie", "_ga=12;");
+      expect(browser.document).to.have.property("cookie", "_ga=12");
     });
 
     it("sets cookie on document disregarding casing", async () => {
       const browser = await Browser(app).navigateTo("/", {
-        CookIe: "_ga=13;"
+        CookIe: "_ga=13"
       });
 
-      expect(browser.document).to.have.property("cookie", "_ga=13;");
+      expect(browser.document).to.have.property("cookie", "_ga=13");
     });
   });
 
@@ -115,7 +120,7 @@ describe("Tallahassee", () => {
 
       require("../app/assets/scripts/main");
 
-      expect(browser.document.cookie).to.equal("_ga=1;");
+      expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
     });
 
@@ -146,14 +151,14 @@ describe("Tallahassee", () => {
 
       const newNavigation = await browser._pending;
 
-      expect(newNavigation.document.cookie).to.equal("_ga=2;");
+      expect(newNavigation.document.cookie).to.equal("_ga=2");
       expect(newNavigation.window.location).to.have.property("search", "?q=12");
     });
   });
 
   describe("focusIframe()", () => {
     it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
-      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2;"});
+      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
 
       const element = browser.document.createElement("iframe");
       element.id = "friendly-frame";
@@ -166,7 +171,7 @@ describe("Tallahassee", () => {
       expect(iframeScope.window === browser.window, "scoped window").to.be.false;
       expect(iframeScope.window.top === browser.window, "window.top").to.be.true;
       expect(iframeScope.document === browser.document, "scoped document").to.be.false;
-      expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2;");
+      expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2");
       expect(iframeScope.window.frameElement === iframe, "window.frameElement property").to.be.true;
     });
 
