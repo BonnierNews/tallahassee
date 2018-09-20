@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+# 5.0.0
+
+- Supports cookies set from server, i.e. set-cookie headers
+- Proper, proper cookie handling
+
+## Breaking
+- Document now requires cookie jar as second argument if for some reason called outside browser context
+- Fetch now takes a supertest agent as argument if it for some reason called outside browser context
+
 # 4.8.0
 - Mutation observer listens for attribute change
 - Add function `canPlayType` to video element, always returns "maybe"
