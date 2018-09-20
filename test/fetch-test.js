@@ -59,7 +59,7 @@ describe("window.fetch", () => {
 
   it("passes cookie to local resource", async () => {
     const browser = await Browser(app).navigateTo("/", {
-      cookie: "_ga=1;"
+      cookie: "_ga=1"
     });
 
     const body = await browser.window.fetch("/req").then((res) => res.json());

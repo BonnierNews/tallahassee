@@ -46,6 +46,11 @@ describe("Tallahassee", () => {
       }
       expect(err).to.be.ok;
     });
+
+    it("passes along cookies", async () => {
+      const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
   });
 
   describe("runScripts()", () => {
@@ -92,7 +97,7 @@ describe("Tallahassee", () => {
 
     it("sets cookie on document disregarding casing", async () => {
       const browser = await Browser(app).navigateTo("/", {
-        CookIe: "_ga=13;"
+        CookIe: "_ga=13"
       });
 
       expect(browser.document).to.have.property("cookie", "_ga=13");
@@ -153,7 +158,7 @@ describe("Tallahassee", () => {
 
   describe("focusIframe()", () => {
     it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
-      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2;"});
+      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
 
       const element = browser.document.createElement("iframe");
       element.id = "friendly-frame";

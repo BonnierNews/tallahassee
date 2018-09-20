@@ -19,11 +19,14 @@ function Tallahassee(app) {
   };
 
   function navigateTo(linkUrl, headers = {}, statusCode = 200) {
-    const req = agent.get(linkUrl);
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
-        agent.jar.setCookies(headers[key]);
-      } else {
+        agent.jar.setCookies(headers[key].split(";").filter((cookie) => cookie));
+      }
+    }
+    const req = agent.get(linkUrl);
+    for (const key in headers) {
+      if (key.toLowerCase() !== "cookie") {
         req.set(key, headers[key]);
       }
     }

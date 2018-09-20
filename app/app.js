@@ -24,6 +24,9 @@ app.get("/setcookie", (req, res) => {
     .cookie("http_only_cookie", "http_only_cookie_value", { httpOnly: true })
     .sendFile(index);
 });
+app.get("/reply-with-cookies", (req, res) => {
+  res.send(`<html><body>${req.headers.cookie}</body></html>`);
+});
 
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));
