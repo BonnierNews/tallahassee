@@ -102,6 +102,22 @@ describe("Tallahassee", () => {
 
       expect(browser.document).to.have.property("cookie", "_ga=13");
     });
+
+    it("sets multiple cookies on document", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        cookie: "cookie1=abc;cookie2=def"
+      });
+
+      expect(browser.document).to.have.property("cookie", "cookie1=abc;cookie2=def");
+    });
+
+    it("sets multiple cookies on document disregarding whitespace and empty values", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        cookie: " cookie1=abc; cookie2=def; ;   ;\tcookie3=ghi;; ;   ;"
+      });
+
+      expect(browser.document).to.have.property("cookie", "cookie1=abc;cookie2=def;cookie3=ghi");
+    });
   });
 
   describe("window", () => {

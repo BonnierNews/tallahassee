@@ -21,7 +21,7 @@ function Tallahassee(app) {
   function navigateTo(linkUrl, headers = {}, statusCode = 200) {
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
-        agent.jar.setCookies(headers[key].split(";").filter((cookie) => cookie));
+        agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean));
       }
     }
     const req = agent.get(linkUrl);
