@@ -1,5 +1,5 @@
 <!-- version -->
-# 4.12.1 API Reference
+# 5.1.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -130,7 +130,7 @@ describe("Iframe", () => {
   });
 
   it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
-    const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2;"});
+    const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
     const element = browser.document.createElement("iframe");
 
     element.id = "friendly-frame";
@@ -143,7 +143,7 @@ describe("Iframe", () => {
     expect(iframeScope.window === browser.window, "scoped window").to.be.false;
     expect(iframeScope.window.top === browser.window, "window.top").to.be.true;
     expect(iframeScope.document === browser.document, "scoped document").to.be.false;
-    expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2;");
+    expect(iframeScope.document.cookie, "scoped document cookie").to.equal("_ga=2");
     expect(iframeScope.window.frameElement === iframe, "window.frameElement property").to.be.true;
   });
 

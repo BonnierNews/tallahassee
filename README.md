@@ -55,7 +55,7 @@ describe("Tallahassee", () => {
 
       require("../app/assets/scripts/main");
 
-      expect(browser.document.cookie).to.equal("_ga=1;");
+      expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
     });
 

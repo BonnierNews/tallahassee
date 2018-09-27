@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 5.1.0
+
+- Supports fetch HEAD request
+
 # 5.0.0
 
 - Supports cookies set from server, i.e. set-cookie headers
