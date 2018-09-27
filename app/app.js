@@ -11,6 +11,7 @@ app.use("/", express.static(Path.join(__dirname, "assets/public")));
 app.use("/", express.static(Path.join(__dirname, "assets/images")));
 
 app.post("/post", (req, res) => res.send({data: 1}));
+app.head("/head", (req, res) => res.status(418).end());
 app.get("/api", (req, res) => res.send({data: 1}));
 app.get("/req", (req, res) => {
   res.send({cookie: req.get("cookie"), headers: {...req.headers}});

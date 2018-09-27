@@ -50,6 +50,14 @@ describe("window.fetch", () => {
     expect(body).to.eql({data: 1});
   });
 
+  it("local head is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+    const status = await browser.window.fetch("/head", {
+      method: "HEAD"
+    }).then((res) => res.status);
+    expect(status).to.eql(418);
+  });
+
   it("local resource routes to app", async () => {
     const browser = await Browser(app).navigateTo("/");
 
