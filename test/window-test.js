@@ -234,4 +234,28 @@ describe("Window", () => {
       expect(media).to.eql({ media: "print", matches: true });
     });
   });
+
+  describe("scroll", () => {
+    it("should set x coordinate properly", () => {
+      window.scroll(100, 0);
+      expect(window.pageXOffset).to.equal(100);
+    });
+
+    it("should set y coordinate properly", () => {
+      window.scroll(0, 100);
+      expect(window.pageYOffset).to.equal(100);
+    });
+
+    it("should set y coordinate properly with object parameters", () => {
+      window.scroll({top: 100});
+      expect(window.pageYOffset).to.equal(100);
+      expect(window.pageXOffset).to.equal(0);
+    });
+
+    it("should set x coordinate properly with object parameters", () => {
+      window.scroll({left: 100});
+      expect(window.pageXOffset).to.equal(100);
+      expect(window.pageYOffset).to.equal(0);
+    });
+  });
 });
