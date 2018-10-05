@@ -462,6 +462,15 @@ describe("elements", () => {
       elm._setBoundingClientRect({top: -300, bottom: 0});
       expect(elm.offsetHeight).to.equal(300);
     });
+
+    it("sets offsetWidth as well", () => {
+      const [elm] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect({left: 10, right: 200});
+      expect(elm.offsetWidth).to.equal(190);
+
+      elm._setBoundingClientRect({left: -300, right: 0});
+      expect(elm.offsetWidth).to.equal(300);
+    });
   });
 
   describe(".textContent", () => {
@@ -1567,6 +1576,54 @@ describe("elements", () => {
       element10.requestFullscreen();
 
       expect(document.fullscreenElement).to.eql(element10);
+    });
+  });
+
+  describe("scrollLeft", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="element">
+                <div></div>
+              </div>
+            </body>
+          </html>`
+      });
+      const element = document.getElementsByClassName("element")[0];
+      element._setBoundingClientRect({
+        left: 0,
+        right: 100
+      });
+
+      element.firstElementChild._setBoundingClientRect({
+        left: 0,
+        right: 200
+      });
+    });
+
+    it("should get element x-axis scroll value", () => {
+      const element = document.getElementsByClassName("element")[0];
+
+      expect(element.scrollLeft).to.equal(0);
+    });
+
+    it("should set element x-axis scroll value", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollLeft = 10;
+
+      expect(element.scrollLeft).to.equal(10);
+    });
+
+    it("should affect other elements inside", () => {
+      const element = document.getElementsByClassName("element")[0];
+      const child = element.firstElementChild;
+      element.setElementsToScroll(() => [child]);
+      element.scrollLeft = 10;
+
+      expect(child.getBoundingClientRect().left).to.equal(-10);
     });
   });
 });
