@@ -234,4 +234,53 @@ describe("Window", () => {
       expect(media).to.eql({ media: "print", matches: true });
     });
   });
+
+  describe("scroll", () => {
+    it("should set x coordinate properly", () => {
+      window.scroll(100, 0);
+      expect(window.pageXOffset).to.equal(100);
+    });
+
+    it("should set y coordinate properly", () => {
+      window.scroll(0, 100);
+      expect(window.pageYOffset).to.equal(100);
+    });
+
+    it("should set y coordinate properly with object parameters and value being 0", () => {
+      window.scroll({top: 100});
+      expect(window.pageYOffset).to.equal(100);
+      window.scroll({top: 0});
+      expect(window.pageYOffset).to.equal(0);
+    });
+
+    it("should set x coordinate properly with object parameters and value being 0", () => {
+      window.scroll({left: 100});
+      expect(window.pageXOffset).to.equal(100);
+      window.scroll({left: 0});
+      expect(window.pageXOffset).to.equal(0);
+    });
+
+    it("should set y coordinate properly with object parameters", () => {
+      window.scroll({top: 100});
+      expect(window.pageYOffset).to.equal(100);
+      expect(window.pageXOffset).to.equal(0);
+    });
+
+    it("should set x coordinate properly with object parameters", () => {
+      window.scroll({left: 100});
+      expect(window.pageXOffset).to.equal(100);
+      expect(window.pageYOffset).to.equal(0);
+    });
+
+    it("should set both coordinates properly with object parameters", () => {
+      window.scroll({top: 100, left: 100});
+      expect(window.pageXOffset).to.equal(100);
+      expect(window.pageYOffset).to.equal(100);
+    });
+
+    it("allows null as x", () => {
+      window.scroll(null, 100);
+      expect(window.pageYOffset).to.equal(100);
+    });
+  });
 });
