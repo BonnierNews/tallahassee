@@ -257,5 +257,10 @@ describe("Window", () => {
       expect(window.pageXOffset).to.equal(100);
       expect(window.pageYOffset).to.equal(0);
     });
+
+    it("allows null as x", () => {
+      window.scroll(null, 1000);
+      expect(window.pageYOffset).to.equal(100);
+    });
   });
 });
