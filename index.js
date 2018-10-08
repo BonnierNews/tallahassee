@@ -55,6 +55,7 @@ function Tallahassee(app) {
       document,
       focus,
       focusIframe,
+      navigateTo,
       runScripts,
       setElementsToScroll,
       scrollToBottomOfElement,

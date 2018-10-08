@@ -51,6 +51,14 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
       expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
     });
+
+    it("returns browser with navigateTo capability that returns new browser with preserved cookie", async () => {
+      const browser = await Browser(app).navigateTo("/", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
+
+      const newBrowser = await browser.navigateTo("/reply-with-cookies");
+
+      expect(newBrowser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
   });
 
   describe("runScripts()", () => {
