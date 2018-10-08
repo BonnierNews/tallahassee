@@ -1,9 +1,12 @@
 <!-- version -->
-# 5.1.0 API Reference
+# 5.3.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
 
+- [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
+- [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
+- [`browser.runScripts([contextElement])`](#browserrunscriptscontextelement)
 - [Scroll](#scroll)
   - [`browser.scrollToTopOfElement()`](#browserscrolltotopofelement)
   - [`browser.scrollToBottomOfElement()`](#browserscrolltobottomofelement)
@@ -13,6 +16,40 @@
 - [iframe scope](#iframe-scope)
 
 <!-- tocstop -->
+
+# `navigateTo(route[, headers, expectedStatusCode])`
+
+Navigate to route.
+
+- `route`: path to app route
+- `headers`: optional object with headers
+- `expectedStatusCode`: optional expected status code, defaults to 200
+
+Returns promise with browser context.
+
+- `$:`: Cheerio context
+- `document`
+- `focus`: Focus this browser
+- `focusIframe`: set focus to Ifram
+- `navigateTo`: navigate to route with preserved cookie
+- `runScripts`: run scripts found in script tags
+- `setElementsToScroll`: set elements to scroll
+- `scrollToBottomOfElement`: scroll to bottom of element
+- `scrollToTopOfElement`: scroll to top of element
+- `stickElementToTop`: stick element to top
+- `unstickElementFromTop`: unstick elements from top
+- `window`
+- `response`: response object
+
+# `browser.navigateTo(route[, headers, expectedStatusCode])`
+
+Returns promise with new browser context with preserved cookies. Takes the same arguments as [`navigateTo`](#navigatetoroute-headers-expectedstatuscode)
+
+# `browser.runScripts([contextElement])`
+
+Runs script in all script tags.
+
+- `contextElement`: run descendant script in context element, defaults to `document.documentElement`.
 
 # Scroll
 
