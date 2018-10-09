@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+# 6.0.0
+
+## Breaking
+- Upgrade to `@babel/core` from `babel-core`
+
 # 5.1.0
 
 - Supports fetch HEAD request
