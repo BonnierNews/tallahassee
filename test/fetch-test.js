@@ -225,7 +225,7 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -245,7 +245,7 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -269,7 +269,7 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -287,7 +287,7 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -315,7 +315,7 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -336,7 +336,7 @@ describe("window.fetch", () => {
           .matchHeader("content-type", "application/json")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -364,7 +364,7 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -387,7 +387,7 @@ describe("window.fetch", () => {
           .matchHeader("content-type", "application/json")
           .reply(200, { data: 1 });
 
-        const agent = supertest(localApp);
+        const agent = supertest.agent(localApp);
 
         const fetch = Fetch(agent, {});
 
@@ -405,7 +405,7 @@ describe("window.fetch", () => {
 
     it("doesn't follow redirect from remote resource if follow is manual", async () => {
       const localApp = express();
-      const agent = supertest(localApp);
+      const agent = supertest.agent(localApp);
 
       nock("https://www.example.com")
         .get("/redirect")
@@ -424,7 +424,7 @@ describe("window.fetch", () => {
         return res.redirect(301, "https://www.example.com");
       });
 
-      const agent = supertest(localApp);
+      const agent = supertest.agent(localApp);
 
       const fetch = Fetch(agent, {});
 
@@ -432,7 +432,7 @@ describe("window.fetch", () => {
       expect(resp.headers.get("location")).to.equal("https://www.example.com");
     });
 
-    it("redirect from remote resource to local resource is SAMMY", async () => {
+    it("redirect from remote resource to local resource is handled", async () => {
       const localApp = express();
 
       nock("https://www.example.com")
@@ -443,7 +443,7 @@ describe("window.fetch", () => {
         return res.send({data: 1});
       });
 
-      const agent = supertest(localApp);
+      const agent = supertest.agent(localApp);
 
       const fetch = Fetch(agent, {
         request: {
