@@ -68,6 +68,14 @@ describe("window.fetch", () => {
     expect(body).to.eql({data: 1});
   });
 
+  it("local resource routes to app if host match", async () => {
+    const browser = await Browser(app).navigateTo("/", {host: "www.expressen.se", "x-forwarded-proto": "https"});
+
+    const body = await browser.window.fetch("https://www.expressen.se/api").then((res) => res.json());
+
+    expect(body).to.eql({data: 1});
+  });
+
   it("passes cookie to local resource", async () => {
     const browser = await Browser(app).navigateTo("/", {
       cookie: "_ga=1"
