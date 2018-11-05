@@ -134,6 +134,13 @@ describe("Document", () => {
     });
   });
 
+  describe("createElementNS", () => {
+    it("returns an element", () => {
+      const element = document.createElementNS("http://www.expressen.se/1999/xhtml", "div");
+      expect(element.tagName).to.equal("DIV");
+    });
+  });
+
   describe("_getElement()", () => {
     it("returns the same element when called twice", () => {
       const $ = document.$;
