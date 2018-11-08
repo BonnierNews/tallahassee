@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -26,8 +26,8 @@
     "url": "git://github.com/ExpressenAB/tallahassee.git"
   },
   "dependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5",
     "@babel/register": "^7.0.0",
     "cheerio": "^1.0.0-rc.2",
     "domexception": "^1.0.1",

@@ -3,7 +3,6 @@
 const {Window, Document} = require("../lib");
 
 describe("Window", () => {
-
   let window, document;
   beforeEach(() => {
     document = Document({
@@ -281,6 +280,123 @@ describe("Window", () => {
     it("allows null as x", () => {
       window.scroll(null, 100);
       expect(window.pageYOffset).to.equal(100);
+    });
+  });
+
+  describe("location", () => {
+    it("exposes location", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/?q=1"
+        }
+      });
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/article-slug/?q=1");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/article-slug/");
+      expect(wdw.location).to.have.property("path", "/nyheter/article-slug/?q=1");
+      expect(wdw.location).to.have.property("search", "?q=1");
+    });
+
+    it("has setter", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/?q=1"
+        }
+      });
+
+      wdw.location = "https://www.expressen.se/nyheter/";
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/");
+      expect(wdw.location).to.have.property("path", "/nyheter/");
+      expect(wdw.location).to.have.property("search", null);
+    });
+
+    it("property can be replaced for testing purposes", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/?q=1"
+        }
+      });
+
+      delete wdw.location;
+
+      wdw.location = "https://www.expressen.se/nyheter/";
+
+      expect(wdw.location).to.equal("https://www.expressen.se/nyheter/");
+    });
+
+    it("supports relative path", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/?q=1"
+        }
+      });
+
+      wdw.location = "/nyheter/";
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/");
+      expect(wdw.location).to.have.property("path", "/nyheter/");
+      expect(wdw.location).to.have.property("search", null);
+    });
+
+    it("emits unload on window if set", (done) => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/?q=1"
+        }
+      });
+
+      wdw.addEventListener("unload", () => {
+        done();
+      });
+
+      wdw.location = "https://www.expressen.se/nyheter/";
+    });
+
+    it("emits unload even if changed to the same url", (done) => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/?q=1"
+        }
+      });
+
+      wdw.addEventListener("unload", () => {
+        done();
+      });
+
+      wdw.location = "https://www.expressen.se/nyheter/article-slug/?q=1";
+    });
+
+    it("doesn't emit unload if changed to the same url with hash", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      let fired = false;
+      wdw.addEventListener("unload", () => {
+        fired = true;
+      });
+
+      wdw.location = "https://www.expressen.se/nyheter/article-slug/#1";
+
+      expect(fired).to.be.false;
     });
   });
 });
