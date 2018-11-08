@@ -1073,6 +1073,11 @@ describe("elements", () => {
       expect(typeof videoElement.pause === "function").to.be.true;
     });
 
+    it("has a load method", () => {
+      const videoElement = document.getElementById("video-element");
+      expect(typeof videoElement.load === "function").to.be.true;
+    });
+
     it("the pause method returns undefined", () => {
       const videoElement = document.getElementById("video-element");
       const returnValue = videoElement.pause();
