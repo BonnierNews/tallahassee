@@ -2,13 +2,16 @@
 
 const express = require("express");
 const Path = require("path");
-
 const app = express();
 const index = Path.join(__dirname, "assets/public/index.html");
 const errorPage = Path.join(__dirname, "assets/public/error.html");
 
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
 app.use("/", express.static(Path.join(__dirname, "assets/images")));
+
+app.post("/", express.urlencoded(), (req, res) => {
+  res.send(`<html><body>Post body ${JSON.stringify(req.body)}</body></html>`);
+});
 
 app.post("/post", (req, res) => res.send({data: 1}));
 app.head("/head", (req, res) => res.status(418).end());

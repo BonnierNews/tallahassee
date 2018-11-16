@@ -1,5 +1,6 @@
 "use strict";
 
+const querystring = require("querystring");
 const getHeaders = require("./lib/getHeaders");
 const makeAbsolute = require("./lib/makeAbsolute");
 const Request = require("request");
@@ -100,14 +101,26 @@ function Tallahassee(app) {
         if (event.defaultPrevented) return resolve();
 
         const form = event.target;
-        const qs = getFormInputAsQs(form);
-        const p = url.parse(form.getAttribute("action"), true);
-        Object.assign(p.query, qs);
+        const method = form.getAttribute("method") || "GET";
+        const action = form.getAttribute("action") || window.location.path;
 
-        const navigation = navigateTo(url.format(p), {
-          cookie: document.cookie
-        });
-        resolve(navigation);
+        const formData = getFormData(form);
+
+        if (method.toUpperCase() === "GET") {
+          const p = url.parse(action, true);
+          Object.assign(p.query, formData);
+
+          const navigation = navigateTo(url.format(p), {
+            cookie: document.cookie
+          });
+          resolve(navigation);
+        } else if (method.toUpperCase() === "POST") {
+          agent.post(action)
+            .set("Content-Type", "application/x-www-form-urlencoded")
+            .send(querystring.stringify(formData))
+            .then(load)
+            .then(resolve);
+        }
       }
     }
 
@@ -256,7 +269,7 @@ function Tallahassee(app) {
   }
 }
 
-function getFormInputAsQs(form) {
+function getFormData(form) {
   const inputs = form.getElementsByTagName("input");
 
   return inputs.reduce((acc, input) => {

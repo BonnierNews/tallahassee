@@ -178,6 +178,60 @@ describe("Tallahassee", () => {
       expect(newNavigation.document.cookie).to.equal("_ga=2");
       expect(newNavigation.window.location).to.have.property("search", "?q=12");
     });
+
+    it("submits post form on click", async () => {
+      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+
+      const form = browser.document.getElementById("post-form");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.document.body.innerHTML).to.contain("Post body");
+    });
+
+    it("submits post form with payload on click", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("post-form");
+      const [input] = form.getElementsByTagName("input");
+      const [button] = form.getElementsByTagName("button");
+
+      input.name = "q";
+      input.value = "12";
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\"}");
+    });
+
+    it("submits post form without action to the same route on click", async () => {
+      const browser = await Browser(app).navigateTo("/?a=b");
+
+      const form = browser.document.getElementById("post-form-without-action");
+      const [input] = form.getElementsByTagName("input");
+      const [button] = form.getElementsByTagName("button");
+
+      input.name = "q";
+      input.value = "12";
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\"}");
+      expect(newBrowser.window.location).to.have.property("search", "?a=b");
+    });
   });
 
   describe("focusIframe()", () => {
