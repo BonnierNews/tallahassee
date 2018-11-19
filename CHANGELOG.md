@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+# 7.0.0
+
+- Proper bubbling of Element events up to Document
+
+## Breaking
+- Changed implemention of element property `checked`. Apperently `change` is not emitted by browsers (Chrome) when property `checked` is altered. If `change` is required please `click()` your checkbox or radio element like a real user.
+
 # 6.0.0
 
 ## Breaking
