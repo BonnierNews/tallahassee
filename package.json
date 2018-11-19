@@ -26,19 +26,19 @@
     "url": "git://github.com/ExpressenAB/tallahassee.git"
   },
   "dependencies": {
-    "@babel/core": "^7.1.5",
-    "@babel/preset-env": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
     "@babel/register": "^7.0.0",
     "cheerio": "^1.0.0-rc.2",
     "domexception": "^1.0.1",
-    "node-fetch": "^2.2.1",
+    "node-fetch": "^2.3.0",
     "request": "^2.88.0",
     "supertest": "^3.3.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "cookiejar": "^2.1.2",
-    "eslint": "^5.8.0",
+    "eslint": "^5.9.0",
     "express": "^4.16.4",
     "markdown-toc": "^1.2.0",
     "mocha": "^5.2.0",

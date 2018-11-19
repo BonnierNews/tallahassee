@@ -4,6 +4,7 @@ const DOMException = require("domexception");
 const Element = require("../lib/Element");
 const DocumentFragment = require("../lib/DocumentFragment");
 const {Document} = require("../lib");
+const {Event} = require("../lib/Events");
 
 const elementProperties = [
   "children",
@@ -276,8 +277,10 @@ describe("elements", () => {
         text: `
           <html>
             <body>
-              <input type="radio" name="test" value="1" checked="checked">
-              <input type="radio" name="test" value="2">
+              <form>
+                <input type="radio" name="test" value="1" checked="checked">
+                <input type="radio" name="test" value="2">
+              </form>
             </body>
           </html>`
       });
@@ -311,6 +314,13 @@ describe("elements", () => {
     it("emits change when checked", (done) => {
       const elm = document.getElementsByTagName("input")[1];
       elm.addEventListener("change", () => done());
+      elm.checked = true;
+    });
+
+    it("emits change on form if checked", (done) => {
+      const form = document.getElementsByTagName("form")[0];
+      const elm = document.getElementsByTagName("input")[1];
+      form.addEventListener("change", () => done());
       elm.checked = true;
     });
 
@@ -1491,6 +1501,57 @@ describe("elements", () => {
       buttons[0].click();
 
       expect(result).to.equal(true);
+    });
+
+    it("should bubble event up to document if bubbles is enabled", () => {
+      const bubbled = [];
+      document.addEventListener("columbus", () => {
+        bubbled.push("document");
+      });
+
+      expect(document.firstElementChild.tagName).to.equal("HTML");
+      document.firstElementChild.addEventListener("columbus", () => {
+        bubbled.push("html");
+      });
+
+      document.body.addEventListener("columbus", () => {
+        bubbled.push("body");
+      });
+
+      document.getElementsByTagName("div")[0].addEventListener("columbus", () => {
+        bubbled.push("div");
+      });
+
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("columbus", () => {
+          bubbled.push("button");
+        });
+      }
+
+      buttons[2].dispatchEvent(new Event("columbus", { bubbles: true }));
+
+      expect(bubbled).to.eql(["button", "div", "body", "html", "document"]);
+    });
+
+    it("should NOT bubble event if bubbles is disabled (default)", () => {
+      const bubbled = [];
+      document.body.addEventListener("wichita", () => {
+        bubbled.push("body");
+      });
+
+      document.getElementsByTagName("div")[0].addEventListener("wichita", () => {
+        bubbled.push("div");
+      });
+
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("wichita", () => {
+          bubbled.push("button");
+        });
+      }
+
+      buttons[2].dispatchEvent(new Event("wichita"));
+
+      expect(bubbled).to.eql(["button"]);
     });
 
     it("should NOT propagate click to parent when propagation stopped", () => {
