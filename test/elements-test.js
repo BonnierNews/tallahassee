@@ -299,6 +299,11 @@ describe("elements", () => {
       expect(document.getElementsByTagName("input")[1].value).to.equal("2");
     });
 
+    it("has type", () => {
+      expect(document.getElementsByTagName("input")[0].type).to.equal("radio");
+      expect(document.getElementsByTagName("input")[1].type).to.equal("radio");
+    });
+
     it("can set checked", () => {
       const elm = document.getElementsByTagName("input")[1];
       elm.checked = true;
@@ -311,17 +316,45 @@ describe("elements", () => {
       expect(elms[0].checked).to.be.false;
     });
 
-    it("emits change when checked", (done) => {
+    it("sets checked if clicked", () => {
       const elm = document.getElementsByTagName("input")[1];
-      elm.addEventListener("change", () => done());
-      elm.checked = true;
+      elm.click();
+
+      expect(elm.checked).to.be.true;
     });
 
-    it("emits change on form if checked", (done) => {
+    it("does NOT emit change when checked", () => {
+      const elm = document.getElementsByTagName("input")[1];
+      let eventFired = false;
+      elm.addEventListener("change", () => {
+        eventFired = true;
+      });
+      elm.checked = true;
+
+      expect(eventFired).to.be.false;
+    });
+
+    it("emits change if clicked", (done) => {
+      const elm = document.getElementsByTagName("input")[1];
+      elm.addEventListener("change", () => done());
+      elm.click();
+    });
+
+    it("does NOT emit change if clicked again", () => {
+      const elm = document.getElementsByTagName("input")[1];
+      let changed = 0;
+      elm.addEventListener("change", () => changed++);
+      elm.click();
+      elm.click();
+
+      expect(changed).to.equal(1);
+    });
+
+    it("emits change on form if clicked", (done) => {
       const form = document.getElementsByTagName("form")[0];
       const elm = document.getElementsByTagName("input")[1];
       form.addEventListener("change", () => done());
-      elm.checked = true;
+      elm.click();
     });
 
     it("unsets checked on siblings in same form", () => {
@@ -358,8 +391,10 @@ describe("elements", () => {
         text: `
           <html>
             <body>
-              <input type="checkbox" name="test" value="1" checked="checked">
-              <input type="checkbox" name="test" value="2">
+              <form>
+                <input type="checkbox" name="test1" value="1" checked="checked">
+                <input type="checkbox" name="test2" value="2">
+              </form>
             </body>
           </html>`
       });
@@ -378,6 +413,11 @@ describe("elements", () => {
       expect(document.getElementsByTagName("input")[1].value).to.equal("2");
     });
 
+    it("has type", () => {
+      expect(document.getElementsByTagName("input")[0].type).to.equal("checkbox");
+      expect(document.getElementsByTagName("input")[1].type).to.equal("checkbox");
+    });
+
     it("can set checked", () => {
       const elm = document.getElementsByTagName("input")[1];
       elm.checked = true;
@@ -390,28 +430,45 @@ describe("elements", () => {
       expect(elm.checked).to.be.false;
     });
 
-    it("emits change when checked", () => {
+    it("sets checked if clicked", () => {
       const elm = document.getElementsByTagName("input")[1];
-      let result = 0;
-      elm.addEventListener("change", () => (result++));
-      elm.checked = true;
-      expect(result).to.equal(1);
+      elm.click();
+
+      expect(elm.checked).to.be.true;
     });
 
-    it("emits change when unchecked", () => {
-      const elm = document.getElementsByTagName("input")[0];
-      let result = 0;
-      elm.addEventListener("change", () => (result++));
-      elm.checked = false;
-      expect(result).to.equal(1);
+    it("does NOT emit change when checked", () => {
+      const elm = document.getElementsByTagName("input")[1];
+      let eventFired = false;
+      elm.addEventListener("change", () => {
+        eventFired = true;
+      });
+      elm.checked = true;
+
+      expect(eventFired).to.be.false;
     });
 
-    it("emits no change when state is unchanged", () => {
-      const elm = document.getElementsByTagName("input")[0];
-      let result = 0;
-      elm.addEventListener("change", () => (result++));
-      elm.checked = true;
-      expect(result).to.equal(0);
+    it("emits change if clicked and checked changes", (done) => {
+      const elm = document.getElementsByTagName("input")[1];
+      elm.addEventListener("change", () => done());
+      elm.click();
+    });
+
+    it("does NOT emit change if clicked again", () => {
+      const elm = document.getElementsByTagName("input")[1];
+      let changed = 0;
+      elm.addEventListener("change", () => changed++);
+      elm.click();
+      elm.click();
+
+      expect(changed).to.equal(1);
+    });
+
+    it("emits change on form if clicked", (done) => {
+      const form = document.getElementsByTagName("form")[0];
+      const elm = document.getElementsByTagName("input")[1];
+      form.addEventListener("change", () => done());
+      elm.click();
     });
   });
 
