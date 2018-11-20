@@ -25,15 +25,20 @@ function Tallahassee(app) {
         agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean));
       }
     }
-    const req = agent.get(linkUrl);
+    const req = agent.get(linkUrl).redirects(20);
     for (const key in headers) {
       if (key.toLowerCase() !== "cookie") {
         req.set(key, headers[key]);
       }
     }
     return req
-      .expect("Content-Type", /text\/html/i)
+      .expect((res) => {
+        if (res.statusCode > 300 && res.statusCode < 308) {
+          throw new Error("Too many redirects");
+        }
+      })
       .expect(statusCode)
+      .expect("Content-Type", /text\/html/i)
       .then(load);
   }
 

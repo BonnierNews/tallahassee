@@ -32,6 +32,18 @@ app.get("/reply-with-cookies", (req, res) => {
   res.send(`<html><body>${req.headers.cookie}</body></html>`);
 });
 
+app.get("/redirect", (req, res) => {
+  res.redirect("/");
+});
+
+app.get("/redirect-loop", (req, res) => {
+  res.redirect("/redirect-loop");
+});
+
+app.get("/external-redirect", (req, res) => {
+  res.redirect("https://www.expressen.se");
+});
+
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));
 

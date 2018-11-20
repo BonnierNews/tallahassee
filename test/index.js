@@ -59,6 +59,20 @@ describe("Tallahassee", () => {
 
       expect(newBrowser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
     });
+
+    it("follows redirects", async () => {
+      const browser = await Browser(app).navigateTo("/redirect");
+      expect(browser.response).to.be.ok;
+      expect(browser.response).to.have.property("statusCode", 200);
+      expect(browser.window.location.path).to.equal("/");
+    });
+
+    it("handles redirect loops by throwing", (done) => {
+      Browser(app).navigateTo("/redirect-loop")
+        .catch(() => {
+          done();
+        });
+    });
   });
 
   describe("runScripts()", () => {
