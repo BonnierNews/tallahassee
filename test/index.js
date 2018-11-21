@@ -64,7 +64,34 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/redirect");
       expect(browser.response).to.be.ok;
       expect(browser.response).to.have.property("statusCode", 200);
-      expect(browser.window.location.path).to.equal("/");
+      expect(browser.window.location.path).to.equal("/req-info-html");
+    });
+
+    it("keeps original request headers when it follows local redirects", async () => {
+      const browser = await Browser(app).navigateTo("/redirect", {
+        host: "www.expressen.se",
+        "x-forwarded-proto": "https"
+      });
+      expect(browser.response).to.be.ok;
+      const reqInfo = JSON.parse(browser.$("body").text());
+      expect(reqInfo.reqHeaders).to.have.property("host", "www.expressen.se");
+      expect(reqInfo.reqHeaders).to.have.property("x-forwarded-proto", "https");
+    });
+
+    it("only sends specified headers when following local redirects", async () => {
+      nock("https://www.example.com")
+        .get("/")
+        .reply(302, "", {
+          location: "https://www.expressen.se/req-info-html"
+        });
+      const browser = await Browser(app).navigateTo("/external-redirect", {
+        host: "www.expressen.se",
+        "x-forwarded-proto": "https"
+      });
+      expect(browser.response).to.be.ok;
+      const reqInfo = JSON.parse(browser.$("body").text());
+      expect(reqInfo.reqHeaders).to.have.property("host", "www.expressen.se");
+      expect(reqInfo.reqHeaders).to.have.property("x-forwarded-proto", "https");
     });
 
     it("handles redirect loops by throwing", (done) => {
