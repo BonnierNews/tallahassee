@@ -1550,14 +1550,14 @@ describe("elements", () => {
     });
 
     it("should propagate click to parent", () => {
-      let result = false;
+      let result = 0;
       document.body.addEventListener("click", () => {
-        result = true;
+        result++;
       });
 
       buttons[0].click();
 
-      expect(result).to.equal(true);
+      expect(result).to.equal(1);
     });
 
     it("should bubble event up to document if bubbles is enabled", () => {
