@@ -9,6 +9,7 @@ const url = require("url");
 const vm = require("vm");
 const {Document, Fetch, Window, Compiler} = require("./lib");
 const {compile} = Compiler;
+const assert = require("assert");
 
 module.exports = Tallahassee;
 
@@ -20,26 +21,56 @@ function Tallahassee(app) {
   };
 
   function navigateTo(linkUrl, headers = {}, statusCode = 200) {
+    let numRedirects = 0;
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
         agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean));
       }
     }
-    const req = agent.get(linkUrl).redirects(20);
-    for (const key in headers) {
-      if (key.toLowerCase() !== "cookie") {
-        req.set(key, headers[key]);
-      }
-    }
-    return req
-      .expect((res) => {
-        if (res.statusCode > 300 && res.statusCode < 308) {
-          throw new Error("Too many redirects");
-        }
+
+    return makeRequest(linkUrl)
+      .then((resp) => {
+        assert.equal(resp.statusCode, statusCode, `Unexepected status code. Expected: ${statusCode}. Actual: ${resp.statusCode}`);
+        assert(resp.headers["content-type"].match(/text\/html/i), `Unexepected content type. Expected: text/html. Actual: ${resp.headers["content-type"]}`);
+        return resp;
       })
-      .expect(statusCode)
-      .expect("Content-Type", /text\/html/i)
       .then(load);
+
+    function makeRequest(reqUrl) {
+      let request;
+      const parsedUrl = url.parse(reqUrl);
+      if (parsedUrl.host && parsedUrl.host !== headers.host) {
+        request = new Promise((resolve, reject) => {
+          Request.get(reqUrl, { followRedirect: false }, (externalReqErr, externalReqRes) => {
+            if (externalReqErr) {
+              return reject(externalReqErr);
+            }
+            return resolve(externalReqRes);
+          });
+        });
+      } else {
+        if (parsedUrl.host) {
+          reqUrl = reqUrl.replace(`${parsedUrl.protocol}//${parsedUrl.host}`, "");
+        }
+        request = agent.get(reqUrl).redirects(0);
+        for (const key in headers) {
+          if (key.toLowerCase() !== "cookie") {
+            request.set(key, headers[key]);
+          }
+        }
+      }
+
+      return request.then((res) => {
+        if (res.statusCode > 300 && res.statusCode < 308) {
+          numRedirects++;
+          if (numRedirects > 20) {
+            throw new Error("Too many redirects");
+          }
+          return makeRequest(res.headers.location);
+        }
+        return res;
+      });
+    }
   }
 
   function load(resp) {

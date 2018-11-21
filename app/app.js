@@ -33,7 +33,11 @@ app.get("/reply-with-cookies", (req, res) => {
 });
 
 app.get("/redirect", (req, res) => {
-  res.redirect("/");
+  res.redirect("/req-info-html");
+});
+
+app.get("/req-info-html", (req, res) => {
+  res.send(`<html><body>${JSON.stringify({ reqHeaders: req.headers })}</body></html>`);
 });
 
 app.get("/redirect-loop", (req, res) => {
@@ -41,7 +45,7 @@ app.get("/redirect-loop", (req, res) => {
 });
 
 app.get("/external-redirect", (req, res) => {
-  res.redirect("https://www.expressen.se");
+  res.redirect("https://www.example.com");
 });
 
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
