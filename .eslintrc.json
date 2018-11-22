@@ -31,6 +31,7 @@
     "no-case-declarations": 0,
     "no-catch-shadow": 2,
     "no-console": 2,
+    "no-control-regex": 0,
     "no-duplicate-imports": 1,
     "no-eval": 2,
     "no-extend-native": 2,
