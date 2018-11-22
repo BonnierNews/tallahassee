@@ -399,4 +399,90 @@ describe("Window", () => {
       expect(fired).to.be.false;
     });
   });
+
+  describe("window.atob()", () => {
+    it("decodes base64 encoded string", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      const encoded = Buffer.from("obfusca").toString("base64");
+      expect(wdw.atob(encoded)).to.equal("obfusca");
+    });
+
+    it("throws if trying to decode invalid base64 string", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      expect(() => wdw.atob("s")).to.throw(/not correctly encoded/);
+      expect(() => wdw.atob({})).to.throw(/not correctly encoded/);
+      expect(() => wdw.atob(undefined)).to.throw(/not correctly encoded/);
+    });
+
+    it("called with no arg is NOT ok", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      expect(() => wdw.atob()).to.throw(TypeError);
+    });
+  });
+
+  describe("window.btoa()", () => {
+    it("decodes base64 encoded string", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      expect(wdw.btoa("obfuscáÿ")).to.equal("b2JmdXNjw6HDvw==");
+    });
+
+    it("throws if trying to encode chars outside latin1 range (>255)", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      expect(() => wdw.btoa("ÿ Ā")).to.throw(/latin1/i);
+      expect(() => wdw.btoa("\u0100")).to.throw(/latin1/i);
+      expect(() => wdw.btoa("\u00FF")).to.not.throw();
+    });
+
+    it("called with undefined is ok", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      expect(() => wdw.btoa(undefined)).to.not.throw();
+    });
+
+    it("called with no arg is NOT ok", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se/nyheter/article-slug/"
+        }
+      });
+
+      expect(() => wdw.btoa()).to.throw(TypeError);
+    });
+  });
 });
