@@ -273,6 +273,36 @@ describe("Tallahassee", () => {
       expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\"}");
       expect(newBrowser.window.location).to.have.property("search", "?a=b");
     });
+
+    it("follows redirect on get", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("get-form-redirect");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.window.location.path).to.equal("/req-info-html");
+    });
+
+    it("follows redirect on post", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("post-form-redirect");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.window.location.path).to.equal("/req-info-html");
+    });
   });
 
   describe("focusIframe()", () => {

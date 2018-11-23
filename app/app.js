@@ -35,6 +35,9 @@ app.get("/reply-with-cookies", (req, res) => {
 app.get("/redirect", (req, res) => {
   res.redirect("/req-info-html");
 });
+app.post("/redirect", (req, res) => {
+  res.redirect("/req-info-html");
+});
 
 app.get("/req-info-html", (req, res) => {
   res.send(`<html><body>${JSON.stringify({ reqHeaders: req.headers })}</body></html>`);

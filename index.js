@@ -154,7 +154,10 @@ function Tallahassee(app) {
           agent.post(action)
             .set("Content-Type", "application/x-www-form-urlencoded")
             .send(querystring.stringify(formData))
-            .then(load)
+            .then((postResp) => {
+              if ([301, 302].includes(postResp.statusCode)) return navigateTo(postResp.headers.location);
+              return load(postResp);
+            })
             .then(resolve);
         }
       }
