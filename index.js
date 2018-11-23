@@ -39,6 +39,7 @@ function Tallahassee(app) {
     function makeRequest(reqUrl) {
       let request;
       const parsedUrl = url.parse(reqUrl);
+
       if (parsedUrl.host && parsedUrl.host !== headers.host) {
         request = new Promise((resolve, reject) => {
           Request.get(reqUrl, { followRedirect: false }, (externalReqErr, externalReqRes) => {

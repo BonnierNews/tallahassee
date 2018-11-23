@@ -50,6 +50,9 @@ app.get("/redirect-loop", (req, res) => {
 app.get("/external-redirect", (req, res) => {
   res.redirect("https://www.example.com");
 });
+app.post("/external-redirect", (req, res) => {
+  res.redirect("https://www.example.com");
+});
 
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));

@@ -303,6 +303,27 @@ describe("Tallahassee", () => {
 
       expect(newBrowser.window.location.path).to.equal("/req-info-html");
     });
+
+    it("follows external redirect on post", async () => {
+      nock("https://www.example.com")
+        .get("/")
+        .reply(200, "<html><body></body></html>", {
+          "content-type": "text/html"
+        });
+
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("post-form-external-redirect");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.window.location.href).to.equal("https://www.example.com/");
+    });
   });
 
   describe("focusIframe()", () => {
