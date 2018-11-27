@@ -137,9 +137,11 @@ function Tallahassee(app) {
       function navigate(resolve) {
         if (event.defaultPrevented) return resolve();
 
+
         const form = event.target;
         const method = form.getAttribute("method") || "GET";
         const action = form.getAttribute("action") || window.location.path;
+        const submitHeaders = {...headers, cookie: agent.jar.getCookies({path: action}).toValueString()};
 
         const formData = getFormData(form);
 
@@ -147,12 +149,11 @@ function Tallahassee(app) {
           const p = url.parse(action, true);
           Object.assign(p.query, formData);
 
-          const navigation = navigateTo(url.format(p), {
-            cookie: document.cookie
-          });
+          const navigation = navigateTo(url.format(p), submitHeaders);
           resolve(navigation);
         } else if (method.toUpperCase() === "POST") {
           agent.post(action)
+            .set(submitHeaders)
             .set("Content-Type", "application/x-www-form-urlencoded")
             .send(querystring.stringify(formData))
             .then((postResp) => {

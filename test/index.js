@@ -200,8 +200,12 @@ describe("Tallahassee", () => {
   });
 
   describe("submit", () => {
-    it("submits get form on click", async () => {
-      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+    it("submits get form on click with maintained headers", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        host: "www.expressen.se",
+        proto: "https",
+        cookie: "_ga=2",
+      });
 
       const form = browser.document.getElementById("get-form");
       const [input] = form.getElementsByTagName("input");
@@ -217,11 +221,18 @@ describe("Tallahassee", () => {
       const newNavigation = await browser._pending;
 
       expect(newNavigation.document.cookie).to.equal("_ga=2");
+      expect(newNavigation.window.location).to.have.property("host", "www.expressen.se");
+      expect(newNavigation.window.location).to.have.property("protocol", "https:");
       expect(newNavigation.window.location).to.have.property("search", "?q=12");
     });
 
-    it("submits post form on click", async () => {
-      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+    it("submits post form on click with maintained headers", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        host: "www.expressen.se",
+        proto: "https",
+        cookie: "_ga=2",
+        "content-type": "unknown/mime-type"
+      });
 
       const form = browser.document.getElementById("post-form");
       const [button] = form.getElementsByTagName("button");
@@ -233,6 +244,10 @@ describe("Tallahassee", () => {
       const newBrowser = await browser._pending;
 
       expect(newBrowser.document.body.innerHTML).to.contain("Post body");
+
+      expect(newBrowser.document.cookie).to.equal("_ga=2");
+      expect(newBrowser.window.location).to.have.property("host", "www.expressen.se");
+      expect(newBrowser.window.location).to.have.property("protocol", "https:");
     });
 
     it("submits post form with payload on click", async () => {
