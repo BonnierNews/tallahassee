@@ -75,7 +75,7 @@ function Tallahassee(app) {
   }
 
   function load(resp) {
-    let initialized, pending, currentPageYOffset;
+    let initialized, pending, currentPageXOffset, currentPageYOffset;
     let elementsToScroll = () => {};
     const stickedElements = [];
 
@@ -108,6 +108,7 @@ function Tallahassee(app) {
       get: () => pending
     });
 
+    currentPageXOffset = window.pageXOffset;
     currentPageYOffset = window.pageYOffset;
 
     document.addEventListener("submit", onDocumentSubmit);
@@ -186,19 +187,23 @@ function Tallahassee(app) {
       const elms = elementsToScroll(document);
       if (!elms || !elms.length) return;
 
-      const pageYOffset = window.pageYOffset;
-      const delta = currentPageYOffset - pageYOffset;
+      const {pageXOffset, pageYOffset} = window;
+      const deltaX = currentPageXOffset - pageXOffset;
+      const deltaY = currentPageYOffset - pageYOffset;
 
       elms.slice().forEach((elm) => {
         if (isElementSticky(elm)) return;
 
-        const {top, bottom} = elm.getBoundingClientRect();
+        const {left, right, top, bottom} = elm.getBoundingClientRect();
         elm._setBoundingClientRect({
-          top: (top || 0) + delta,
-          bottom: (bottom || 0) + delta
+          left: (left || 0) + deltaX,
+          right: (right || 0) + deltaX,
+          top: (top || 0) + deltaY,
+          bottom: (bottom || 0) + deltaY,
         });
       });
 
+      currentPageXOffset = pageXOffset;
       currentPageYOffset = pageYOffset;
     }
 
