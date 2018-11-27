@@ -43,6 +43,49 @@ describe("Window scroller", () => {
     expect(img2.getBoundingClientRect()).to.have.property("top", 150);
   });
 
+  it("observes and sets left of elements passed to stacked elements function", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    browser.setElementsToScroll((document) => {
+      return document.getElementsByTagName("img");
+    });
+
+    const elements = browser.document.getElementsByTagName("img");
+    const [img1, img2] = elements;
+    img1._setBoundingClientRect({
+      left: 100,
+      right: 120
+    });
+    img2._setBoundingClientRect({
+      left: 200,
+      right: 220
+    });
+
+    browser.window.scroll(100, 0);
+
+    expect(img1.getBoundingClientRect()).to.have.property("left", 0);
+    expect(img1.getBoundingClientRect()).to.have.property("right", 20);
+
+    expect(img2.getBoundingClientRect()).to.have.property("left", 100);
+    expect(img2.getBoundingClientRect()).to.have.property("right", 120);
+
+    browser.window.scroll(200, 0);
+
+    expect(img1.getBoundingClientRect()).to.have.property("left", -100);
+    expect(img1.getBoundingClientRect()).to.have.property("right", -80);
+
+    expect(img2.getBoundingClientRect()).to.have.property("left", 0);
+    expect(img2.getBoundingClientRect()).to.have.property("right", 20);
+
+    browser.window.scroll(50, 0);
+
+    expect(img1.getBoundingClientRect()).to.have.property("left", 50);
+    expect(img1.getBoundingClientRect()).to.have.property("right", 70);
+
+    expect(img2.getBoundingClientRect()).to.have.property("left", 150);
+    expect(img2.getBoundingClientRect()).to.have.property("right", 170);
+  });
+
   describe("scrollToTopOfElement()", () => {
     it("scrolls to top of element", async () => {
       const browser = await Browser(app).navigateTo("/");
