@@ -138,7 +138,6 @@ function Tallahassee(app) {
       function navigate(resolve) {
         if (event.defaultPrevented) return resolve();
 
-
         const form = event.target;
         const method = form.getAttribute("method") || "GET";
         const action = form.getAttribute("action") || window.location.path;
@@ -319,6 +318,8 @@ function getFormData(form) {
   const inputs = form.getElementsByTagName("input");
 
   return inputs.reduce((acc, input) => {
+    if (input.disabled) return acc;
+
     if (input.name && input.value) {
       if (input.type === "radio") {
         if (input.checked) {
