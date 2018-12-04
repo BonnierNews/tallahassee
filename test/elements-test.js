@@ -1749,4 +1749,29 @@ describe("elements", () => {
       expect(child.getBoundingClientRect().left).to.equal(-10);
     });
   });
+
+  describe("element attributes when creating and appending dynamically", () => {
+    let document;
+    let element;
+    const clickListener = () => {};
+
+    before(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+            </body>
+          </html>`
+      });
+      element = document.createElement("div");
+      element.addEventListener("click", clickListener);
+      document.body.appendChild(element);
+    });
+
+    it("keeps the click listener registered before appending to DOM", () => {
+      const elm = document.getElementsByTagName("div")[0];
+
+      expect(elm).to.deep.equal(element);
+    });
+  });
 });
