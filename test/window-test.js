@@ -409,8 +409,9 @@ describe("Window", () => {
         }
       });
 
-      const encoded = Buffer.from("obfusca").toString("base64");
-      expect(wdw.atob(encoded)).to.equal("obfusca");
+      expect(wdw.atob(Buffer.from("obfusca", "latin1").toString("base64"))).to.equal("obfusca");
+      expect(wdw.atob(Buffer.from("obfuscåa", "latin1").toString("base64"))).to.equal("obfuscåa");
+      expect(wdw.atob(Buffer.from("obfusc😭a", "latin1").toString("base64"))).to.equal("obfusc=-a");
     });
 
     it("throws if trying to decode invalid base64 string", () => {
@@ -439,7 +440,7 @@ describe("Window", () => {
   });
 
   describe("window.btoa()", () => {
-    it("decodes base64 encoded string", () => {
+    it("decodes base64 encoded string as latin1", () => {
       const wdw = Window({
         request: {
           header: {},
@@ -447,7 +448,7 @@ describe("Window", () => {
         }
       });
 
-      expect(wdw.btoa("obfuscáÿ")).to.equal("b2JmdXNjw6HDvw==");
+      expect(wdw.btoa("pål med å inte äöáÿ")).to.equal("cOVsIG1lZCDlIGludGUg5Pbh/w==");
     });
 
     it("throws if trying to encode chars outside latin1 range (>255)", () => {
