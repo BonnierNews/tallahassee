@@ -36,3 +36,6 @@ config/_revision
 /worker.js
 
 package-lock.json
+
+# vim
+*.sw[a-z]
