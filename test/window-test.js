@@ -51,10 +51,10 @@ describe("Window", () => {
 
     it("replaceState() sets new location", () => {
       window.history.replaceState(null, null, "/?a=1");
+
       expect(window.location).to.have.property("hostname", "www.expressen.se");
       expect(window.location).to.have.property("protocol", "https:");
       expect(window.location).to.have.property("pathname", "/");
-      expect(window.location).to.have.property("path", "/?a=1");
       expect(window.location).to.have.property("search", "?a=1");
 
       window.history.replaceState(null, null, "/nyheter/article-slug-2/");
@@ -295,8 +295,29 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/article-slug/?q=1");
       expect(wdw.location).to.have.property("protocol", "https:");
       expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("hostname", "www.expressen.se");
+      expect(wdw.location).to.have.property("origin", "https://www.expressen.se");
       expect(wdw.location).to.have.property("pathname", "/nyheter/article-slug/");
-      expect(wdw.location).to.have.property("path", "/nyheter/article-slug/?q=1");
+      expect(wdw.location).to.not.have.property("path");
+      expect(wdw.location).to.have.property("search", "?q=1");
+    });
+
+    it("exposes location with port", () => {
+      const wdw = Window({
+        request: {
+          header: {},
+          url: "https://www.expressen.se:443/nyheter/article-slug/?q=1"
+        }
+      });
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se:443/nyheter/article-slug/?q=1");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("port", "443");
+      expect(wdw.location).to.have.property("host", "www.expressen.se:443");
+      expect(wdw.location).to.have.property("hostname", "www.expressen.se");
+      expect(wdw.location).to.have.property("origin", "https://www.expressen.se:443");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/article-slug/");
+      expect(wdw.location).to.not.have.property("path");
       expect(wdw.location).to.have.property("search", "?q=1");
     });
 
@@ -314,7 +335,7 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("protocol", "https:");
       expect(wdw.location).to.have.property("host", "www.expressen.se");
       expect(wdw.location).to.have.property("pathname", "/nyheter/");
-      expect(wdw.location).to.have.property("path", "/nyheter/");
+      expect(wdw.location).to.not.have.property("path");
       expect(wdw.location).to.have.property("search", null);
     });
 
@@ -347,7 +368,7 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("protocol", "https:");
       expect(wdw.location).to.have.property("host", "www.expressen.se");
       expect(wdw.location).to.have.property("pathname", "/nyheter/");
-      expect(wdw.location).to.have.property("path", "/nyheter/");
+      expect(wdw.location).to.not.have.property("path");
       expect(wdw.location).to.have.property("search", null);
     });
 

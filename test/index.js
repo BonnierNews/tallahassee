@@ -64,7 +64,7 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/redirect");
       expect(browser.response).to.be.ok;
       expect(browser.response).to.have.property("statusCode", 200);
-      expect(browser.window.location.path).to.equal("/req-info-html");
+      expect(browser.window.location.pathname).to.equal("/req-info-html");
     });
 
     it("keeps original request headers when it follows local redirects", async () => {
@@ -301,7 +301,7 @@ describe("Tallahassee", () => {
 
       const newBrowser = await browser._pending;
 
-      expect(newBrowser.window.location.path).to.equal("/req-info-html");
+      expect(newBrowser.window.location.pathname).to.equal("/req-info-html");
     });
 
     it("follows redirect on post", async () => {
@@ -316,7 +316,7 @@ describe("Tallahassee", () => {
 
       const newBrowser = await browser._pending;
 
-      expect(newBrowser.window.location.path).to.equal("/req-info-html");
+      expect(newBrowser.window.location.pathname).to.equal("/req-info-html");
     });
 
     it("follows external redirect on post", async () => {

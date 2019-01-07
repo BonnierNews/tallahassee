@@ -9,7 +9,7 @@ const errorPage = Path.join(__dirname, "assets/public/error.html");
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
 app.use("/", express.static(Path.join(__dirname, "assets/images")));
 
-app.post("/", express.urlencoded(), (req, res) => {
+app.post("/", express.urlencoded({extended: true}), (req, res) => {
   res.send(`<html><body>Post body ${JSON.stringify(req.body)}</body></html>`);
 });
 

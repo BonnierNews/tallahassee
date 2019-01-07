@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+# 8.0.0
+
+## Breaking
+- Changed implemention of window property `location` to match browser behaviour. Removed property `path` and added property `origin`.
+
 # 7.0.0
 
 - Proper bubbling of Element events up to Document

@@ -140,7 +140,7 @@ function Tallahassee(app) {
 
         const form = event.target;
         const method = form.getAttribute("method") || "GET";
-        const action = form.getAttribute("action") || window.location.path;
+        const action = form.getAttribute("action") || window.location.pathname + (window.location.search ? window.location.search : "");
         const submitHeaders = {...headers, cookie: agent.jar.getCookies({path: action}).toValueString()};
 
         const formData = getFormData(form);
