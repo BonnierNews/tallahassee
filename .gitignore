@@ -39,3 +39,5 @@ package-lock.json
 
 # vim
 *.sw[a-z]
+
+/tmp
