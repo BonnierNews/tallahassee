@@ -61,10 +61,12 @@ describe("elements", () => {
               <a href="//example.com">Absolute link no protocol</a>
               <a href="http://example.com">Absolute link with protocol</a>
               <a href="/slug/">Relative link</a>
+              <a href="/?signed_out=true">Relative link with query parameter</a>
 
-              <img class="test-src" src="//example.com/img.png">Absolute link no protocol</iframe>
-              <iframe class="test-src" src="http://example.com">Absolute link with protocol</iframe>
-              <iframe class="test-src" src="/slug/">Relative link</iframe>
+              <img class="test-src" src="//example.com/img.png">Absolute frame no protocol</iframe>
+              <iframe class="test-src" src="http://example.com">Absolute frame with protocol</iframe>
+              <iframe class="test-src" src="/slug/">Relative frame</iframe>
+              <iframe class="test-src" src="/qs/?widget=malservice">Relative frame with query parameter</iframe>
             </body>
           </html>`
       });
@@ -165,19 +167,21 @@ describe("elements", () => {
     });
 
     it("exposes .href with the expected behaviour", async () => {
-      const [noprot, abs, rel] = document.getElementsByTagName("a");
-      expect(noprot).to.have.property("href", "https://example.com");
-      expect(abs).to.have.property("href", "http://example.com");
-      expect(rel).to.have.property("href", "https://www.expressen.se/slug/");
+      const [noprotocol, absolute, relative, withQuery] = document.getElementsByTagName("a");
+      expect(noprotocol).to.have.property("href", "https://example.com");
+      expect(absolute).to.have.property("href", "http://example.com");
+      expect(relative).to.have.property("href", "https://www.expressen.se/slug/");
+      expect(withQuery).to.have.property("href", "https://www.expressen.se/?signed_out=true");
     });
 
     it("exposes .src with the expected behaviour", async () => {
-      const [noprot, abs, rel] = document.getElementsByClassName("test-src");
-      expect(noprot).to.have.property("src", "https://example.com/img.png");
-      expect(abs).to.have.property("src", "http://example.com");
-      expect(rel).to.have.property("src", "https://www.expressen.se/slug/");
-      noprot.src = "/img/set.gif";
-      expect(noprot).to.have.property("src", "https://www.expressen.se/img/set.gif");
+      const [noprotocol, absolute, relative, withQuery] = document.getElementsByClassName("test-src");
+      expect(noprotocol).to.have.property("src", "https://example.com/img.png");
+      expect(absolute).to.have.property("src", "http://example.com");
+      expect(relative).to.have.property("src", "https://www.expressen.se/slug/");
+      expect(withQuery).to.have.property("src", "https://www.expressen.se/qs/?widget=malservice");
+      noprotocol.src = "/img/set.gif";
+      expect(noprotocol).to.have.property("src", "https://www.expressen.se/img/set.gif");
     });
 
     it("triggers load event when setting .src", async () => {
