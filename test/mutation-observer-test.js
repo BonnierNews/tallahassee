@@ -2,13 +2,10 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler, MutationObserver} = require("../lib");
+const Script = require("@bonniernews/wichita");
+const {MutationObserver} = require("../lib");
 
 describe("MutationObserver", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   it("triggers when element has been inserted into the observed node using appendChild", async () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
@@ -27,7 +24,7 @@ describe("MutationObserver", () => {
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, config);
 
-    require("../app/assets/scripts/main");
+    await Script("../app/assets/scripts/main").run(browser.window);
 
     expect(childListMutation).to.be.ok;
   });

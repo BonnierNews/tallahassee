@@ -20,13 +20,9 @@ Supports just about everything except `querySelectorAll()` which we don´t want 
 
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
-const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
+const Script = require("@bonniernews/wichita");
 
 describe("Tallahassee", () => {
-  before(() => {
-    Compiler([/assets\/scripts/]);
-  });
-
   describe("navigateTo()", () => {
     it("navigates to url", async () => {
       await Browser(app).navigateTo("/");
@@ -48,12 +44,12 @@ describe("Tallahassee", () => {
   });
 
   describe("run script", () => {
-    it("transpiles and runs es6 script", async () => {
+    it("run es6 script sources with @bonniernews/wichita", async () => {
       const browser = await Browser(app).navigateTo("/", {
         Cookie: "_ga=1"
       });
 
-      require("../app/assets/scripts/main");
+      await Script("../app/assets/scripts/main").run(browser.window);
 
       expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
@@ -62,7 +58,7 @@ describe("Tallahassee", () => {
     it("again", async () => {
       const browser = await Browser(app).navigateTo("/");
 
-      require("../app/assets/scripts/main");
+      await Script("../app/assets/scripts/main").run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);
@@ -71,11 +67,6 @@ describe("Tallahassee", () => {
 });
 ```
 
-# Compiler
+# External scripts
 
-To make compiler ignore test directory you can use a version of this negative look-ahead pattern:
-
-```js
-const {Compiler} = require("@expressen/tallahassee/lib/Compiler");
-Compiler([/^(?!.*\/test\/assets).*\/assets\/scripts/]);
-```
+May we suggest you to use Wichita, the Tallahassee sidekick. It can be found here https://www.npmjs.com/package/@bonniernews/wichita

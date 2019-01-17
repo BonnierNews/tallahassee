@@ -2,20 +2,17 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler, IntersectionObserver} = require("../lib");
+const Script = require("@bonniernews/wichita");
+const {IntersectionObserver} = require("../lib");
 
 describe("IntersectionObserver", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   it("observes elements", async () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });
     const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    require("../app/assets/scripts/main");
+    await Script("../app/assets/scripts/main").run(browser.window);
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
   });
@@ -30,8 +27,7 @@ describe("IntersectionObserver", () => {
 
     expect(lazyLoadElements.length).to.equal(1);
 
-
-    require("../app/assets/scripts/main");
+    await Script("../app/assets/scripts/main").run(browser.window);
 
     browser.setElementsToScroll(() => {
       return lazyLoadElements;

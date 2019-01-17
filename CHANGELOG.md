@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+# 9.0.0
+
+## Breaking
+- Nodejs v10.15 or above is required
+- The Compiler is gone, please transpile your own es6 scripts and reset global scope, or just try out the new Tallahassee sidekick [Wichita](https://www.npmjs.com/package/@bonniernews/wichita)
+- As a side effect of the removed Compiler, there are no more `global.window` or `global.document`
+
 # 8.0.0
 
 ## Breaking

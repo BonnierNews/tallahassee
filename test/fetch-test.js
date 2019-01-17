@@ -6,13 +6,8 @@ const Fetch = require("../lib/Fetch");
 const express = require("express");
 const nock = require("nock");
 const supertest = require("supertest");
-const {Compiler} = require("../lib/Compiler");
 
 describe("window.fetch", () => {
-  before(() => {
-    Compiler([/assets\/scripts/]);
-  });
-
   beforeEach(nock.cleanAll);
 
   it("external resource is supported", async () => {
