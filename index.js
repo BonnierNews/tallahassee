@@ -321,9 +321,10 @@ function getFormData(form) {
     if (input.disabled) return acc;
 
     if (input.name && input.value) {
-      if (input.type === "radio") {
+      if (input.type === "radio" || input.type === "checkbox") {
         if (input.checked) {
-          acc[input.name] = input.value;
+          acc[input.name] = acc[input.name] || [];
+          acc[input.name].push(input.value);
         }
       } else {
         acc[input.name] = input.value;

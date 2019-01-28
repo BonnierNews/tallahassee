@@ -289,6 +289,34 @@ describe("Tallahassee", () => {
       expect(newBrowser.window.location).to.have.property("search", "?a=b");
     });
 
+    it("submits get form with values from checkboxes", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("checkboxes-get-form");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newNavigation = await browser._pending;
+      expect(newNavigation.window.location).to.have.property("search", "?filter=cb1&filter=cb3");
+    });
+
+    it("submits post form with values from checkboxes", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("checkboxes-post-form");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newNavigation = await browser._pending;
+      expect(newNavigation.document.body.innerHTML).to.contain("{\"filter\":[\"cb1\",\"cb3\"]}");
+    });
+
     it("follows redirect on get", async () => {
       const browser = await Browser(app).navigateTo("/");
 
