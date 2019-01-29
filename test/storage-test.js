@@ -70,6 +70,18 @@ describe("Storage", () => {
     expect(result).to.be.null;
   });
 
+  it("should return key by index", () => {
+    window.localStorage.setItem("test-item-1", "foo");
+    window.localStorage.setItem("test-item-2", "foo");
+    window.localStorage.setItem("test-item-3", "foo");
+
+    expect(window.localStorage.key(1)).to.equal("test-item-2");
+  });
+
+  it("should return null if key at index index doesn't exist", () => {
+    expect(window.localStorage.key(1)).to.be.null;
+  });
+
   it("should clear all", () => {
     window.localStorage.clear();
 
