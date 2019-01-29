@@ -350,11 +350,14 @@ describe("Tallahassee", () => {
     it("follows external redirect on post", async () => {
       nock("https://www.example.com")
         .get("/")
+        .matchHeader("host", "www.example.com")
         .reply(200, "<html><body></body></html>", {
           "content-type": "text/html"
         });
 
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await Browser(app, {
+        headers: {host: "www.expressen.se"}
+      }).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-external-redirect");
       const [button] = form.getElementsByTagName("button");
@@ -366,6 +369,30 @@ describe("Tallahassee", () => {
       const newBrowser = await browser._pending;
 
       expect(newBrowser.window.location.href).to.equal("https://www.example.com/");
+    });
+
+    it("follows external redirect on post that redirects back to app", async () => {
+      const browser = await Browser(app, {
+        headers: {host: "www.expressen.se"}
+      }).navigateTo("/", );
+
+      nock("https://www.example.com")
+        .get("/")
+        .reply(302, undefined, {
+          location: browser.window.location.href
+        });
+
+      const form = browser.document.getElementById("post-form-external-redirect");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newBrowser = await browser._pending;
+
+      expect(newBrowser.window.location.host).to.equal("www.expressen.se");
+      expect(newBrowser.window.location.pathname).to.equal("/");
     });
   });
 
