@@ -17,6 +17,14 @@
 
 <!-- tocstop -->
 
+# `Tallahassee(app[, options])`
+
+Create new instance of Tallahasse.
+
+- `app`: required express app
+- `options`: optional options
+  - `headers`: default headers for local trafic
+
 # `navigateTo(route[, headers, expectedStatusCode])`
 
 Navigate to route.

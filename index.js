@@ -13,7 +13,7 @@ const assert = require("assert");
 
 module.exports = Tallahassee;
 
-function Tallahassee(app) {
+function Tallahassee(app, options = {}) {
   const agent = supertest.agent(app);
   return {
     navigateTo,
@@ -21,6 +21,13 @@ function Tallahassee(app) {
   };
 
   function navigateTo(linkUrl, headers = {}, statusCode = 200) {
+    if (options.headers) {
+      headers = {
+        ...options.headers,
+        ...headers,
+      };
+    }
+
     let numRedirects = 0;
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
