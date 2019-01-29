@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -31,7 +31,7 @@
     "domexception": "^1.0.1",
     "node-fetch": "^2.3.0",
     "request": "^2.88.0",
-    "supertest": "^3.4.1"
+    "supertest": "^3.4.2"
   },
   "devDependencies": {
     "@bonniernews/wichita": "^0.3.1",
