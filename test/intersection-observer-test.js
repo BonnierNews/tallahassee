@@ -18,6 +18,8 @@ describe("IntersectionObserver", () => {
     require("../app/assets/scripts/main");
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
+    expect(browser.window.IntersectionObserverEntry).to.exist;
+    expect(browser.window.IntersectionObserverEntry.prototype.intersectionRatio).to.exist;
   });
 
   it("listens to window scroll", async () => {
