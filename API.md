@@ -1,9 +1,10 @@
 <!-- version -->
-# 8.0.1 API Reference
+# 8.1.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
 
+- [`Tallahassee(app[, options])`](#tallahasseeapp-options)
 - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
 - [`browser.runScripts([contextElement])`](#browserrunscriptscontextelement)
