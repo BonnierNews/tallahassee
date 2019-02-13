@@ -157,15 +157,30 @@ function Tallahassee(app, options = {}) {
           const navigation = navigateTo(url.format(p), submitHeaders);
           resolve(navigation);
         } else if (method.toUpperCase() === "POST") {
-          agent.post(action)
-            .set(submitHeaders)
-            .set("Content-Type", "application/x-www-form-urlencoded")
-            .send(querystring.stringify(formData))
-            .then((postResp) => {
-              if ([301, 302].includes(postResp.statusCode)) return navigateTo(postResp.headers.location);
-              return load(postResp);
-            })
-            .then(resolve);
+
+          if (action.startsWith("/") || url.parse(action).host === submitHeaders.host) {
+            agent.post(action)
+              .set(submitHeaders)
+              .set("Content-Type", "application/x-www-form-urlencoded")
+              .send(querystring.stringify(formData))
+              .then((postResp) => {
+                if ([301, 302].includes(postResp.statusCode)) return navigateTo(postResp.headers.location);
+                return load(postResp);
+              })
+              .then(resolve);
+          } else {
+            Request.post(action, {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              body: querystring.stringify(formData)
+            }, (err, res) => {
+              if (err) {
+                throw err;
+              }
+              resolve(load(res));
+            });
+          }
         }
       }
     }
