@@ -397,7 +397,7 @@ describe("Tallahassee", () => {
 
     it("follows external url on post", async () => {
       nock("https://www.example.com")
-        .post("/blahonga/")
+        .post("/blahonga/", "a=b")
         .matchHeader("host", "www.example.com")
         .reply(200, "<html><body></body></html>", {
           "content-type": "text/html"
