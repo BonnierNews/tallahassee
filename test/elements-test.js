@@ -975,7 +975,8 @@ describe("elements", () => {
                   <option value="2" selected="selected">2</option>
                 </select>
                 <button type="submit">Submit</submit>
-                <button type="reset">Submit</submit>
+                <button>Submit</submit>
+                <button type="reset">Reset</submit>
               </form>
             </body>
           </html>`
@@ -1014,6 +1015,15 @@ describe("elements", () => {
       button.click();
     });
 
+    it("typeless button click emits submit on form", (done) => {
+      const [form] = document.getElementsByTagName("form");
+      const [, button] = document.getElementsByTagName("button");
+
+      form.addEventListener("submit", () => done());
+
+      button.click();
+    });
+
     it("submit sets event target to form", (done) => {
       const [form] = document.getElementsByTagName("form");
       const [button] = document.getElementsByTagName("button");
@@ -1028,7 +1038,7 @@ describe("elements", () => {
 
     it("reset button click emits reset on form", (done) => {
       const [form] = document.getElementsByTagName("form");
-      const [, button] = form.getElementsByTagName("button");
+      const [,, button] = form.getElementsByTagName("button");
 
       form.addEventListener("reset", () => done());
 
