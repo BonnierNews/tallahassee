@@ -2,13 +2,8 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler} = require("../lib");
 
 describe("CustomEvent", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   it("creates an object with the expected properties", async () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"

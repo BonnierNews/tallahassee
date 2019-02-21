@@ -1,5 +1,5 @@
 <!-- version -->
-# 8.1.0 API Reference
+# 9.2.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -7,7 +7,7 @@
 - [`Tallahassee(app[, options])`](#tallahasseeapp-options)
 - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
-- [`browser.runScripts([contextElement])`](#browserrunscriptscontextelement)
+- [`browser.runScripts([scopeElement])`](#browserrunscriptsscopeelement)
 - [Scroll](#scroll)
   - [`browser.scrollToTopOfElement()`](#browserscrolltotopofelement)
   - [`browser.scrollToBottomOfElement()`](#browserscrolltobottomofelement)
@@ -54,11 +54,11 @@ Returns promise with browser context.
 
 Returns promise with new browser context with preserved cookies. Takes the same arguments as [`navigateTo`](#navigatetoroute-headers-expectedstatuscode)
 
-# `browser.runScripts([contextElement])`
+# `browser.runScripts([scopeElement])`
 
 Runs script in all script tags.
 
-- `contextElement`: run descendant script in context element, defaults to `document.documentElement`.
+- `scopeElement`: run descendant script in context element, defaults to `document.documentElement`.
 
 # Scroll
 
@@ -71,13 +71,10 @@ Test you abundant sticky logic.
 
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
-const {Compiler, IntersectionObserver} = require("@expressen/tallahassee/lib");
+const Script = require("@bonniernews/wichita");
+const {IntersectionObserver} = require("@expressen/tallahassee/lib");
 
 describe("Window scroller", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   describe("use with IntersectionObserver", () => {
     it("listens to window scroll", async () => {
       const browser = await Browser(app).navigateTo("/");
@@ -90,7 +87,7 @@ describe("Window scroller", () => {
       const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
       lazyLoaded._setBoundingClientRect({top: 300});
 
-      require("../app/assets/scripts/main");
+      await Script("./app/assets/scripts/main").run(browser.window);
 
       browser.scrollToTopOfElement(lazyLoaded);
 
@@ -119,20 +116,17 @@ Resets element top to wherever it was before sticked.
 
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
-const {Compiler, IntersectionObserver} = require("@expressen/tallahassee/lib");
+const Script = require("@bonniernews/wichita");
+const {IntersectionObserver} = require("@expressen/tallahassee/lib");
 
 describe("IntersectionObserver", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   it("observes elements", async () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });
     const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    require("../app/assets/scripts/main");
+    await Script("./app/assets/scripts/main").run(browser.window);
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
   });
@@ -143,7 +137,7 @@ describe("IntersectionObserver", () => {
     });
     browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    require("../app/assets/scripts/main");
+    await Script("./app/assets/scripts/main").run(browser.window);
 
     browser.setElementsToScroll((document) => {
       return document.getElementsByClassName("lazy-load");
@@ -168,13 +162,8 @@ Switch scopes between iframe window and main window.
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const nock = require("nock");
-const {Compiler} = require("@expressen/tallahassee/lib");
 
 describe("Iframe", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
     const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
     const element = browser.document.createElement("iframe");

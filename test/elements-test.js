@@ -903,12 +903,20 @@ describe("elements", () => {
     });
 
     it("executes if script", () => {
-      global.window = {};
       const elm = document.createElement("script");
       elm.innerText = "window.appended = true;";
+
+      const window = {
+        get window() {
+          return this;
+        }
+      };
+
+      document.window = window;
+
       document.body.appendChild(elm);
 
-      expect(global.window.appended).to.be.true;
+      expect(document.window.appended).to.be.true;
     });
   });
 

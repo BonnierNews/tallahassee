@@ -7,8 +7,7 @@ const Request = require("request");
 const supertest = require("supertest");
 const url = require("url");
 const vm = require("vm");
-const {Document, Fetch, Window, Compiler} = require("./lib");
-const {compile} = Compiler;
+const {Document, Fetch, Window} = require("./lib");
 const assert = require("assert");
 
 module.exports = Tallahassee;
@@ -82,18 +81,24 @@ function Tallahassee(app, options = {}) {
   }
 
   function load(resp) {
-    let initialized, pending, currentPageXOffset, currentPageYOffset;
+    let pending, currentPageXOffset, currentPageYOffset;
     let elementsToScroll = () => {};
     const stickedElements = [];
 
-    compile();
-
     const headers = getHeaders(resp.request);
+    const document = Document(resp, agent.jar);
     const window = Window(resp, {
       fetch: Fetch(agent, resp),
+      get document() {
+        return document;
+      },
     });
-    const document = Document(resp, agent.jar);
-    window.document = document;
+
+    Object.defineProperty(document, "window", {
+      get() {
+        return window;
+      }
+    });
 
     const browserContext = {
       $: document.$,
@@ -126,13 +131,6 @@ function Tallahassee(app, options = {}) {
     return browserContext;
 
     function focus() {
-      if (initialized) {
-        compile();
-      }
-
-      initialized = true;
-      global.window = window;
-      global.document = document;
     }
 
     function onDocumentSubmit(event) {
@@ -194,7 +192,7 @@ function Tallahassee(app, options = {}) {
         if (scriptType && !/javascript/i.test(scriptType)) return;
 
         const scriptBody = $script.html();
-        if (scriptBody) vm.runInThisContext(scriptBody);
+        if (scriptBody) vm.runInNewContext(scriptBody, window);
       });
     }
 

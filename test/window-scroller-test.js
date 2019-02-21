@@ -2,13 +2,10 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const {Compiler, IntersectionObserver} = require("../lib");
+const Script = require("@bonniernews/wichita");
+const {IntersectionObserver} = require("../lib");
 
 describe("Window scroller", () => {
-  before(() => {
-    Compiler.Compiler([/assets\/scripts/]);
-  });
-
   it("observes and sets top of elements passed to stacked elements function", async () => {
     const browser = await Browser(app).navigateTo("/");
 
@@ -317,7 +314,7 @@ describe("Window scroller", () => {
       const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
       lazyLoaded._setBoundingClientRect({top: 300});
 
-      require("../app/assets/scripts/main");
+      await Script("../app/assets/scripts/main").run(browser.window);
 
       browser.scrollToTopOfElement(lazyLoaded);
 

@@ -4,13 +4,9 @@ const app = require("../app/app");
 const Browser = require("../");
 const nock = require("nock");
 const Path = require("path");
-const {Compiler} = require("../lib/Compiler");
+const Script = require("@bonniernews/wichita");
 
 describe("Tallahassee", () => {
-  before(() => {
-    Compiler([/assets\/scripts/]);
-  });
-
   describe("navigateTo()", () => {
     it("navigates to url", async () => {
       await Browser(app).navigateTo("/");
@@ -102,14 +98,14 @@ describe("Tallahassee", () => {
     });
   });
 
-  describe("runScripts()", () => {
+  describe("runScripts(scopeElement)", () => {
     let browser;
 
     beforeEach(async () => {
       browser = await Browser(app).navigateTo("/");
     });
 
-    it("runs all scripts without context", () => {
+    it("runs all scripts without scope element", () => {
       expect(browser.document.documentElement.classList.contains("no-js")).to.be.true;
       expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
 
@@ -119,7 +115,7 @@ describe("Tallahassee", () => {
       expect(browser.window).to.have.property("scriptsAreExecutedInBody", true);
     });
 
-    it("runs scripts within supplied context", () => {
+    it("runs scripts within supplied scope element", () => {
       expect(browser.document.documentElement.classList.contains("no-js")).to.be.true;
       expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
 
@@ -131,6 +127,11 @@ describe("Tallahassee", () => {
   });
 
   describe("document", () => {
+    it("expose current window on document", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      expect(browser.document).to.have.property("window").that.equal(browser.window);
+    });
+
     it("doesn't expose classList on document", async () => {
       const browser = await Browser(app).navigateTo("/");
       expect(browser.document.classList, "classList on document").to.be.undefined;
@@ -178,21 +179,25 @@ describe("Tallahassee", () => {
   });
 
   describe("run script", () => {
-    it("transpiles and runs es6 script", async () => {
+    it("runs es6 script with browser window as global", async () => {
       const browser = await Browser(app).navigateTo("/", {
         Cookie: "_ga=1"
       });
-
-      require("../app/assets/scripts/main");
-
       expect(browser.document.cookie).to.equal("_ga=1");
+
+      const script = Script("../app/assets/scripts/main");
+
+      await script.run(browser.window);
+
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
     });
 
     it("again", async () => {
       const browser = await Browser(app).navigateTo("/");
 
-      require("../app/assets/scripts/main");
+      const script = Script("../app/assets/scripts/main");
+
+      await script.run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);

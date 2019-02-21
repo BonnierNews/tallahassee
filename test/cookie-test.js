@@ -3,13 +3,8 @@
 const app = require("../app/app");
 const Browser = require("../");
 const nock = require("nock");
-const {Compiler} = require("../lib/Compiler");
 
 describe("cookies", () => {
-  before(() => {
-    Compiler([/assets\/scripts/]);
-  });
-
   it("sets non-httponly cookies from response on document", async () => {
     const browser = await Browser(app).navigateTo("/setcookie");
     expect(browser.document.cookie).to.equal("regular_cookie=regular_cookie_value");
