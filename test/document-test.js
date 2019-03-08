@@ -28,6 +28,11 @@ describe("Document", () => {
               </div>
             </template>
             <div id="lazy"></div>
+            <form>
+              <input name="input1">
+              <input name="input2">
+              <button id="input2">CTA</button>
+            </form>
           </body>
         </html>`
     }, jar);
@@ -273,6 +278,21 @@ describe("Document", () => {
       document.exitFullscreen();
       expect(document.fullscreenElement).to.eql(null);
       expect(calledCB).to.equal(false);
+    });
+  });
+
+  describe("getElementsByName", () => {
+    it("returns elements with name", () => {
+      const elements = document.getElementsByName("input1");
+      expect(elements.length).to.equal(1);
+      expect(elements[0].tagName).to.equal("INPUT");
+    });
+
+    it("also returns elements with the same id to mimic <= IE10 behaviour", () => {
+      const elements = document.getElementsByName("input2");
+      expect(elements.length).to.equal(2);
+      expect(elements[0].tagName).to.equal("INPUT");
+      expect(elements[1].tagName).to.equal("BUTTON");
     });
   });
 });
