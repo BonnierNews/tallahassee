@@ -28,7 +28,7 @@ describe("Document", () => {
               </div>
             </template>
             <div id="lazy"></div>
-            <form>
+            <form class="test-form">
               <input name="input1">
               <input name="input2">
               <button id="input2">CTA</button>
@@ -293,6 +293,19 @@ describe("Document", () => {
       expect(elements.length).to.equal(2);
       expect(elements[0].tagName).to.equal("INPUT");
       expect(elements[1].tagName).to.equal("BUTTON");
+    });
+  });
+
+  describe("getElementsByTagName", () => {
+    it("returns elements with tag name", () => {
+      const elements = document.getElementsByTagName("form");
+      expect(elements.length).to.equal(1);
+      expect(elements[0].tagName).to.equal("FORM");
+    });
+
+    it("returns empty if tag name doesn´t match", () => {
+      const elements = document.getElementsByTagName(".test-form");
+      expect(elements.length).to.equal(0);
     });
   });
 });
