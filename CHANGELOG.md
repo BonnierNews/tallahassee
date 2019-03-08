@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 9.4.0
+- Support `document.getElementsByName`. NB! with the behaviour of IE10 and lower, i.e. elements with id that match passed name are also returned (sic)
+- Close #72 bug
+
 # 9.0.0
 
 ## Breaking

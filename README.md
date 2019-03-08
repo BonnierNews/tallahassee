@@ -70,3 +70,14 @@ describe("Tallahassee", () => {
 # External scripts
 
 May we suggest you to use Wichita, the Tallahassee sidekick. It can be found here https://www.npmjs.com/package/@bonniernews/wichita
+
+# Timers
+
+If overriding timers on window, e.g. `setTimeout` it can be a good idea to make them asynchronous if they are recurring.
+
+Example:
+```js
+browser.window.setTimeout = function mySetTimeout(fn, ms, ...args) {
+  process.nextTick(fn, ...args);
+};
+```
