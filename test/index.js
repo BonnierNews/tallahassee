@@ -455,6 +455,28 @@ describe("Tallahassee", () => {
 
       expect(browser.window.location.href).to.equal("http://www.expressen.se/");
     });
+
+    it("respects submit formaction", async () => {
+      nock("https://www.example.com")
+        .get("/")
+        .matchHeader("host", "www.example.com")
+        .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
+          "content-type": "text/html"
+        });
+
+      let browser = await Browser(app, {
+        headers: {host: "www.expressen.se"}
+      }).navigateTo("/");
+
+      const form = browser.document.getElementById("multi-submit-form");
+      const [, button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      browser = await browser._pending;
+
+      expect(browser.window.location.href).to.equal("https://www.example.com/");
+    });
   });
 
   describe("focusIframe()", () => {

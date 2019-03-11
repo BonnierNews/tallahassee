@@ -52,6 +52,10 @@
       <input type="checkbox" value="cb3" name="filter" checked>
       <button type="submit">Submit</button>
     </form>
+    <form id="multi-submit-form" method="post" action="/redirect">
+      <button type="submit">Submit</button>
+      <button type="submit" formaction="/external-redirect">Custom submit</button>
+    </form>
     <img class="lazy-load" data-img-source="/images/tallahassee-1.png">
     <script>
       (function IIFE() {

@@ -145,7 +145,8 @@ function Tallahassee(app, options = {}) {
 
         const form = event.target;
         const method = form.getAttribute("method") || "GET";
-        const action = form.getAttribute("action") || window.location.pathname + (window.location.search ? window.location.search : "");
+        const formaction = (event._submitElement && event._submitElement.getAttribute("formaction")) || form.getAttribute("action");
+        const action = formaction || window.location.pathname + (window.location.search ? window.location.search : "");
         const submitHeaders = {...options.headers, ...headers, cookie: agent.jar.getCookies({path: action}).toValueString()};
 
         const formData = getFormData(form);
