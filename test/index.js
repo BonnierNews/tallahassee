@@ -477,6 +477,21 @@ describe("Tallahassee", () => {
 
       expect(browser.window.location.href).to.equal("https://www.example.com/");
     });
+
+
+    it("sends the clicked submit button's name and value if available", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      const form = browser.document.getElementById("form-with-named-button");
+
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newNavigation = await browser._pending;
+      expect(newNavigation.document.body.innerHTML).to.contain("{\"submit\": \"submit\"}");
+    });
   });
 
   describe("focusIframe()", () => {
