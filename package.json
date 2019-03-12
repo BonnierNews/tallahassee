@@ -47,7 +47,7 @@
   "files": [
     "lib/",
     "index.js",
-    "LICENCE"
+    "LICENSE"
   ],
   "bugs": {
     "url": "https://github.com/ExpressenAB/tallahassee/issues"
