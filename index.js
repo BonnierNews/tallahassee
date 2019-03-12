@@ -145,10 +145,11 @@ function Tallahassee(app, options = {}) {
 
         const form = event.target;
         const method = form.getAttribute("method") || "GET";
-        const action = form.getAttribute("action") || window.location.pathname + (window.location.search ? window.location.search : "");
+        const formaction = (event._submitElement && event._submitElement.getAttribute("formaction")) || form.getAttribute("action");
+        const action = formaction || window.location.pathname + (window.location.search ? window.location.search : "");
         const submitHeaders = {...options.headers, ...headers, cookie: agent.jar.getCookies({path: action}).toValueString()};
 
-        const formData = getFormData(form);
+        const formData = getFormData(form, event._submitElement);
 
         if (method.toUpperCase() === "GET") {
           const p = url.parse(action, true);
@@ -333,10 +334,10 @@ function Tallahassee(app, options = {}) {
   }
 }
 
-function getFormData(form) {
+function getFormData(form, submitElement) {
   const inputs = form.getElementsByTagName("input");
 
-  return inputs.reduce((acc, input) => {
+  const payload = inputs.reduce((acc, input) => {
     if (input.disabled) return acc;
 
     if (input.name && input.value) {
@@ -351,4 +352,10 @@ function getFormData(form) {
     }
     return acc;
   }, {});
+
+  if (submitElement && submitElement.name) {
+    payload[submitElement.name] = submitElement.value;
+  }
+
+  return payload;
 }

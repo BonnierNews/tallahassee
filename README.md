@@ -73,7 +73,7 @@ May we suggest you to use Wichita, the Tallahassee sidekick. It can be found her
 
 # Timers
 
-If overriding timers on window, e.g. `setTimeout` it can be a good idea to make them asynchronous if they are recurring.
+If overriding timers on window, e.g. `setTimeout` it can be a good idea to make them asynchronous since they tend to be recurring.
 
 Example:
 ```js

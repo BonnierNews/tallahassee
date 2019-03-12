@@ -974,6 +974,7 @@ describe("elements", () => {
                   <option value="1">1</option>
                   <option value="2" selected="selected">2</option>
                 </select>
+                <textarea name="multiline"></textarea>
                 <button type="submit">Submit</submit>
                 <button>Submit</submit>
                 <button type="reset">Reset</submit>
@@ -1063,6 +1064,27 @@ describe("elements", () => {
       expect(checkboxes[0].checked).to.be.false;
       expect(checkboxes[1].checked).to.be.true;
     });
+
+    it("input can get and set value", () => {
+      const input = document.getElementsByTagName("input")[0];
+      expect(input).to.have.property("value", "1");
+      input.value = 3;
+      expect(input).to.have.property("value", "3");
+    });
+
+    it("textarea can get and set value", () => {
+      const input = document.getElementsByTagName("textarea")[0];
+      expect(input).to.have.property("value", "");
+      input.value = "line 1\nline 2";
+      expect(input).to.have.property("value", "line 1\nline 2");
+    });
+
+    it("button can get and set value", () => {
+      const button = document.getElementsByTagName("button")[0];
+      expect(button).to.have.property("value", "");
+      button.value = "send";
+      expect(button).to.have.property("value", "send");
+    });
   });
 
   describe("select", () => {
@@ -1098,6 +1120,11 @@ describe("elements", () => {
       const [select] = document.getElementsByTagName("select");
 
       expect(select.selectedIndex).to.equal(1);
+    });
+
+    it("gets value from selected option", () => {
+      const button = document.getElementsByTagName("select")[0];
+      expect(button).to.have.property("value", "2");
     });
 
     it("should change selected index when changing selected option", () => {
