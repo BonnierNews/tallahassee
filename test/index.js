@@ -477,6 +477,56 @@ describe("Tallahassee", () => {
 
       expect(browser.window.location.href).to.equal("https://www.example.com/");
     });
+
+    it("named submit element appear in payload empty value", async () => {
+      nock("https://www.example.com")
+        .post("/1", (body) => {
+          expect(body).to.have.property("named-button").that.is.empty;
+          return true;
+        })
+        .matchHeader("host", "www.example.com")
+        .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
+          "content-type": "text/html"
+        });
+
+      let browser = await Browser(app, {
+        headers: {host: "www.expressen.se"}
+      }).navigateTo("/");
+
+      const form = browser.document.getElementById("multi-submit-form");
+      const [,, button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      browser = await browser._pending;
+
+      expect(browser.window.location.href).to.equal("https://www.example.com/1");
+    });
+
+    it("named submit element with value send payload with value", async () => {
+      nock("https://www.example.com")
+        .post("/2", (body) => {
+          expect(body).to.have.property("named-button-with-value").that.equal("1");
+          return true;
+        })
+        .matchHeader("host", "www.example.com")
+        .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
+          "content-type": "text/html"
+        });
+
+      let browser = await Browser(app, {
+        headers: {host: "www.expressen.se"}
+      }).navigateTo("/");
+
+      const form = browser.document.getElementById("multi-submit-form");
+      const [,,, button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      browser = await browser._pending;
+
+      expect(browser.window.location.href).to.equal("https://www.example.com/2");
+    });
   });
 
   describe("focusIframe()", () => {
