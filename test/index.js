@@ -271,7 +271,7 @@ describe("Tallahassee", () => {
 
       const newBrowser = await browser._pending;
 
-      expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\"}");
+      expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\",\"p\":\"text\"}");
     });
 
     it("submits post form without action to the same route on click", async () => {

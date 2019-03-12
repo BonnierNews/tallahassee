@@ -974,7 +974,7 @@ describe("elements", () => {
                   <option value="1">1</option>
                   <option value="2" selected="selected">2</option>
                 </select>
-                <textarea name="multiline"></textarea>
+                <label>Description<textarea name="multiline"></textarea></label>
                 <button type="submit">Submit</submit>
                 <button>Submit</submit>
                 <button type="reset">Reset</submit>
@@ -1084,6 +1084,16 @@ describe("elements", () => {
       expect(button).to.have.property("value", "");
       button.value = "send";
       expect(button).to.have.property("value", "send");
+    });
+
+    it("form property elements return form fields", () => {
+      const form = document.getElementsByTagName("form")[0];
+      expect(form).to.have.property("elements");
+      const elements = form.elements;
+      expect(elements.length).to.equal(7);
+      for (let i = 0; i < elements.length; ++i) {
+        expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
+      }
     });
   });
 

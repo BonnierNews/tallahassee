@@ -335,7 +335,7 @@ function Tallahassee(app, options = {}) {
 }
 
 function getFormData(form, submitElement) {
-  const inputs = form.getElementsByTagName("input");
+  const inputs = form.elements;
 
   const payload = inputs.reduce((acc, input) => {
     if (input.disabled) return acc;
