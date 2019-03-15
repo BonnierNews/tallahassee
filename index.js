@@ -106,6 +106,7 @@ function Tallahassee(app, options = {}) {
       focus,
       focusIframe,
       navigateTo,
+      runScript,
       runScripts,
       setElementsToScroll,
       scrollToBottomOfElement,
@@ -185,15 +186,23 @@ function Tallahassee(app, options = {}) {
       }
     }
 
+    function runScript(script) {
+      const $script = script.$elm;
+
+      const scriptType = $script.attr("type");
+      if (scriptType && !/javascript/i.test(scriptType)) return;
+
+      const scriptBody = $script.html();
+      if (scriptBody) vm.runInNewContext(scriptBody, window);
+    }
+
     function runScripts(context) {
       context = context || document.documentElement;
-      context.$elm.find("script").each((idx, elm) => {
-        const $script = document.$(elm);
-        const scriptType = $script.attr("type");
-        if (scriptType && !/javascript/i.test(scriptType)) return;
 
-        const scriptBody = $script.html();
-        if (scriptBody) vm.runInNewContext(scriptBody, window);
+      context.$elm.find("script").each((idx, elm) => {
+        const script = document._getElement(document.$(elm));
+
+        runScript(script);
       });
     }
 
