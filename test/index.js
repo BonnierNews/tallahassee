@@ -98,6 +98,35 @@ describe("Tallahassee", () => {
     });
   });
 
+  describe("runScript(scriptElement)", () => {
+    let browser;
+
+    beforeEach(async () => {
+      browser = await Browser(app).navigateTo("/");
+    });
+
+    it("runs supplied script element", () => {
+      expect(browser.document.documentElement.classList.contains("no-js")).to.be.true;
+      expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
+
+      const scriptElement = browser.document.getElementsByTagName("script")[0];
+
+      browser.runScript(scriptElement);
+
+      expect(browser.document.documentElement.classList.contains("no-js")).to.be.false;
+      expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
+    });
+
+    it("does not run if script type is not JavaScript", () => {
+      const scriptElement = browser.document.getElementsByTagName("script")[1];
+      const scriptType = scriptElement.$elm.attr("type");
+
+      expect(scriptType).to.be.ok;
+      expect(scriptType).to.not.include("javascript");
+      browser.runScript(scriptElement);
+    });
+  });
+
   describe("runScripts(scopeElement)", () => {
     let browser;
 
