@@ -265,6 +265,29 @@ describe("MutationObserver", () => {
     expect(childListMutation).to.be.ok;
   });
 
+  it("triggers when element has been removed from the observed node using removeChild", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const targetNode = browser.document.getElementsByTagName("body")[0];
+    const elementToRemove = browser.document.createElement("div");
+    targetNode.appendChild(elementToRemove);
+
+    const config = { attributes: true, childList: true };
+    let childListMutation = false;
+    const callback = function (mutationsList) {
+      for (const mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          childListMutation = true;
+        }
+      }
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+    targetNode.removeChild(elementToRemove);
+    expect(childListMutation).to.be.ok;
+  });
+
   it("disconnect() stops listening for mutations", async () => {
     const browser = await Browser(app).navigateTo("/");
 
