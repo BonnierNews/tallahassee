@@ -1079,6 +1079,18 @@ describe("elements", () => {
       expect(input).to.have.property("value", "line 1\nline 2");
     });
 
+    it("set innerHTML on textarea updates value", () => {
+      const input = document.getElementsByTagName("textarea")[0];
+      input.innerHTML = "&lt;p&gt;A test&lt;/p&gt;";
+      expect(input.value).to.equal("<p>A test</p>");
+    });
+
+    it("set innerText on textarea updates value", () => {
+      const input = document.getElementsByTagName("textarea")[0];
+      input.innerText = "&lt;p&gt;A test&lt;/p&gt;";
+      expect(input.value).to.equal("&lt;p&gt;A test&lt;/p&gt;");
+    });
+
     it("button can get and set value", () => {
       const button = document.getElementsByTagName("button")[0];
       expect(button).to.have.property("value", "");
