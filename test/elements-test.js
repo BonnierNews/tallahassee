@@ -1117,12 +1117,13 @@ describe("elements", () => {
           <html>
             <body>
               <select>
-                <option value="1">1</option>
-                <option value="2" selected="selected">2</option>
+                <option value="1">value of 1</option>
+                <option value="2" selected="selected">value of 2</option>
+                <option>value of 3</option>
               </select>
               <select multiple="multiple">
-                <option value="1">1</option>
-                <option value="2" selected="selected">2</option>
+                <option value="1">value of 1</option>
+                <option value="2" selected="selected">value of 2</option>
               </select>
             </body>
           </html>`
@@ -1133,20 +1134,28 @@ describe("elements", () => {
       const [select] = document.getElementsByTagName("select");
       const options = select.getElementsByTagName("option");
 
-      expect(select.options.length).to.equal(2);
+      expect(select.options.length).to.equal(3);
       expect(select.options[0] === options[0]).to.equal(true);
       expect(select.options[1] === options[1]).to.equal(true);
+      expect(select.options[2] === options[2]).to.equal(true);
     });
 
     it("returns selected index of options in select", () => {
       const [select] = document.getElementsByTagName("select");
-
       expect(select.selectedIndex).to.equal(1);
     });
 
     it("gets value from selected option", () => {
-      const button = document.getElementsByTagName("select")[0];
-      expect(button).to.have.property("value", "2");
+      const select = document.getElementsByTagName("select")[0];
+      expect(select).to.have.property("value", "2");
+      select.options[0].selected = true;
+      expect(select).to.have.property("value", "1");
+    });
+
+    it("should return the innerText of option if missing value", () => {
+      const select = document.getElementsByTagName("select")[0];
+      select.options[2].selected = true;
+      expect(select).to.have.property("value", "value of 3");
     });
 
     it("should change selected index when changing selected option", () => {
