@@ -1124,6 +1124,7 @@ describe("elements", () => {
               <select multiple="multiple">
                 <option value="1">value of 1</option>
                 <option value="2" selected="selected">value of 2</option>
+                <option value="3">value of 3</option>
               </select>
             </body>
           </html>`
@@ -1175,6 +1176,27 @@ describe("elements", () => {
 
       expect(select.options[0].selected).to.be.true;
       expect(select.options[1].selected).to.be.true;
+    });
+
+    it("should return selected option in selectedOptions", () => {
+      const [select] = document.getElementsByTagName("select");
+
+      select.options[1].selected = true;
+      select.options[2].selected = true;
+
+      expect(select.selectedOptions).to.have.length(1);
+      expect(select.selectedOptions[0] === select.options[2]).to.be.true;
+    });
+
+    it("muliple should return selected options in selectedOptions", () => {
+      const [, select] = document.getElementsByTagName("select");
+
+      select.options[1].selected = true;
+      select.options[2].selected = true;
+
+      expect(select.selectedOptions).to.have.length(2);
+      expect(select.selectedOptions[0] === select.options[1]).to.be.true;
+      expect(select.selectedOptions[1] === select.options[2]).to.be.true;
     });
 
     it("should emit change on select when changing selected option", (done) => {
