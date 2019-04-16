@@ -28,20 +28,20 @@
     "url": "git://github.com/ExpressenAB/tallahassee.git"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
+    "cheerio": "^1.0.0-rc.3",
     "domexception": "^1.0.1",
     "node-fetch": "^2.3.0",
     "request": "^2.88.0",
     "supertest": "^3.4.2"
   },
   "devDependencies": {
-    "@bonniernews/wichita": "^0.4.0",
+    "@bonniernews/wichita": "^0.5.0",
     "chai": "^4.2.0",
     "cookiejar": "^2.1.2",
-    "eslint": "^5.15.1",
+    "eslint": "^5.16.0",
     "express": "^4.16.4",
     "markdown-toc": "^1.2.0",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.3",
     "nock": "^10.0.6"
   },
   "files": [
