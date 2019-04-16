@@ -1153,6 +1153,11 @@ describe("elements", () => {
       expect(select).to.have.property("value", "1");
     });
 
+    it("returns empty value if selected option has no value", () => {
+      const select = document.getElementsByTagName("select")[0];
+      expect(select.options[2].value).to.equal("");
+    });
+
     it("should return the innerText of option if missing value", () => {
       const select = document.getElementsByTagName("select")[0];
       select.options[2].selected = true;

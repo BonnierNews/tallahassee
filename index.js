@@ -170,6 +170,7 @@ function Tallahassee(app, options = {}) {
               })
               .then(resolve);
           } else {
+
             Request.post(action, {
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -354,6 +355,15 @@ function getFormData(form, submitElement) {
         if (input.checked) {
           acc[input.name] = acc[input.name] || [];
           acc[input.name].push(input.value);
+        }
+      } else if (input.tagName === "SELECT") {
+        const selected = input.selectedOptions;
+
+
+        if (selected.length === 1) {
+          acc[input.name] = selected[0].value;
+        } else if (selected.length > 1) {
+          acc[input.name] = selected.map((option) => option.getAttribute("value"));
         }
       } else {
         acc[input.name] = input.value;

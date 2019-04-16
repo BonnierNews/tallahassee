@@ -351,6 +351,44 @@ describe("Tallahassee", () => {
       expect(newNavigation.document.body.innerHTML).to.contain("{\"filter\":[\"cb1\",\"cb3\"]}");
     });
 
+    it("submits post form with values from select inputs", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("select-form");
+      const [button] = form.getElementsByTagName("button");
+
+      const [select, multipleSelect] = form.getElementsByTagName("select");
+
+      select.options[0].selected = true;
+      multipleSelect.options[0].selected = true;
+      multipleSelect.options[2].selected = true;
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newNavigation = await browser._pending;
+      expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"1\",\"multiple-select\":[\"1\",\"3\"]}");
+    });
+
+    it("submits empty select input if option value is empty", async () => {
+      const browser = await Browser(app).navigateTo("/");
+
+      const form = browser.document.getElementById("select-form");
+      const [button] = form.getElementsByTagName("button");
+
+      const [select] = form.getElementsByTagName("select");
+
+      select.options[2].selected = true;
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      const newNavigation = await browser._pending;
+      expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"\"}");
+    });
+
     it("follows redirect on get", async () => {
       const browser = await Browser(app).navigateTo("/");
 
