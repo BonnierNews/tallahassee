@@ -416,7 +416,6 @@ describe("Window", () => {
         }
       });
 
-      expect(() => wdw.atob("s")).to.throw(/not correctly encoded/);
       expect(() => wdw.atob({})).to.throw(/not correctly encoded/);
       expect(() => wdw.atob(undefined)).to.throw(/not correctly encoded/);
     });
