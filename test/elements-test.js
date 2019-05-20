@@ -1857,6 +1857,54 @@ describe("elements", () => {
     });
   });
 
+  describe("scrollTop", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="element">
+                <div></div>
+              </div>
+            </body>
+          </html>`
+      });
+      const element = document.getElementsByClassName("element")[0];
+      element._setBoundingClientRect({
+        top: 0,
+        bottom: 100
+      });
+
+      element.firstElementChild._setBoundingClientRect({
+        top: 0,
+        bottom: 200
+      });
+    });
+
+    it("should get element y-axis scroll value", () => {
+      const element = document.getElementsByClassName("element")[0];
+
+      expect(element.scrollTop).to.equal(0);
+    });
+
+    it("should set element y-axis scroll value", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollTop = 10;
+
+      expect(element.scrollTop).to.equal(10);
+    });
+
+    it("should affect other elements inside", () => {
+      const element = document.getElementsByClassName("element")[0];
+      const child = element.firstElementChild;
+      element.setElementsToScroll(() => [child]);
+      element.scrollTop = 10;
+
+      expect(child.getBoundingClientRect().top).to.equal(-10);
+    });
+  });
+
   describe("element attributes when creating and appending dynamically", () => {
     let document;
     let element;
