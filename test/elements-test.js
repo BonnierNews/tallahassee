@@ -1913,6 +1913,20 @@ describe("elements", () => {
 
       expect(child.getBoundingClientRect().left).to.equal(-10);
     });
+
+    it("should clamp value to min scroll left", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollLeft = -99999;
+
+      expect(element.scrollLeft).to.equal(0);
+    });
+
+    it("should clamp value to max scroll left", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollLeft = 99999;
+
+      expect(element.scrollLeft).to.equal(100);
+    });
   });
 
   describe("scrollTop", () => {
@@ -1960,6 +1974,20 @@ describe("elements", () => {
       element.scrollTop = 10;
 
       expect(child.getBoundingClientRect().top).to.equal(-10);
+    });
+
+    it("should clamp value to min scroll top", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollTop = -99999;
+
+      expect(element.scrollTop).to.equal(0);
+    });
+
+    it("should clamp value to max scroll top", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollTop = 99999;
+
+      expect(element.scrollTop).to.equal(100);
     });
   });
 
