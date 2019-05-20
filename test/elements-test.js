@@ -816,6 +816,64 @@ describe("elements", () => {
     });
   });
 
+  describe(".scrollWidth", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="element">
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+              </div>
+            </body>
+          </html>`
+      });
+
+      document.getElementsByClassName("child").forEach((el, i) => {
+        el._setBoundingClientRect({
+          left: 100 * i,
+          right: 100 * (i + 1)
+        });
+      });
+    });
+
+    it("should return the correct value", () => {
+      expect(document.getElementById("element").scrollWidth).to.equal(300);
+    });
+  });
+
+  describe(".scrollHeight", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="element">
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+              </div>
+            </body>
+          </html>`
+      });
+
+      document.getElementsByClassName("child").forEach((el, i) => {
+        el._setBoundingClientRect({
+          top: 100 * i,
+          bottom: 100 * (i + 1)
+        });
+      });
+    });
+
+    it("should return the correct value", () => {
+      expect(document.getElementById("element").scrollHeight).to.equal(300);
+    });
+  });
+
   describe(".outerHTML", () => {
     let document;
     beforeEach(() => {
@@ -1854,6 +1912,82 @@ describe("elements", () => {
       element.scrollLeft = 10;
 
       expect(child.getBoundingClientRect().left).to.equal(-10);
+    });
+
+    it("should clamp value to min scroll left", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollLeft = -99999;
+
+      expect(element.scrollLeft).to.equal(0);
+    });
+
+    it("should clamp value to max scroll left", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollLeft = 99999;
+
+      expect(element.scrollLeft).to.equal(100);
+    });
+  });
+
+  describe("scrollTop", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div class="element">
+                <div></div>
+              </div>
+            </body>
+          </html>`
+      });
+      const element = document.getElementsByClassName("element")[0];
+      element._setBoundingClientRect({
+        top: 0,
+        bottom: 100
+      });
+
+      element.firstElementChild._setBoundingClientRect({
+        top: 0,
+        bottom: 200
+      });
+    });
+
+    it("should get element y-axis scroll value", () => {
+      const element = document.getElementsByClassName("element")[0];
+
+      expect(element.scrollTop).to.equal(0);
+    });
+
+    it("should set element y-axis scroll value", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollTop = 10;
+
+      expect(element.scrollTop).to.equal(10);
+    });
+
+    it("should affect other elements inside", () => {
+      const element = document.getElementsByClassName("element")[0];
+      const child = element.firstElementChild;
+      element.setElementsToScroll(() => [child]);
+      element.scrollTop = 10;
+
+      expect(child.getBoundingClientRect().top).to.equal(-10);
+    });
+
+    it("should clamp value to min scroll top", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollTop = -99999;
+
+      expect(element.scrollTop).to.equal(0);
+    });
+
+    it("should clamp value to max scroll top", () => {
+      const element = document.getElementsByClassName("element")[0];
+      element.scrollTop = 99999;
+
+      expect(element.scrollTop).to.equal(100);
     });
   });
 
