@@ -816,6 +816,64 @@ describe("elements", () => {
     });
   });
 
+  describe(".scrollWidth", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="element">
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+              </div>
+            </body>
+          </html>`
+      });
+
+      document.getElementsByClassName("child").forEach((el, i) => {
+        el._setBoundingClientRect({
+          left: 100 * i,
+          right: 100 * (i + 1)
+        });
+      });
+    });
+
+    it("should return the correct value", () => {
+      expect(document.getElementById("element").scrollWidth).to.equal(300);
+    });
+  });
+
+  describe(".scrollHeight", () => {
+    let document;
+    beforeEach(() => {
+      document = Document({
+        text: `
+          <html>
+            <body>
+              <div id="element">
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+              </div>
+            </body>
+          </html>`
+      });
+
+      document.getElementsByClassName("child").forEach((el, i) => {
+        el._setBoundingClientRect({
+          top: 100 * i,
+          bottom: 100 * (i + 1)
+        });
+      });
+    });
+
+    it("should return the correct value", () => {
+      expect(document.getElementById("element").scrollHeight).to.equal(300);
+    });
+  });
+
   describe(".outerHTML", () => {
     let document;
     beforeEach(() => {
