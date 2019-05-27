@@ -96,6 +96,35 @@ describe("Tallahassee", () => {
           done();
         });
     });
+
+    it("makes request to local app when the requested host matches host header from browser creation", async () => {
+      let browser = await Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+      browser = await browser.navigateTo("http://www.expressen.se/");
+      expect(browser.response).to.be.ok;
+    });
+
+    it("makes request to local app when the requested host matches x-forwarded-host from browser creation", async () => {
+      let browser = await Browser(app, {
+        headers: {
+          host: "some-other-host.com",
+          "x-forwarded-host": "www.expressen.se"
+        }
+      }).navigateTo("/");
+      browser = await browser.navigateTo("http://www.expressen.se/");
+      expect(browser.response).to.be.ok;
+    });
+
+    it("makes request to local app when the requested host matches x-forwarded-host and protocol matches x-forwarded-proto from browser creation", async () => {
+      let browser = await Browser(app, {
+        headers: {
+          host: "some-other-host.com",
+          "x-forwarded-host": "www.expressen.se",
+          "x-forwarded-proto": "https"
+        }
+      }).navigateTo("/");
+      browser = await browser.navigateTo("https://www.expressen.se/");
+      expect(browser.response).to.be.ok;
+    });
   });
 
   describe("runScript(scriptElement)", () => {
@@ -593,6 +622,43 @@ describe("Tallahassee", () => {
       browser = await browser._pending;
 
       expect(browser.window.location.href).to.equal("https://www.example.com/2");
+    });
+
+    it("submits to local app if absolute form action matches host header", async () => {
+      let browser = await Browser(app, {
+        headers: {host: "www.expressen.se"}
+      }).navigateTo("/");
+
+      const form = browser.document.getElementById("post-form-absolute-url");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      browser = await browser._pending;
+
+      expect(browser.window.location.href).to.equal("http://www.expressen.se/");
+    });
+
+    it("submits to local app if absolute form action matches x-forwarded-host header", async () => {
+      let browser = await Browser(app, {
+        headers: {
+          host: "some-other-host.com",
+          "x-forwarded-host": "www.expressen.se"
+        }
+      }).navigateTo("/");
+
+      const form = browser.document.getElementById("post-form-absolute-url");
+      const [button] = form.getElementsByTagName("button");
+
+      button.click();
+
+      expect(browser._pending).to.be.ok;
+
+      browser = await browser._pending;
+
+      expect(browser.window.location.href).to.equal("http://www.expressen.se/");
     });
   });
 
