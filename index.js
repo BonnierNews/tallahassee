@@ -14,6 +14,7 @@ module.exports = Tallahassee;
 
 function Tallahassee(app, options = {}) {
   const agent = supertest.agent(app);
+  const localAppHost = options.headers && (options.headers["x-forwarded-host"] || options.headers.host);
   return {
     navigateTo,
     load,
@@ -46,7 +47,7 @@ function Tallahassee(app, options = {}) {
       let request;
       const parsedUrl = url.parse(reqUrl);
 
-      if (parsedUrl.host && parsedUrl.host !== headers.host) {
+      if (parsedUrl.host && parsedUrl.host !== (localAppHost || headers.host)) {
         request = new Promise((resolve, reject) => {
           Request.get(reqUrl, { followRedirect: false }, (externalReqErr, externalReqRes) => {
             if (externalReqErr) {
@@ -159,7 +160,7 @@ function Tallahassee(app, options = {}) {
           const navigation = navigateTo(url.format(p), submitHeaders);
           resolve(navigation);
         } else if (method.toUpperCase() === "POST") {
-          if (action.startsWith("/") || url.parse(action).host === submitHeaders.host) {
+          if (action.startsWith("/") || url.parse(action).host === localAppHost) {
             agent.post(url.parse(action).path)
               .set(submitHeaders)
               .set("Content-Type", "application/x-www-form-urlencoded")
