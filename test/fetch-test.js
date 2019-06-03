@@ -123,14 +123,12 @@ describe("window.fetch", () => {
     const browser = await Browser(app).navigateTo("/", {
       "X-Forwarded-Proto": "https",
       "X-Forwarded-Host": "www.expressen.se",
-      cookie: "_ga=1"
     });
 
     nock("http://example.com")
       .get("/with-header")
       .reply(function () {
         const {headers} = this.req;
-        if (headers.cookie) return [401, {}];
         if (headers["x-forwarded-proto"]) return [403, {}];
         return [200, {data: 1}];
       });
@@ -213,6 +211,49 @@ describe("window.fetch", () => {
 
     const res = await browser.window.fetch("/api");
     expect(res.json()).to.be.a("promise");
+  });
+
+  it("should attach cookies from req header to exactly the app host", async () => {
+    const browser = await Browser(app, {
+      headers: {
+        "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "www.expressen.se"
+      }
+    }).navigateTo("/", { cookie: "_ga=1" });
+
+    let cookie;
+    nock("https://blahonga.expressen.se")
+      .get("/").reply(function () {
+        const {headers} = this.req;
+        cookie = headers.cookie;
+        return [200, {}];
+      });
+
+    await browser.window.fetch("https://blahonga.expressen.se/");
+    expect(cookie).to.equal(undefined);
+  });
+
+  it("should use cookie jar when making external fetch requests", async () => {
+    let browser = Browser(app, {
+      headers: {
+        "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "www.expressen.se"
+      }
+    });
+    browser.jar.setCookies("_ga=1; Domain=.expressen.se; Path=/");
+
+    browser = await browser.navigateTo("/");
+
+    let cookie;
+    nock("https://blahonga.expressen.se")
+      .get("/").reply(function () {
+        const {headers} = this.req;
+        cookie = headers.cookie;
+        return [200, {}];
+      });
+
+    await browser.window.fetch("https://blahonga.expressen.se/");
+    expect(cookie).to.eql(["_ga=1"]);
   });
 
   describe("redirect", () => {

@@ -41,3 +41,4 @@ package-lock.json
 *.sw[a-z]
 
 /tmp
+.vscode

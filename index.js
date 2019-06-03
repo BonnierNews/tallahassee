@@ -14,8 +14,11 @@ module.exports = Tallahassee;
 
 function Tallahassee(app, options = {}) {
   const agent = supertest.agent(app);
-  const localAppHost = options.headers && (options.headers["x-forwarded-host"] || options.headers.host);
+  const forwardedHostHeader = options.headers && Object.entries(options.headers).find((entry) => entry[0].toLowerCase() === "x-forwarded-host");
+
+  const localAppHost = options.headers && ((forwardedHostHeader && forwardedHostHeader[1]) || options.headers.host);
   return {
+    jar: agent.jar,
     navigateTo,
     load,
   };
@@ -31,7 +34,7 @@ function Tallahassee(app, options = {}) {
     let numRedirects = 0;
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
-        agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean));
+        agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean), localAppHost);
       }
     }
 
