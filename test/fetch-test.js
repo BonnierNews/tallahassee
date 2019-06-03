@@ -240,7 +240,7 @@ describe("window.fetch", () => {
         "X-Forwarded-Host": "www.expressen.se"
       }
     });
-    browser.jar.setCookies("_ga=1; Domain=.expressen.se; Path=/");
+    browser.jar.setCookies("_ga=1; Domain=.expressen.se; Path=/;Secure");
 
     browser = await browser.navigateTo("/");
 
