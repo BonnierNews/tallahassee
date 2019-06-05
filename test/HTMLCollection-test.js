@@ -1,6 +1,6 @@
 "use strict";
 
-const {HTMLCollectionFactory} = require("../lib/HTMLCollection");
+const {HTMLCollection} = require("../lib/HTMLCollection");
 const {Document} = require("../lib");
 
 describe("HTMLCollection", () => {
@@ -23,7 +23,7 @@ describe("HTMLCollection", () => {
   });
 
   it("removes element from list if member attribute change that mathed selector", () => {
-    const elements = HTMLCollectionFactory(document.body, ".row.row--boat");
+    const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
 
     elements[0].className = "row";
@@ -32,32 +32,30 @@ describe("HTMLCollection", () => {
   });
 
   it("removes element from list if node is deleted", () => {
-    const elements = HTMLCollectionFactory(document.body, ".row.row--boat");
+    const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
     document.body.removeChild(elements[0]);
     expect(elements.length).to.equal(1);
   });
 
-  it("passes options to underlying MutationObserver, but ignores childList", () => {
-    const elementsC = HTMLCollectionFactory(document.body, "div", {childList: true});
-    expect(elementsC.length).to.equal(3);
-    elementsC[0].className = "row";
-    expect(elementsC.length).to.equal(3);
+  it("can handle document.documentElement as well as element", () => {
+    const elements = new HTMLCollection(document.documentElement, ".row.row--boat");
+    expect(elements.length).to.equal(2);
 
-    document.body.removeChild(elementsC[0]);
-    expect(elementsC.length).to.equal(2);
+    elements[0].className = "row";
 
-    const elementsE = HTMLCollectionFactory(document.body, "div", {childList: false});
-    expect(elementsE.length).to.equal(2);
-    elementsE[0].className = "row";
+    expect(elements.length).to.equal(1);
+  });
 
-    document.body.removeChild(elementsC[0]);
-
-    expect(elementsE.length).to.equal(1);
+  it("removes element from list if node is deleted", () => {
+    const elements = new HTMLCollection(document.body, ".row.row--boat");
+    expect(elements.length).to.equal(2);
+    document.body.removeChild(elements[0]);
+    expect(elements.length).to.equal(1);
   });
 
   it("result is not an Array", () => {
-    const elements = HTMLCollectionFactory(document.body, ".row.row--boat");
+    const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
 
     expect(Array.isArray(elements)).to.be.false;
@@ -68,13 +66,19 @@ describe("HTMLCollection", () => {
   });
 
   it("result can be casted to Array", () => {
-    const elements = HTMLCollectionFactory(document.body, ".row.row--boat");
+    const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
     expect(Array.prototype.slice.call(elements)).to.have.length(2);
   });
 
+  it("result has own keys representing index as strings", () => {
+    const elements = new HTMLCollection(document.body, ".row.row--boat");
+    expect(elements.length).to.equal(2);
+    expect(Object.getOwnPropertyNames(elements)).to.eql(["0", "1"]);
+  });
+
   it("result can be for looped", () => {
-    const elements = HTMLCollectionFactory(document.body, "div", {attributes: false});
+    const elements = new HTMLCollection(document.body, "div", {attributes: false});
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -84,5 +88,31 @@ describe("HTMLCollection", () => {
     }
 
     expect(tags).to.eql(["DIV", "DIV", "DIV"]);
+  });
+
+  it("result can be for-of looped", () => {
+    const elements = new HTMLCollection(document.body, "div", {attributes: false});
+    expect(elements.length).to.equal(3);
+
+    const tags = [];
+
+    for (const elm of elements) {
+      tags.push(elm.tagName);
+    }
+
+    expect(tags).to.eql(["DIV", "DIV", "DIV"]);
+  });
+
+  it("result can be for-in looped", () => {
+    const elements = new HTMLCollection(document.body, "div", {attributes: false});
+    expect(elements.length).to.equal(3);
+
+    const tags = [];
+
+    for (const key in elements) {
+      tags.push(key);
+    }
+
+    expect(tags).to.eql(["0", "1", "2", "length", "item", "namedItem"]);
   });
 });

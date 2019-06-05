@@ -247,7 +247,7 @@ describe("Tallahassee", () => {
 
       await script.run(browser.window);
 
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
+      expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(1);
     });
 
     it("again", async () => {
@@ -258,7 +258,7 @@ describe("Tallahassee", () => {
       await script.run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);
+      expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(0);
     });
   });
 

@@ -224,9 +224,8 @@ function Tallahassee(app, options = {}) {
       const deltaX = currentPageXOffset - pageXOffset;
       const deltaY = currentPageYOffset - pageYOffset;
 
-      elms.slice().forEach((elm) => {
-        if (isElementSticky(elm)) return;
-
+      for (const elm of elms) {
+        if (isElementSticky(elm)) continue;
         const {left, right, top, bottom} = elm.getBoundingClientRect();
         elm._setBoundingClientRect({
           left: (left || 0) + deltaX,
@@ -234,7 +233,7 @@ function Tallahassee(app, options = {}) {
           top: (top || 0) + deltaY,
           bottom: (bottom || 0) + deltaY,
         });
-      });
+      }
 
       currentPageXOffset = pageXOffset;
       currentPageYOffset = pageYOffset;

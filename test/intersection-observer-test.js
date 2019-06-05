@@ -35,7 +35,7 @@ describe("IntersectionObserver", () => {
       return lazyLoadElements;
     });
 
-    const [lazyLoadElement] = lazyLoadElements;
+    const lazyLoadElement = lazyLoadElements[0];
     browser.scrollToTopOfElement(lazyLoadElement);
     expect(lazyLoadElement.classList.contains("lazy-load")).to.be.false;
 

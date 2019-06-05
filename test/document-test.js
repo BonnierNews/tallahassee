@@ -3,6 +3,7 @@
 const DocumentFragment = require("../lib/DocumentFragment");
 const {Document} = require("../lib");
 const {CookieJar} = require("cookiejar");
+const {HTMLCollection} = require("../lib/HTMLCollection");
 
 describe("Document", () => {
   let document;
@@ -77,8 +78,9 @@ describe("Document", () => {
     });
 
     describe("getElementsByName", () => {
-      it("returns elements with name", () => {
+      it("returns HTMLCollection with elements with name", () => {
         const elements = document.getElementsByName("input1");
+        expect(elements).to.be.instanceof(HTMLCollection);
         expect(elements.length).to.equal(1);
         expect(elements[0].tagName).to.equal("INPUT");
       });
@@ -99,7 +101,7 @@ describe("Document", () => {
       });
 
       it("returns empty if tag name doesn´t match", () => {
-        const elements = document.getElementsByTagName(".test-form");
+        const elements = document.getElementsByTagName("test-form");
         expect(elements.length).to.equal(0);
       });
     });
