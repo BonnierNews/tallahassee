@@ -241,6 +241,151 @@ describe("elements", () => {
     });
   });
 
+  describe("Methods", () => {
+    describe("getElementsByClassName(className)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body>
+                <div class="row"></div>
+                <div class="row row--boat">
+                  <span class="row--boat">Wide</span>
+                </div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("returns elements that match class name", () => {
+        const elms = document.body.getElementsByClassName("row");
+        expect(elms.length).to.equal(2);
+      });
+
+      it("returns elements that match class names separated by blank", () => {
+        const elms = document.body.getElementsByClassName("row row--boat");
+        expect(elms.length).to.equal(1);
+      });
+
+      it("returns elements that match class names separated any number of whitespaces", () => {
+        const elms = document.body.getElementsByClassName("row \n\t     row--boat   \n\t ");
+        expect(elms.length).to.equal(1);
+      });
+    });
+
+    describe("appendChild(aChild)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body id="grandparent">
+                <span class="child">åäö</span>
+                <div id="parent-1"></div>
+                <div id="parent-2"></div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("moves existing child", () => {
+        const child = document.getElementsByClassName("child")[0];
+        const parent1 = document.getElementById("parent-1");
+        const parent2 = document.getElementById("parent-2");
+
+        parent1.appendChild(child);
+        expect(document.getElementsByClassName("child").length).to.equal(1);
+        expect(child.parentElement).to.have.property("id", "parent-1");
+
+        parent2.appendChild(child);
+        expect(document.getElementsByClassName("child").length).to.equal(1);
+        expect(child.parentElement).to.have.property("id", "parent-2");
+      });
+
+      it("inserts new child", () => {
+        const elm = document.createElement("span");
+        elm.dataset.json = JSON.stringify({data: 1});
+        elm.textContent = "åäö";
+        document.body.appendChild(elm);
+
+        const newElm = document.body.lastElementChild;
+
+        expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
+        expect(newElm.dataset.json).to.equal("{\"data\":1}");
+        expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
+      });
+
+      it("executes if script", () => {
+        const elm = document.createElement("script");
+        elm.innerText = "window.appended = true;";
+
+        const window = {
+          get window() {
+            return this;
+          }
+        };
+
+        document.window = window;
+
+        document.body.appendChild(elm);
+
+        expect(document.window.appended).to.be.true;
+      });
+    });
+
+    describe("removeChild(child)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body id="grandparent">
+                <div id="parent-1">
+                  <span class="child">åäö</span>
+                </div>
+                <div id="parent-2"></div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("removes child element and returns remove child ref", () => {
+        const parent = document.getElementById("parent-1");
+        const child = document.getElementsByClassName("child")[0];
+        expect(parent.children.length).to.equal(1);
+
+        const removed = parent.removeChild(child);
+        expect(parent.children.length).to.equal(0);
+
+        expect(removed === child).to.be.true;
+      });
+
+      it("removes child text node", () => {
+        const parent = document.getElementsByClassName("child")[0];
+        const child = parent.firstChild;
+        expect(child.nodeType).to.equal(3);
+
+        expect(parent.childNodes.length).to.equal(1);
+
+        const removed = parent.removeChild(child);
+        expect(parent.childNodes.length).to.equal(0);
+
+        expect(removed === child).to.be.true;
+      });
+
+      it("throws if removed twice", () => {
+        const parent = document.getElementsByClassName("child")[0];
+        const child = parent.firstChild;
+        const removed = parent.removeChild(child);
+
+        expect(() => {
+          parent.removeChild(removed);
+        }).to.throw(DOMException, "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
+      });
+    });
+  });
+
   describe(".style", () => {
     let document;
     beforeEach(() => {
@@ -1982,119 +2127,6 @@ describe("elements", () => {
       const elm = document.getElementsByTagName("div")[0];
 
       expect(elm).to.deep.equal(element);
-    });
-  });
-
-  describe("Methods", () => {
-    describe("appendChild(aChild)", () => {
-      let document;
-      beforeEach(() => {
-        document = Document({
-          text: `
-            <html>
-              <body id="grandparent">
-                <span class="child">åäö</span>
-                <div id="parent-1"></div>
-                <div id="parent-2"></div>
-              </body>
-            </html>`
-        });
-      });
-
-      it("moves existing child", () => {
-        const child = document.getElementsByClassName("child")[0];
-        const parent1 = document.getElementById("parent-1");
-        const parent2 = document.getElementById("parent-2");
-
-        parent1.appendChild(child);
-        expect(document.getElementsByClassName("child").length).to.equal(1);
-        expect(child.parentElement).to.have.property("id", "parent-1");
-
-        parent2.appendChild(child);
-        expect(document.getElementsByClassName("child").length).to.equal(1);
-        expect(child.parentElement).to.have.property("id", "parent-2");
-      });
-
-      it("inserts new child", () => {
-        const elm = document.createElement("span");
-        elm.dataset.json = JSON.stringify({data: 1});
-        elm.textContent = "åäö";
-        document.body.appendChild(elm);
-
-        const newElm = document.body.lastElementChild;
-
-        expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
-        expect(newElm.dataset.json).to.equal("{\"data\":1}");
-        expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
-      });
-
-      it("executes if script", () => {
-        const elm = document.createElement("script");
-        elm.innerText = "window.appended = true;";
-
-        const window = {
-          get window() {
-            return this;
-          }
-        };
-
-        document.window = window;
-
-        document.body.appendChild(elm);
-
-        expect(document.window.appended).to.be.true;
-      });
-    });
-
-    describe("removeChild(child)", () => {
-      let document;
-      beforeEach(() => {
-        document = Document({
-          text: `
-            <html>
-              <body id="grandparent">
-                <div id="parent-1">
-                  <span class="child">åäö</span>
-                </div>
-                <div id="parent-2"></div>
-              </body>
-            </html>`
-        });
-      });
-
-      it("removes child element and returns remove child ref", () => {
-        const parent = document.getElementById("parent-1");
-        const child = document.getElementsByClassName("child")[0];
-        expect(parent.children.length).to.equal(1);
-
-        const removed = parent.removeChild(child);
-        expect(parent.children.length).to.equal(0);
-
-        expect(removed === child).to.be.true;
-      });
-
-      it("removes child text node", () => {
-        const parent = document.getElementsByClassName("child")[0];
-        const child = parent.firstChild;
-        expect(child.nodeType).to.equal(3);
-
-        expect(parent.childNodes.length).to.equal(1);
-
-        const removed = parent.removeChild(child);
-        expect(parent.childNodes.length).to.equal(0);
-
-        expect(removed === child).to.be.true;
-      });
-
-      it("throws if removed twice", () => {
-        const parent = document.getElementsByClassName("child")[0];
-        const child = parent.firstChild;
-        const removed = parent.removeChild(child);
-
-        expect(() => {
-          parent.removeChild(removed);
-        }).to.throw(DOMException, "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
-      });
     });
   });
 });

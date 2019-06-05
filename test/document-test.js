@@ -33,12 +33,16 @@ describe("Document", () => {
               <input name="input2">
               <button id="input2">CTA</button>
             </form>
+            <div class="row"></div>
+            <div class="row row--boat">
+              <p class="row--boat">Wide</p>
+            </div>
           </body>
         </html>`
     }, jar);
   });
 
-  describe("properties", () => {
+  describe("Properties", () => {
     it("has location", () => {
       expect(document.location).to.be.ok;
       expect(document.location).to.have.property("host", "www.expressen.se");
@@ -51,6 +55,53 @@ describe("Document", () => {
 
     it("exposes documentElement with expected behaviour", async () => {
       expect(document.documentElement).to.have.property("tagName", "HTML");
+    });
+  });
+
+  describe("Methods", () => {
+    describe("getElementsByClassName(className)", () => {
+      it("returns elements that match class name", () => {
+        const elms = document.getElementsByClassName("row");
+        expect(elms.length).to.equal(2);
+      });
+
+      it("returns elements that match class names separated by blank", () => {
+        const elms = document.getElementsByClassName("row row--boat");
+        expect(elms.length).to.equal(1);
+      });
+
+      it("returns elements that match class names separated any number of whitespaces", () => {
+        const elms = document.getElementsByClassName("row \n\t     row--boat   \n\t ");
+        expect(elms.length).to.equal(1);
+      });
+    });
+
+    describe("getElementsByName", () => {
+      it("returns elements with name", () => {
+        const elements = document.getElementsByName("input1");
+        expect(elements.length).to.equal(1);
+        expect(elements[0].tagName).to.equal("INPUT");
+      });
+
+      it("also returns elements with the same id to mimic <= IE10 behaviour", () => {
+        const elements = document.getElementsByName("input2");
+        expect(elements.length).to.equal(2);
+        expect(elements[0].tagName).to.equal("INPUT");
+        expect(elements[1].tagName).to.equal("BUTTON");
+      });
+    });
+
+    describe("getElementsByTagName", () => {
+      it("returns elements with tag name", () => {
+        const elements = document.getElementsByTagName("form");
+        expect(elements.length).to.equal(1);
+        expect(elements[0].tagName).to.equal("FORM");
+      });
+
+      it("returns empty if tag name doesn´t match", () => {
+        const elements = document.getElementsByTagName(".test-form");
+        expect(elements.length).to.equal(0);
+      });
     });
   });
 
@@ -278,34 +329,6 @@ describe("Document", () => {
       document.exitFullscreen();
       expect(document.fullscreenElement).to.eql(null);
       expect(calledCB).to.equal(false);
-    });
-  });
-
-  describe("getElementsByName", () => {
-    it("returns elements with name", () => {
-      const elements = document.getElementsByName("input1");
-      expect(elements.length).to.equal(1);
-      expect(elements[0].tagName).to.equal("INPUT");
-    });
-
-    it("also returns elements with the same id to mimic <= IE10 behaviour", () => {
-      const elements = document.getElementsByName("input2");
-      expect(elements.length).to.equal(2);
-      expect(elements[0].tagName).to.equal("INPUT");
-      expect(elements[1].tagName).to.equal("BUTTON");
-    });
-  });
-
-  describe("getElementsByTagName", () => {
-    it("returns elements with tag name", () => {
-      const elements = document.getElementsByTagName("form");
-      expect(elements.length).to.equal(1);
-      expect(elements[0].tagName).to.equal("FORM");
-    });
-
-    it("returns empty if tag name doesn´t match", () => {
-      const elements = document.getElementsByTagName(".test-form");
-      expect(elements.length).to.equal(0);
     });
   });
 });
