@@ -1210,8 +1210,8 @@ describe("elements", () => {
     });
 
     it("reset button click emits reset on form", (done) => {
-      const [form] = document.getElementsByTagName("form");
-      const [,, button] = form.getElementsByTagName("button");
+      const form = document.getElementsByTagName("form")[0];
+      const button = form.getElementsByTagName("button")[2];
 
       form.addEventListener("reset", () => done());
 
@@ -1219,9 +1219,9 @@ describe("elements", () => {
     });
 
     it("reset form resets form elements", () => {
-      const [form] = document.getElementsByTagName("form");
-      const [select] = form.getElementsByTagName("select");
-      const checkboxes = form.getElementsByTagName("input[type='checkbox']");
+      const form = document.getElementsByTagName("form")[0];
+      const select = form.getElementsByTagName("select")[0];
+      const checkboxes = form.getElementsByTagName("input");
 
       select.options[0].selected = true;
 
