@@ -42,7 +42,7 @@ const elementApi = [
 ];
 
 describe("elements", () => {
-  describe("properties", () => {
+  describe("Properties", () => {
     let document;
     beforeEach(() => {
       document = Document({
@@ -67,6 +67,7 @@ describe("elements", () => {
               <iframe class="test-src" src="http://example.com">Absolute frame with protocol</iframe>
               <iframe class="test-src" src="/slug/">Relative frame</iframe>
               <iframe class="test-src" src="/qs/?widget=malservice">Relative frame with query parameter</iframe>
+              <span>Text <b>bold</b> and some</span>
             </body>
           </html>`
       });
@@ -149,7 +150,7 @@ describe("elements", () => {
     });
 
     it("exposes disabled with the expected behaviour on input element", async () => {
-      const [elm] = document.getElementsByTagName("input");
+      const elm = document.getElementsByTagName("input")[0];
       expect(elm).to.have.property("disabled").that.is.false;
       elm.disabled = true;
       expect(elm.outerHTML).to.equal("<input type=\"button\" disabled=\"disabled\">");
@@ -167,25 +168,28 @@ describe("elements", () => {
     });
 
     it("exposes .href with the expected behaviour", async () => {
-      const [noprotocol, absolute, relative, withQuery] = document.getElementsByTagName("a");
-      expect(noprotocol).to.have.property("href", "https://example.com");
-      expect(absolute).to.have.property("href", "http://example.com");
-      expect(relative).to.have.property("href", "https://www.expressen.se/slug/");
-      expect(withQuery).to.have.property("href", "https://www.expressen.se/?signed_out=true");
+      const anchors = document.getElementsByTagName("a");
+      expect(anchors[0]).to.have.property("href", "https://example.com");
+      expect(anchors[1]).to.have.property("href", "http://example.com");
+      expect(anchors[2]).to.have.property("href", "https://www.expressen.se/slug/");
+      expect(anchors[3]).to.have.property("href", "https://www.expressen.se/?signed_out=true");
     });
 
     it("exposes .src with the expected behaviour", async () => {
-      const [noprotocol, absolute, relative, withQuery] = document.getElementsByClassName("test-src");
-      expect(noprotocol).to.have.property("src", "https://example.com/img.png");
-      expect(absolute).to.have.property("src", "http://example.com");
-      expect(relative).to.have.property("src", "https://www.expressen.se/slug/");
-      expect(withQuery).to.have.property("src", "https://www.expressen.se/qs/?widget=malservice");
-      noprotocol.src = "/img/set.gif";
-      expect(noprotocol).to.have.property("src", "https://www.expressen.se/img/set.gif");
+      const sources = document.getElementsByClassName("test-src");
+      expect(sources[0]).to.have.property("src", "https://example.com/img.png");
+      expect(sources[1]).to.have.property("src", "http://example.com");
+      expect(sources[2]).to.have.property("src", "https://www.expressen.se/slug/");
+      expect(sources[3]).to.have.property("src", "https://www.expressen.se/qs/?widget=malservice");
+      sources[0].src = "/img/set.gif";
+      expect(sources[0]).to.have.property("src", "https://www.expressen.se/img/set.gif");
     });
 
     it("triggers load event when setting .src", async () => {
-      const [img1, img2] = document.getElementsByTagName("img");
+      const images = document.getElementsByTagName("img");
+      const img1 = images[0];
+      const img2 = images[1];
+
       img1.imageLoaded = "false";
       img2.imageLoaded = "false";
 
@@ -195,6 +199,204 @@ describe("elements", () => {
       img2.src = "/img/setImage2.gif";
       expect(img1).to.have.property("imageLoaded", "false");
       expect(img2).to.have.property("imageLoaded", "true");
+    });
+
+
+    describe("nodeType", () => {
+      it("should return the correct node type", () => {
+        expect(document.getElementsByTagName("span")[0].nodeType).to.equal(1);
+      });
+
+      it("cannot be changed", () => {
+        const elm = document.getElementsByTagName("span")[0];
+        elm.nodeType = 3;
+        expect(elm.nodeType).to.equal(1);
+      });
+
+      it("should return the correct node type for text node", () => {
+        const elm = document.getElementsByTagName("span")[0];
+        expect(elm.firstChild.nodeType).to.equal(3);
+      });
+    });
+
+    describe("childNodes", () => {
+      it("return all child nodes including text", async () => {
+        const span = document.getElementsByTagName("span")[0];
+        const childNodes = span.childNodes;
+        expect(childNodes.length).to.equal(3);
+
+        expect(childNodes[0].nodeType).to.equal(3);
+        expect(childNodes[1].nodeType).to.equal(1);
+        expect(childNodes[2].nodeType).to.equal(3);
+      });
+
+      it("returns the same nodes if called again", async () => {
+        const span = document.getElementsByTagName("span")[0];
+        const call1 = span.childNodes;
+        const call2 = span.childNodes;
+
+        expect(call2.length).to.equal(3).and.equal(call1.length);
+
+        expect(call1[0] === call2[0]).to.be.true;
+        expect(call1[1] === call2[1]).to.be.true;
+        expect(call1[2] === call2[2]).to.be.true;
+      });
+    });
+
+    describe("parentNode", () => {
+      it("returns parent node", async () => {
+        const span = document.getElementsByTagName("span")[0];
+        expect(span.parentNode === document.body).to.be.true;
+      });
+
+      it("body parent node is document.documentElement", async () => {
+        expect(document.body.parentNode === document.documentElement).to.be.true;
+      });
+    });
+  });
+
+  describe("Methods", () => {
+    describe("getElementsByClassName(className)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body>
+                <div class="row"></div>
+                <div class="row row--boat">
+                  <span class="row--boat">Wide</span>
+                </div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("returns elements that match class name", () => {
+        const elms = document.body.getElementsByClassName("row");
+        expect(elms.length).to.equal(2);
+      });
+
+      it("returns elements that match class names separated by blank", () => {
+        const elms = document.body.getElementsByClassName("row row--boat");
+        expect(elms.length).to.equal(1);
+      });
+
+      it("returns elements that match class names separated any number of whitespaces", () => {
+        const elms = document.body.getElementsByClassName("row \n\t     row--boat   \n\t ");
+        expect(elms.length).to.equal(1);
+      });
+    });
+
+    describe("appendChild(aChild)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body id="grandparent">
+                <span class="child">åäö</span>
+                <div id="parent-1"></div>
+                <div id="parent-2"></div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("moves existing child", () => {
+        const child = document.getElementsByClassName("child")[0];
+        const parent1 = document.getElementById("parent-1");
+        const parent2 = document.getElementById("parent-2");
+
+        parent1.appendChild(child);
+        expect(document.getElementsByClassName("child").length).to.equal(1);
+        expect(child.parentElement).to.have.property("id", "parent-1");
+
+        parent2.appendChild(child);
+        expect(document.getElementsByClassName("child").length).to.equal(1);
+        expect(child.parentElement).to.have.property("id", "parent-2");
+      });
+
+      it("inserts new child", () => {
+        const elm = document.createElement("span");
+        elm.dataset.json = JSON.stringify({data: 1});
+        elm.textContent = "åäö";
+        document.body.appendChild(elm);
+
+        const newElm = document.body.lastElementChild;
+
+        expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
+        expect(newElm.dataset.json).to.equal("{\"data\":1}");
+        expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
+      });
+
+      it("executes if script", () => {
+        const elm = document.createElement("script");
+        elm.innerText = "window.appended = true;";
+
+        const window = {
+          get window() {
+            return this;
+          }
+        };
+
+        document.window = window;
+
+        document.body.appendChild(elm);
+
+        expect(document.window.appended).to.be.true;
+      });
+    });
+
+    describe("removeChild(child)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body id="grandparent">
+                <div id="parent-1">
+                  <span class="child">åäö</span>
+                </div>
+                <div id="parent-2"></div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("removes child element and returns remove child ref", () => {
+        const parent = document.getElementById("parent-1");
+        const child = document.getElementsByClassName("child")[0];
+        expect(parent.children.length).to.equal(1);
+
+        const removed = parent.removeChild(child);
+        expect(parent.children.length).to.equal(0);
+
+        expect(removed === child).to.be.true;
+      });
+
+      it("removes child text node", () => {
+        const parent = document.getElementsByClassName("child")[0];
+        const child = parent.firstChild;
+        expect(child.nodeType).to.equal(3);
+
+        expect(parent.childNodes.length).to.equal(1);
+
+        const removed = parent.removeChild(child);
+        expect(parent.childNodes.length).to.equal(0);
+
+        expect(removed === child).to.be.true;
+      });
+
+      it("throws if removed twice", () => {
+        const parent = document.getElementsByClassName("child")[0];
+        const child = parent.firstChild;
+        const removed = parent.removeChild(child);
+
+        expect(() => {
+          parent.removeChild(removed);
+        }).to.throw(DOMException, "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
+      });
     });
   });
 
@@ -632,7 +834,9 @@ describe("elements", () => {
     });
 
     it("returns text content", () => {
-      expect(document.getElementsByTagName("p")[0].firstChild).to.equal("Some ");
+      const lastChild = document.getElementsByTagName("p")[0].firstChild;
+      expect(lastChild.textContent).to.equal("Some ");
+      expect(lastChild.nodeType).to.equal(3);
     });
 
     it("returns null if no element children", () => {
@@ -687,7 +891,9 @@ describe("elements", () => {
     });
 
     it("returns text content", () => {
-      expect(document.getElementsByTagName("p")[0].lastChild).to.equal(" text");
+      const lastChild = document.getElementsByTagName("p")[0].lastChild;
+      expect(lastChild.textContent).to.equal(" text");
+      expect(lastChild.nodeType).to.equal(3);
     });
 
     it("returns element if last", () => {
@@ -798,24 +1004,6 @@ describe("elements", () => {
     });
   });
 
-  describe(".nodeType", () => {
-    let document;
-    beforeEach(() => {
-      document = Document({
-        text: `
-          <html>
-            <body>
-              <div id="element"></div>
-            </body>
-          </html>`
-      });
-    });
-
-    it("should return the correct node type", () => {
-      expect(document.getElementById("element").nodeType).to.equal(1);
-    });
-  });
-
   describe(".scrollWidth", () => {
     let document;
     beforeEach(() => {
@@ -832,12 +1020,14 @@ describe("elements", () => {
           </html>`
       });
 
-      document.getElementsByClassName("child").forEach((el, i) => {
+      const children = document.getElementsByClassName("child");
+      for (let i = 0; i < children.length; ++i) {
+        const el = children[i];
         el._setBoundingClientRect({
           left: 100 * i,
           right: 100 * (i + 1)
         });
-      });
+      }
     });
 
     it("should return the correct value", () => {
@@ -861,12 +1051,14 @@ describe("elements", () => {
           </html>`
       });
 
-      document.getElementsByClassName("child").forEach((el, i) => {
+      const children = document.getElementsByClassName("child");
+      for (let i = 0; i < children.length; ++i) {
+        const el = children[i];
         el._setBoundingClientRect({
           top: 100 * i,
           bottom: 100 * (i + 1)
         });
-      });
+      }
     });
 
     it("should return the correct value", () => {
@@ -915,66 +1107,6 @@ describe("elements", () => {
       const [elm] = document.getElementsByTagName("span");
       elm.innerText = "ÖÄÅ";
       expect(elm.innerText).to.equal("ÖÄÅ");
-    });
-  });
-
-  describe(".appendChild", () => {
-    let document;
-    beforeEach(() => {
-      document = Document({
-        text: `
-          <html>
-            <body id="grandparent">
-              <span class="child">åäö</span>
-              <div id="parent-1"></div>
-              <div id="parent-2"></div>
-            </body>
-          </html>`
-      });
-    });
-
-    it("moves existing child", () => {
-      const child = document.getElementsByClassName("child")[0];
-      const parent1 = document.getElementById("parent-1");
-      const parent2 = document.getElementById("parent-2");
-
-      parent1.appendChild(child);
-      expect(document.getElementsByClassName("child").length).to.equal(1);
-      expect(child.parentElement).to.have.property("id", "parent-1");
-
-      parent2.appendChild(child);
-      expect(document.getElementsByClassName("child").length).to.equal(1);
-      expect(child.parentElement).to.have.property("id", "parent-2");
-    });
-
-    it("inserts new child", () => {
-      const elm = document.createElement("span");
-      elm.dataset.json = JSON.stringify({data: 1});
-      elm.textContent = "åäö";
-      document.body.appendChild(elm);
-
-      const newElm = document.body.lastElementChild;
-
-      expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
-      expect(newElm.dataset.json).to.equal("{\"data\":1}");
-      expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
-    });
-
-    it("executes if script", () => {
-      const elm = document.createElement("script");
-      elm.innerText = "window.appended = true;";
-
-      const window = {
-        get window() {
-          return this;
-        }
-      };
-
-      document.window = window;
-
-      document.body.appendChild(elm);
-
-      expect(document.window.appended).to.be.true;
     });
   });
 
@@ -1096,8 +1228,8 @@ describe("elements", () => {
     });
 
     it("reset button click emits reset on form", (done) => {
-      const [form] = document.getElementsByTagName("form");
-      const [,, button] = form.getElementsByTagName("button");
+      const form = document.getElementsByTagName("form")[0];
+      const button = form.getElementsByTagName("button")[2];
 
       form.addEventListener("reset", () => done());
 
@@ -1105,9 +1237,9 @@ describe("elements", () => {
     });
 
     it("reset form resets form elements", () => {
-      const [form] = document.getElementsByTagName("form");
-      const [select] = form.getElementsByTagName("select");
-      const checkboxes = form.getElementsByTagName("input[type='checkbox']");
+      const form = document.getElementsByTagName("form")[0];
+      const select = form.getElementsByTagName("select")[0];
+      const checkboxes = form.getElementsByTagName("input");
 
       select.options[0].selected = true;
 
@@ -1441,22 +1573,22 @@ describe("elements", () => {
     });
 
     it("should get the previous element sibling", () => {
-      const [elm] = document.getElementsByClassName("start-element");
+      const elm = document.getElementsByClassName("start-element")[0];
       expect(elm.previousElementSibling.classList.contains("previous-element")).to.be.true;
     });
 
     it("should return null if no previous sibling", () => {
-      const [elm] = document.getElementsByClassName("previous-element");
+      const elm = document.getElementsByClassName("previous-element")[0];
       expect(elm.previousElementSibling).to.equal(undefined);
     });
 
     it("should get the next element sibling", () => {
-      const [elm] = document.getElementsByClassName("start-element");
+      const elm = document.getElementsByClassName("start-element")[0];
       expect(elm.nextElementSibling.classList.contains("next-element")).to.be.true;
     });
 
     it("should return null if no next sibling", () => {
-      const [elm] = document.getElementsByClassName("next-element");
+      const elm = document.getElementsByClassName("next-element")[0];
       expect(elm.nextElementSibling).to.equal(undefined);
     });
   });
@@ -1478,8 +1610,8 @@ describe("elements", () => {
     });
 
     it("should insert node before reference node", () => {
-      const [parentElm] = document.getElementsByTagName("body");
-      const [beforeElm] = document.getElementsByClassName("element-20");
+      const parentElm = document.getElementsByTagName("body")[0];
+      const beforeElm = document.getElementsByClassName("element-20")[0];
 
       const newNode = document.createElement("div");
       newNode.classList.add("element-15");
@@ -1493,7 +1625,7 @@ describe("elements", () => {
     });
 
     it("should insert node as last child of parent when referenceNode is null", () => {
-      const [parentElm] = document.getElementsByTagName("body");
+      const parentElm = document.getElementsByTagName("body")[0];
 
       const newNode = document.createElement("div");
       newNode.classList.add("element-30");
@@ -1507,8 +1639,8 @@ describe("elements", () => {
     });
 
     it("should throw DOMException when referenceNode is not child of target", () => {
-      const [parentElm] = document.getElementsByClassName("element-10");
-      const [beforeElm] = document.getElementsByClassName("element-20");
+      const parentElm = document.getElementsByClassName("element-10")[0];
+      const beforeElm = document.getElementsByClassName("element-20")[0];
 
       const newNode = document.createElement("div");
       newNode.classList.add("element-15");
@@ -1522,9 +1654,9 @@ describe("elements", () => {
     });
 
     it("should move existing nodes", () => {
-      const [parentElm] = document.getElementsByTagName("body");
-      const [beforeElm] = document.getElementsByClassName("element-10");
-      const [moveElm] = document.getElementsByClassName("element-20");
+      const parentElm = document.getElementsByTagName("body")[0];
+      const beforeElm = document.getElementsByClassName("element-10")[0];
+      const moveElm = document.getElementsByClassName("element-20")[0];
 
       const returnValue = parentElm.insertBefore(moveElm, beforeElm);
 
@@ -1536,8 +1668,8 @@ describe("elements", () => {
     });
 
     it("should handle text nodes", () => {
-      const [parentElm] = document.getElementsByTagName("body");
-      const [beforeElm] = document.getElementsByClassName("element-20");
+      const parentElm = document.getElementsByTagName("body")[0];
+      const beforeElm = document.getElementsByClassName("element-20")[0];
 
       const newNode = document.createTextNode("Tordyveln flyger i skymningen");
 
@@ -1627,22 +1759,22 @@ describe("elements", () => {
     });
 
     it("should return true is element matches selector", () => {
-      const [element] = document.getElementsByClassName("element");
+      const element = document.getElementsByClassName("element")[0];
       expect(element.matches(".element")).to.be.true;
     });
 
     it("should return true is element matches more complex selector", () => {
-      const [element] = document.getElementsByClassName("element");
+      const element = document.getElementsByClassName("element")[0];
       expect(element.matches(".parent-element div.element[data-attr=value]:first-child")).to.be.true;
     });
 
     it("should return false is element doesn't match selector", () => {
-      const [element] = document.getElementsByClassName("element");
+      const element = document.getElementsByClassName("element")[0];
       expect(element.matches(".random-element")).to.be.false;
     });
 
     it("should throw DOMException when passed an invalid selector", () => {
-      const [element] = document.getElementsByClassName("element");
+      const element = document.getElementsByClassName("element")[0];
 
       expect(() => {
         element.matches("$invalid");

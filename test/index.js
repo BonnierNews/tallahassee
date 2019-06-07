@@ -247,7 +247,7 @@ describe("Tallahassee", () => {
 
       await script.run(browser.window);
 
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
+      expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(1);
     });
 
     it("again", async () => {
@@ -258,7 +258,7 @@ describe("Tallahassee", () => {
       await script.run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);
+      expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(0);
     });
   });
 
@@ -271,8 +271,8 @@ describe("Tallahassee", () => {
       });
 
       const form = browser.document.getElementById("get-form");
-      const [input] = form.getElementsByTagName("input");
-      const [button] = form.getElementsByTagName("button");
+      const input = form.getElementsByTagName("input")[0];
+      const button = form.getElementsByTagName("button")[0];
 
       input.name = "q";
       input.value = "12";
@@ -298,7 +298,7 @@ describe("Tallahassee", () => {
       });
 
       const form = browser.document.getElementById("post-form");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -317,8 +317,8 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("post-form");
-      const [input] = form.getElementsByTagName("input");
-      const [button] = form.getElementsByTagName("button");
+      const input = form.getElementsByTagName("input")[0];
+      const button = form.getElementsByTagName("button")[0];
 
       input.name = "q";
       input.value = "12";
@@ -336,8 +336,8 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/?a=b");
 
       const form = browser.document.getElementById("post-form-without-action");
-      const [input] = form.getElementsByTagName("input");
-      const [button] = form.getElementsByTagName("button");
+      const input = form.getElementsByTagName("input")[0];
+      const button = form.getElementsByTagName("button")[0];
 
       input.name = "q";
       input.value = "12";
@@ -356,7 +356,7 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("checkboxes-get-form");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -370,7 +370,7 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("checkboxes-post-form");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -384,9 +384,11 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("select-form");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
-      const [select, multipleSelect] = form.getElementsByTagName("select");
+      const selects = form.getElementsByTagName("select");
+      const select = selects[0];
+      const multipleSelect = selects[1];
 
       select.options[0].selected = true;
       multipleSelect.options[0].selected = true;
@@ -404,9 +406,9 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("select-form");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
-      const [select] = form.getElementsByTagName("select");
+      const select = form.getElementsByTagName("select")[0];
 
       select.options[2].selected = true;
 
@@ -422,7 +424,7 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("get-form-redirect");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -437,7 +439,7 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-redirect");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -461,7 +463,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-external-redirect");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -484,7 +486,7 @@ describe("Tallahassee", () => {
         });
 
       const form = browser.document.getElementById("post-form-external-redirect");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -509,7 +511,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-external-direct");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -533,7 +535,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-external-direct");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -543,7 +545,7 @@ describe("Tallahassee", () => {
 
       expect(browser.window.location.href).to.equal("https://www.example.com/blahonga/");
 
-      const [newButton] = browser.document.getElementsByTagName("button");
+      const newButton = browser.document.getElementsByTagName("button")[0];
 
       newButton.click();
 
@@ -565,7 +567,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("multi-submit-form");
-      const [, button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[1];
 
       button.click();
 
@@ -590,7 +592,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("multi-submit-form");
-      const [,, button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[2];
 
       button.click();
 
@@ -615,7 +617,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("multi-submit-form");
-      const [,,, button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[3];
 
       button.click();
 
@@ -630,7 +632,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-absolute-url");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
@@ -650,7 +652,7 @@ describe("Tallahassee", () => {
       }).navigateTo("/");
 
       const form = browser.document.getElementById("post-form-absolute-url");
-      const [button] = form.getElementsByTagName("button");
+      const button = form.getElementsByTagName("button")[0];
 
       button.click();
 
