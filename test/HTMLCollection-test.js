@@ -115,4 +115,92 @@ describe("HTMLCollection", () => {
 
     expect(tags).to.eql(["0", "1", "2", "length", "item", "namedItem"]);
   });
+
+  it("mutates all collections", () => {
+    const elements1 = new HTMLCollection(document.body, ".row--boat");
+    const elements2 = new HTMLCollection(document.body, ".row--boat");
+    expect(elements1.length).to.equal(3);
+    expect(elements2.length).to.equal(3);
+
+    const secondItem = elements1[1];
+    expect(secondItem.tagName).to.equal("SPAN");
+    secondItem.parentElement.removeChild(secondItem);
+
+    expect(elements1.length).to.equal(2);
+    expect(elements2.length).to.equal(2);
+  });
+
+  describe("removeChild(child)", () => {
+    it("mutates document class collection", () => {
+      const elements = new HTMLCollection(document.documentElement, ".row");
+      expect(elements.length).to.equal(3);
+
+      const firstItem = elements[0];
+      firstItem.parentElement.removeChild(firstItem);
+
+      expect(elements.length).to.equal(2);
+    });
+
+    it("mutates document tag collection", () => {
+      const elements = new HTMLCollection(document.documentElement, "div", {attributes: false});
+      expect(elements.length).to.equal(3);
+
+      const firstItem = elements[0];
+      firstItem.parentElement.removeChild(firstItem);
+
+      expect(elements.length).to.equal(2);
+    });
+
+    it("mutates parentNode class collection", () => {
+      const elements = new HTMLCollection(document.body, ".row");
+      expect(elements.length).to.equal(3);
+
+      const firstItem = elements[0];
+      document.body.removeChild(firstItem);
+
+      expect(elements.length).to.equal(2);
+    });
+
+    it("mutates parentNode tag collection", () => {
+      const elements = new HTMLCollection(document.body, "div", {attributes: false});
+      expect(elements.length).to.equal(3);
+
+      const firstItem = elements[0];
+      document.body.removeChild(firstItem);
+
+      expect(elements.length).to.equal(2);
+    });
+
+    it("mutates parent parentNode tag collection", () => {
+      const elements = new HTMLCollection(document.body, "p", {attributes: false});
+      expect(elements.length).to.equal(1);
+
+      const firstItem = elements[0];
+      firstItem.parentElement.removeChild(firstItem);
+
+      expect(elements.length).to.equal(0);
+    });
+
+    it("mutates parent parentNode class collection", () => {
+      const elements = new HTMLCollection(document.body, ".row--boat");
+      expect(elements.length).to.equal(3);
+
+      const secondItem = elements[1];
+      expect(secondItem.tagName).to.equal("SPAN");
+      secondItem.parentElement.removeChild(secondItem);
+
+      expect(elements.length).to.equal(2);
+    });
+
+    it("mutates nested class collection", () => {
+      const elements = new HTMLCollection(document.body, ".row--boat");
+      expect(elements.length).to.equal(3);
+
+      const firstItem = elements[0];
+      expect(firstItem.tagName).to.equal("DIV");
+      firstItem.parentElement.removeChild(firstItem);
+
+      expect(elements.length).to.equal(1);
+    });
+  });
 });

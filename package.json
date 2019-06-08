@@ -1,12 +1,12 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" mocha",
-    "posttest": "eslint . --cache",
+    "posttest": "eslint . --cache && npm run toc",
     "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md && NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./API.md",
     "toc": "node ./scripts/generate-api-toc"
   },
