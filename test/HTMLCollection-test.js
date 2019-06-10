@@ -130,6 +130,11 @@ describe("HTMLCollection", () => {
     expect(elements2.length).to.equal(2);
   });
 
+  it("returns undefined for Symbol.isConcatSpreadable", () => {
+    const elements1 = new HTMLCollection(document.body, ".row--boat");
+    expect(elements1[Symbol.isConcatSpreadable]).to.equal(undefined);
+  });
+
   describe("removeChild(child)", () => {
     it("mutates document class collection", () => {
       const elements = new HTMLCollection(document.documentElement, ".row");
