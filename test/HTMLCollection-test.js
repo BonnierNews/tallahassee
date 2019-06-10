@@ -135,6 +135,14 @@ describe("HTMLCollection", () => {
     expect(elements1[Symbol.isConcatSpreadable]).to.equal(undefined);
   });
 
+  it("throws if trying to concat collections", () => {
+    const elements1 = new HTMLCollection(document.body, "span");
+    const elements2 = new HTMLCollection(document.body, "p");
+    expect(() => {
+      elements1.concat(elements2);
+    }).to.throw(TypeError, "concat is not a function");
+  });
+
   describe("removeChild(child)", () => {
     it("mutates document class collection", () => {
       const elements = new HTMLCollection(document.documentElement, ".row");
@@ -206,6 +214,33 @@ describe("HTMLCollection", () => {
       firstItem.parentElement.removeChild(firstItem);
 
       expect(elements.length).to.equal(1);
+    });
+  });
+
+  describe("insert", () => {
+    it("updates list if node is inserted that match selector", () => {
+      const elements = new HTMLCollection(document.body, "p");
+      expect(elements.length).to.equal(1);
+
+      const elm = document.createElement("p");
+      elm.textContent = "my new elm";
+      document.body.appendChild(elm);
+
+      expect(elements.length).to.equal(2);
+      expect(elements[1].innerText).to.equal("my new elm");
+    });
+
+    it("updates empty list if node is inserted that match selector", () => {
+      const elements = new HTMLCollection(document.body, ".nelm");
+      expect(elements.length).to.equal(0);
+
+      const elm = document.createElement("div");
+      elm.className = "nelm";
+      elm.innerHTML = "<p>my new elm</p>";
+      document.body.appendChild(elm);
+
+      expect(elements.length).to.equal(1);
+      expect(elements[0].innerText).to.equal("my new elm");
     });
   });
 });
