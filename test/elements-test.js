@@ -1180,6 +1180,11 @@ describe("elements", () => {
 
     it("has reset method", () => {
       expect(document.getElementById("get-form")).to.have.property("reset").that.is.a("function");
+      expect(document.getElementById("get-form")).to.have.property("reset").that.is.a("function");
+    });
+
+    it("returns the same form twice", () => {
+      expect(document.getElementById("get-form") === document.getElementById("get-form")).to.be.true;
     });
 
     it("submit button has associated form property", () => {
@@ -1216,11 +1221,11 @@ describe("elements", () => {
     });
 
     it("submit sets event target to form", (done) => {
-      const [form] = document.getElementsByTagName("form");
-      const [button] = document.getElementsByTagName("button");
+      const form = document.getElementsByTagName("form")[0];
+      const button = document.getElementsByTagName("button")[0];
 
       document.addEventListener("submit", (event) => {
-        expect(event.target === form).to.be.true;
+        expect(event.target === form, "event target is not form").to.be.true;
         done();
       });
 

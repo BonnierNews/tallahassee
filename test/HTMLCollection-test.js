@@ -22,7 +22,7 @@ describe("HTMLCollection", () => {
     });
   });
 
-  it("removes element from list if member attribute change that mathed selector", () => {
+  it("removes element from list if member attribute change that matched selector", () => {
     const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
 
