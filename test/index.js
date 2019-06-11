@@ -125,6 +125,25 @@ describe("Tallahassee", () => {
       browser = await browser.navigateTo("https://www.expressen.se/");
       expect(browser.response).to.be.ok;
     });
+
+    it("passes cookie if options.host is specified", async () => {
+      const browser = await Browser(app, {
+        headers: {
+          host: "www.expressen.se",
+        }
+      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
+
+    it("passes cookie if options.x-forwarded-host is specified", async () => {
+      const browser = await Browser(app, {
+        headers: {
+          host: "some-other-host.com",
+          "x-forwarded-host": "www.expressen.se",
+        }
+      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
   });
 
   describe("runScript(scriptElement)", () => {

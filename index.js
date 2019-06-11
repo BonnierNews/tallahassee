@@ -31,6 +31,7 @@ function Tallahassee(app, options = {}) {
       };
     }
 
+
     let numRedirects = 0;
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
@@ -63,13 +64,18 @@ function Tallahassee(app, options = {}) {
         if (parsedUrl.host) {
           reqUrl = reqUrl.replace(`${parsedUrl.protocol}//${parsedUrl.host}`, "");
         }
-        request = agent.get(reqUrl).redirects(0);
+
+        request = agent.get(reqUrl)
+          .redirects(0)
+          .set("cookie", agent.jar.getCookies({domain: localAppHost, path: parsedUrl.pathname}).toValueString());
+
         for (const key in headers) {
           if (key.toLowerCase() !== "cookie") {
             request.set(key, headers[key]);
           }
         }
       }
+
 
       return request.then((res) => {
         if (res.statusCode > 300 && res.statusCode < 308) {
