@@ -14,9 +14,7 @@ module.exports = Tallahassee;
 
 function Tallahassee(app, options = {}) {
   const agent = supertest.agent(app);
-  const forwardedHostHeader = options.headers && Object.entries(options.headers).find((entry) => entry[0].toLowerCase() === "x-forwarded-host");
-
-  const localAppHost = options.headers && ((forwardedHostHeader && forwardedHostHeader[1]) || options.headers.host);
+  const defaultPublicHost = getPublicHost(options.headers);
   return {
     jar: agent.jar,
     navigateTo,
@@ -31,11 +29,10 @@ function Tallahassee(app, options = {}) {
       };
     }
 
-
     let numRedirects = 0;
     for (const key in headers) {
       if (key.toLowerCase() === "cookie") {
-        agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean), localAppHost);
+        agent.jar.setCookies(headers[key].split(";").map((c) => c.trim()).filter(Boolean), defaultPublicHost);
       }
     }
 
@@ -50,8 +47,9 @@ function Tallahassee(app, options = {}) {
     function makeRequest(reqUrl) {
       let request;
       const parsedUrl = url.parse(reqUrl);
+      const publicHost = getPublicHost(headers) || defaultPublicHost;
 
-      if (parsedUrl.host && parsedUrl.host !== (localAppHost || headers.host)) {
+      if (parsedUrl.host && parsedUrl.host !== publicHost) {
         request = new Promise((resolve, reject) => {
           Request.get(reqUrl, { followRedirect: false }, (externalReqErr, externalReqRes) => {
             if (externalReqErr) {
@@ -61,13 +59,9 @@ function Tallahassee(app, options = {}) {
           });
         });
       } else {
-        if (parsedUrl.host) {
-          reqUrl = reqUrl.replace(`${parsedUrl.protocol}//${parsedUrl.host}`, "");
-        }
-
-        request = agent.get(reqUrl)
+        request = agent.get(parsedUrl.path)
           .redirects(0)
-          .set("cookie", agent.jar.getCookies({domain: localAppHost, path: parsedUrl.pathname}).toValueString());
+          .set("cookie", agent.jar.getCookies({domain: publicHost, path: parsedUrl.pathname}).toValueString());
 
         for (const key in headers) {
           if (key.toLowerCase() !== "cookie") {
@@ -75,7 +69,6 @@ function Tallahassee(app, options = {}) {
           }
         }
       }
-
 
       return request.then((res) => {
         if (res.statusCode > 300 && res.statusCode < 308) {
@@ -169,7 +162,7 @@ function Tallahassee(app, options = {}) {
           const navigation = navigateTo(url.format(p), submitHeaders);
           resolve(navigation);
         } else if (method.toUpperCase() === "POST") {
-          if (action.startsWith("/") || url.parse(action).host === localAppHost) {
+          if (action.startsWith("/") || url.parse(action).host === defaultPublicHost) {
             agent.post(url.parse(action).path)
               .set(submitHeaders)
               .set("Content-Type", "application/x-www-form-urlencoded")
@@ -350,6 +343,19 @@ function Tallahassee(app, options = {}) {
         throw new Error(`Blocked a frame with origin "${origin.protocol}//${origin.host}" from accessing a cross-origin frame.`);
       }
     }
+  }
+
+  function getPublicHost(headers) {
+    let host;
+    if (!headers) return host;
+
+    for (const key in headers) {
+      const lkey = key.toLowerCase();
+      if (lkey === "host") host = headers[key];
+      if (lkey === "x-forwarded-host") return headers[key];
+    }
+
+    return host;
   }
 }
 
