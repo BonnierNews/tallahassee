@@ -2,10 +2,8 @@
 
 const app = require("../app/app");
 const Browser = require("../");
-const Fetch = require("../lib/Fetch");
 const express = require("express");
 const nock = require("nock");
-const supertest = require("supertest");
 
 describe("window.fetch", () => {
   beforeEach(nock.cleanAll);
@@ -53,6 +51,7 @@ describe("window.fetch", () => {
     const status = await browser.window.fetch("/head", {
       method: "HEAD"
     }).then((res) => res.status);
+
     expect(status).to.eql(418);
   });
 
@@ -64,7 +63,10 @@ describe("window.fetch", () => {
   });
 
   it("local resource routes to app if host match", async () => {
-    const browser = await Browser(app).navigateTo("/", {host: "www.expressen.se", "x-forwarded-proto": "https"});
+    const browser = await Browser(app).navigateTo("/", {
+      host: "www.expressen.se",
+      "x-forwarded-proto": "https",
+    });
 
     const body = await browser.window.fetch("https://www.expressen.se/api").then((res) => res.json());
 
@@ -223,7 +225,8 @@ describe("window.fetch", () => {
 
     let cookie;
     nock("https://blahonga.expressen.se")
-      .get("/").reply(function () {
+      .get("/")
+      .reply(function blahongaReply() {
         const {headers} = this.req;
         cookie = headers.cookie;
         return [200, {}];
@@ -246,7 +249,8 @@ describe("window.fetch", () => {
 
     let cookie;
     nock("https://blahonga.expressen.se")
-      .get("/").reply(function () {
+      .get("/")
+      .reply(function blahongaReply() {
         const {headers} = this.req;
         cookie = headers.cookie;
         return [200, {}];
@@ -257,11 +261,18 @@ describe("window.fetch", () => {
   });
 
   describe("redirect", () => {
+    let localApp;
+    beforeEach(() => {
+      localApp = express();
+
+      localApp.get("/", (req, res) => {
+        return res.send("<html></html>");
+      });
+    });
+
     [301, 302, 303].forEach((statusCode) => {
       it(`if local resource GET returns ${statusCode} by the redirect should be followed`, async () => {
-        const localApp = express();
-
-        localApp.use("/", (req, res) => {
+        localApp.use("/redirect", (req, res) => {
           return res.redirect(statusCode, "https://www.example.com");
         });
 
@@ -269,19 +280,14 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("/").then((r) => r.json());
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("/redirect").then((r) => r.json());
 
         expect(resp).to.eql({ data: 1 });
       });
 
       it(`if local resource POST returns ${statusCode} by the redirect should be followed using GET`, async () => {
-        const localApp = express();
-
-        localApp.use("/", (req, res) => {
+        localApp.use("/redirect", (req, res) => {
           return res.redirect(statusCode, "https://www.example.com");
         });
 
@@ -289,11 +295,8 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("/", {
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("/redirect", {
           method: "POST",
           headers: {
             "content-type": "application/json"
@@ -305,37 +308,27 @@ describe("window.fetch", () => {
       });
 
       it(`if remote resource GET returns ${statusCode} the redirect should be followed`, async () => {
-        const localApp = express();
-
         nock("https://www.example.com")
           .get("/redirect")
           .reply(statusCode, null, { location: "https://www.example.com/" })
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("https://www.example.com/redirect").then((r) => r.json());
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("https://www.example.com/redirect").then((r) => r.json());
 
         expect(resp).to.eql({ data: 1 });
       });
 
       it(`if remote resource POST returns ${statusCode} the redirect should be followed using GET`, async () => {
-        const localApp = express();
-
         nock("https://www.example.com")
           .post("/redirect")
           .reply(statusCode, null, { location: "https://www.example.com/" })
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("https://www.example.com/redirect", {
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("https://www.example.com/redirect", {
           method: "POST",
           headers: {
             "content-type": "application/json"
@@ -349,9 +342,7 @@ describe("window.fetch", () => {
 
     [307, 308].forEach((statusCode) => {
       it(`if local resource GET returns ${statusCode} by the redirect should be followed`, async () => {
-        const localApp = express();
-
-        localApp.use("/", (req, res) => {
+        localApp.use("/redirect", (req, res) => {
           return res.redirect(statusCode, "https://www.example.com");
         });
 
@@ -359,19 +350,14 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("/").then((r) => r.json());
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("/redirect").then((r) => r.json());
 
         expect(resp).to.eql({ data: 1 });
       });
 
       it(`if local resource POST returns ${statusCode} by the redirect should be followed with preserved verb and body`, async () => {
-        const localApp = express();
-
-        localApp.use("/", (req, res) => {
+        localApp.use("/redirect", (req, res) => {
           return res.redirect(statusCode, "https://www.example.com");
         });
 
@@ -380,11 +366,8 @@ describe("window.fetch", () => {
           .matchHeader("content-type", "application/json")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("/", {
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("/redirect", {
           method: "POST",
           headers: {
             "content-type": "application/json"
@@ -396,9 +379,7 @@ describe("window.fetch", () => {
       });
 
       it(`if remote resource GET returns ${statusCode} by the redirect should be followed`, async () => {
-        const localApp = express();
-
-        localApp.use("/", (req, res) => {
+        localApp.use("/redirect", (req, res) => {
           return res.redirect(statusCode, "https://www.example.com");
         });
 
@@ -408,19 +389,14 @@ describe("window.fetch", () => {
           .get("/")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("https://www.example.com/redirect").then((r) => r.json());
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("https://www.example.com/redirect").then((r) => r.json());
 
         expect(resp).to.eql({ data: 1 });
       });
 
       it(`if remote resource POST returns ${statusCode} by the redirect should be followed with preserved verb and body`, async () => {
-        const localApp = express();
-
-        localApp.use("/", (req, res) => {
+        localApp.use("/redirect", (req, res) => {
           return res.redirect(statusCode, "https://www.example.com");
         });
 
@@ -431,11 +407,8 @@ describe("window.fetch", () => {
           .matchHeader("content-type", "application/json")
           .reply(200, { data: 1 });
 
-        const agent = supertest.agent(localApp);
-
-        const fetch = Fetch(agent, {});
-
-        const resp = await fetch("/", {
+        const browser = await Browser(localApp).navigateTo("/");
+        const resp = await browser.window.fetch("/redirect", {
           method: "POST",
           headers: {
             "content-type": "application/json"
@@ -448,57 +421,39 @@ describe("window.fetch", () => {
     });
 
     it("doesn't follow redirect from remote resource if follow is manual", async () => {
-      const localApp = express();
-      const agent = supertest.agent(localApp);
-
       nock("https://www.example.com")
         .get("/redirect")
         .reply(301, null, { location: "https://www.example.com/" });
 
-      const fetch = Fetch(agent, {});
-
-      const resp = await fetch("https://www.example.com/redirect", {redirect: "manual"});
+      const browser = await Browser(localApp).navigateTo("/");
+      const resp = await browser.window.fetch("https://www.example.com/redirect", {redirect: "manual"});
       expect(resp.headers.get("location")).to.equal("https://www.example.com/");
     });
 
     it("doesn't follow redirect from local resource if follow is manual", async () => {
-      const localApp = express();
-
-      localApp.use("/", (req, res) => {
+      localApp.use("/redirect", (req, res) => {
         return res.redirect(301, "https://www.example.com");
       });
 
-      const agent = supertest.agent(localApp);
-
-      const fetch = Fetch(agent, {});
-
-      const resp = await fetch("/", {redirect: "manual"});
+      const browser = await Browser(localApp).navigateTo("/");
+      const resp = await browser.window.fetch("/redirect", {redirect: "manual"});
       expect(resp.headers.get("location")).to.equal("https://www.example.com");
     });
 
     it("redirect from remote resource to local resource is handled", async () => {
-      const localApp = express();
-
-      nock("https://www.example.com")
-        .get("/redirect")
-        .reply(301, null, { location: "https://www.expressen.se/" });
-
-      localApp.use("/", (req, res) => {
+      localApp.use("/redirected", (req, res) => {
         return res.send({data: 1});
       });
 
-      const agent = supertest.agent(localApp);
+      nock("https://www.example.com")
+        .get("/redirect")
+        .reply(301, null, { location: "https://www.expressen.se/redirected" });
 
-      const fetch = Fetch(agent, {
-        request: {
-          header: {
-            host: "www.expressen.se"
-          }
-        }
+      const browser = await Browser(localApp).navigateTo("/", {
+        host: "www.expressen.se"
       });
 
-      const resp = await fetch("https://www.example.com/redirect").then((r) => r.json());
-
+      const resp = await browser.window.fetch("https://www.example.com/redirect").then((r) => r.json());
       expect(resp).to.eql({data: 1});
     });
   });

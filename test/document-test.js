@@ -11,11 +11,12 @@ describe("Document", () => {
     const jar = CookieJar();
     jar.setCookies("_ga=1");
     document = Document({
-      request: {
-        header: {
-          referer: "referer.url"
-        },
-        url: "https://www.expressen.se/nyheter/article-slug/"
+      url: "https://www.expressen.se/nyheter/article-slug/",
+      headers: new Map(Object.entries({})),
+      location: {
+        host: "www.expressen.se",
+        hostname: "www.expressen.se",
+        pathname: "/nyheter/article-slug/",
       },
       text: `
         <html>
@@ -56,6 +57,19 @@ describe("Document", () => {
 
     it("exposes documentElement with expected behaviour", async () => {
       expect(document.documentElement).to.have.property("tagName", "HTML");
+    });
+
+    it("referrer is empty if direct call", () => {
+      expect(document.referrer).to.equal("");
+    });
+
+    it("referrer returns referer header if defined", () => {
+      const doc = Document({
+        url: "https://www.expressen.se/nyheter/article-slug/",
+        headers: new Map(Object.entries({"referer": "https://example.com"})),
+        text: "<html></html>"
+      });
+      expect(doc).to.have.property("referrer", "https://example.com");
     });
   });
 
@@ -244,16 +258,6 @@ describe("Document", () => {
     it("can set cookie with expires", () => {
       document.cookie = "termsAware=1;path=/;domain=.expressen.se;expires=Wed, 20 Sep 2028 08:38:44 GMT";
       expect(document.cookie).to.equal("_ga=1;termsAware=1");
-    });
-  });
-
-  describe("referrer", () => {
-    it("has referer", () => {
-      expect(document.referrer).to.be.ok;
-    });
-
-    it("has a url", () => {
-      expect(document.referrer).to.equal("referer.url");
     });
   });
 

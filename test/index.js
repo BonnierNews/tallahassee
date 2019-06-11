@@ -19,19 +19,20 @@ describe("Tallahassee", () => {
 
     it("sets browser window location", async () => {
       const browser = await Browser(app).navigateTo("/", {
-        Host: "www.expressen.se"
+        Host: "www.expressen.se",
+        "x-forwarded-proto": "https"
       });
       expect(browser.window).to.be.ok;
+      expect(browser.window.location.protocol).to.equal("https:");
       expect(browser.window.location.host).to.equal("www.expressen.se");
     });
 
     it("exposes http response", async () => {
       const browser = await Browser(app).navigateTo("/");
       expect(browser.response).to.be.ok;
-      expect(browser.response).to.have.property("statusCode", 200);
-      expect(browser.response).to.have.property("headers").that.deep.include({
-        "content-type": "text/html; charset=UTF-8"
-      });
+      expect(browser.response).to.have.property("status", 200);
+      expect(browser.response).to.have.property("headers");
+      expect(browser.response.headers.get("content-type")).to.equal("text/html; charset=UTF-8");
     });
 
     it("throws if not 200", async () => {
@@ -59,7 +60,7 @@ describe("Tallahassee", () => {
     it("follows redirects", async () => {
       const browser = await Browser(app).navigateTo("/redirect");
       expect(browser.response).to.be.ok;
-      expect(browser.response).to.have.property("statusCode", 200);
+      expect(browser.response).to.have.property("status", 200);
       expect(browser.window.location.pathname).to.equal("/req-info-html");
     });
 
@@ -126,10 +127,28 @@ describe("Tallahassee", () => {
       expect(browser.response).to.be.ok;
     });
 
+    it("passes cookie if host is specified", async () => {
+      const browser = await Browser(app).navigateTo("/reply-with-cookies", {
+        host: "www.expressen.se",
+        cookie: "myCookie=singoalla;mySecondCookie=chocolateChip",
+      });
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
+
     it("passes cookie if options.host is specified", async () => {
       const browser = await Browser(app, {
         headers: {
           host: "www.expressen.se",
+        }
+      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+    });
+
+    it("passes cookie if options.x-forwarded-host is specified", async () => {
+      const browser = await Browser(app, {
+        headers: {
+          host: "some-other-host.com",
+          "x-forwarded-host": "www.expressen.se",
         }
       }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
       expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
@@ -285,7 +304,7 @@ describe("Tallahassee", () => {
     it("submits get form on click with maintained headers", async () => {
       const browser = await Browser(app).navigateTo("/", {
         host: "www.expressen.se",
-        proto: "https",
+        "x-forwarded-proto": "https",
         cookie: "_ga=2",
       });
 
@@ -311,7 +330,7 @@ describe("Tallahassee", () => {
     it("submits post form on click with maintained headers", async () => {
       const browser = await Browser(app).navigateTo("/", {
         host: "www.expressen.se",
-        proto: "https",
+        "x-forwarded-proto": "https",
         cookie: "_ga=2",
         "content-type": "unknown/mime-type"
       });
@@ -709,7 +728,9 @@ describe("Tallahassee", () => {
           "Content-Type": "text/html"
         });
 
-      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+      const browser = await Browser(app).navigateTo("/", {
+        cookie: "_ga=2"
+      });
 
       const element = browser.document.createElement("iframe");
       element.id = "iframe";
