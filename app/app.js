@@ -6,6 +6,8 @@ const app = express();
 const index = Path.join(__dirname, "assets/public/index.html");
 const errorPage = Path.join(__dirname, "assets/public/error.html");
 
+app.set("trust proxy", true);
+
 app.use("/", express.static(Path.join(__dirname, "assets/public")));
 app.use("/", express.static(Path.join(__dirname, "assets/images")));
 
@@ -29,7 +31,7 @@ app.get("/setcookie", (req, res) => {
     .sendFile(index);
 });
 app.get("/reply-with-cookies", (req, res) => {
-  res.send(`<html><body>${req.headers.cookie}</body></html>`);
+  res.send(`<html><body>${req.headers.cookie || ""}</body></html>`);
 });
 
 app.get("/redirect", (req, res) => {

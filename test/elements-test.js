@@ -3,6 +3,7 @@
 const DOMException = require("domexception");
 const Element = require("../lib/Element");
 const DocumentFragment = require("../lib/DocumentFragment");
+const url = require("url");
 const {Document} = require("../lib");
 const {Event} = require("../lib/Events");
 
@@ -46,9 +47,8 @@ describe("elements", () => {
     let document;
     beforeEach(() => {
       document = Document({
-        request: {
-          url: "https://www.expressen.se/"
-        },
+        url: "https://www.expressen.se/",
+        location: url.parse("https://www.expressen.se/"),
         text: `
           <html>
             <body>

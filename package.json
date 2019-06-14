@@ -31,7 +31,6 @@
     "cheerio": "^1.0.0-rc.3",
     "domexception": "^1.0.1",
     "node-fetch": "^2.6.0",
-    "request": "^2.88.0",
     "supertest": "^4.0.2"
   },
   "devDependencies": {
