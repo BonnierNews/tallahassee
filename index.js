@@ -2,6 +2,7 @@
 
 const assert = require("assert");
 const getLocation = require("./lib/getLocation");
+const Fetch = require("./lib/Fetch");
 const makeAbsolute = require("./lib/makeAbsolute");
 const NodeFetch = require("node-fetch");
 const querystring = require("querystring");
@@ -119,7 +120,7 @@ function Tallahassee(app, options = {}) {
       const document = Document({text, location}, agent.jar);
       const window = Window(resp, {
         location,
-        fetch,
+        fetch: Fetch(fetch),
         get document() {
           return document;
         },

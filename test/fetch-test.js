@@ -260,6 +260,18 @@ describe("window.fetch", () => {
     expect(cookie).to.eql(["_ga=1"]);
   });
 
+  it("exposes pendingRequests promise list", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    browser.window.fetch("/req?q=1");
+    browser.window.fetch("/req?q=2");
+
+    const responses = await Promise.all(browser.window.fetch._pendingRequests);
+    expect(responses).to.have.length(2);
+    expect(responses[0].ok).to.be.ok;
+    expect(responses[1].ok).to.be.ok;
+  });
+
   describe("redirect", () => {
     let localApp;
     beforeEach(() => {
