@@ -95,8 +95,8 @@ describe("Window", () => {
 
     it(".userAgent is returns User-Agent header", () => {
       const wndw = Window({
-        headers: new Map(Object.entries({"user-agent": "Mozilla/5.0"})),
-      }, {document});
+        headers: new Map(Object.entries({})),
+      }, {document}, "Mozilla/5.0");
 
       expect(wndw.navigator).to.have.property("userAgent", "Mozilla/5.0");
     });

@@ -263,13 +263,15 @@ describe("window.fetch", () => {
   it("exposes pendingRequests promise list", async () => {
     const browser = await Browser(app).navigateTo("/");
 
-    browser.window.fetch("/req?q=1");
-    browser.window.fetch("/req?q=2");
+    let completed = 0;
+    browser.window.fetch("/req?q=1").then(() => ++completed);
+    browser.window.fetch("/req?q=2").then(() => ++completed);
 
-    const responses = await Promise.all(browser.window.fetch._pendingRequests);
-    expect(responses).to.have.length(2);
-    expect(responses[0].ok).to.be.ok;
-    expect(responses[1].ok).to.be.ok;
+    expect(browser.window.fetch._pendingRequests).to.have.length(2);
+
+    await Promise.all(browser.window.fetch._pendingRequests);
+
+    expect(completed).to.equal(2);
   });
 
   describe("redirect", () => {
@@ -284,13 +286,13 @@ describe("window.fetch", () => {
 
     [301, 302, 303].forEach((statusCode) => {
       it(`if local resource GET returns ${statusCode} by the redirect should be followed`, async () => {
-        localApp.use("/redirect", (req, res) => {
-          return res.redirect(statusCode, "https://www.example.com");
-        });
-
         nock("https://www.example.com")
           .get("/")
           .reply(200, { data: 1 });
+
+        localApp.use("/redirect", (req, res) => {
+          return res.redirect(statusCode, "https://www.example.com");
+        });
 
         const browser = await Browser(localApp).navigateTo("/");
         const resp = await browser.window.fetch("/redirect").then((r) => r.json());
@@ -349,6 +351,36 @@ describe("window.fetch", () => {
         }).then((r) => r.json());
 
         expect(resp).to.eql({ data: 1 });
+      });
+
+
+      it(`redirect with ${statusCode} gets cookies for domain`, async () => {
+        localApp.use("/redirect", (req, res) => {
+          return res.redirect(statusCode, "https://www.example.com");
+        });
+
+        const browser = await Browser(localApp, {
+          headers: {
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Host": "www.expressen.se"
+          }
+        }).navigateTo("/", {
+          cookie: "_ga=1",
+          "set-cookie": "_ga=2; Domain=example.com",
+        });
+
+        let cookie;
+        nock("https://www.example.com")
+          .get("/")
+          .reply(function blahongaReply() {
+            const {headers} = this.req;
+            cookie = headers.cookie;
+            return [200, {cookie}];
+          });
+
+        const resp = await browser.window.fetch("/redirect").then((r) => r.json());
+
+        expect(resp).to.eql({ cookie: ["_ga=2"] });
       });
     });
 

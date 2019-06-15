@@ -32,6 +32,40 @@ describe("cookies", () => {
       expect(browser.jar.getCookie("myCookie", {domain: "127.0.0.1", path: "/"})).to.be.ok;
     });
 
+    it("navigating with set-cookie header sets cookies", async () => {
+      const browser = await Browser(app);
+
+      await browser.navigateTo("/reply-with-cookies", {"set-cookie": "myCookie=singoalla"});
+
+      expect(browser.jar.getCookie("myCookie", {domain: "127.0.0.1", path: "/"})).to.be.ok;
+    });
+
+    it("navigating with set-cookie array header sets cookies", async () => {
+      const browser = await Browser(app);
+
+      await browser.navigateTo("/reply-with-cookies", {"set-cookie": ["myCookie=singoalla", "myOtherCookie=drommar"]});
+
+      expect(browser.jar.getCookie("myCookie", {domain: "127.0.0.1", path: "/"})).to.be.ok;
+      expect(browser.jar.getCookie("myOtherCookie", {domain: "127.0.0.1", path: "/"})).to.be.ok;
+    });
+
+    it("navigating with set-cookie forwards cookie to backend", async () => {
+      const browser = await Browser(app);
+
+      const page = await browser.navigateTo("/reply-with-cookies", {
+        "host": "internal.cloud.io",
+        "x-forwarded-host": "www.expressen.se",
+        "x-forwarded-proto": "https",
+        "set-cookie": [
+          "myCookie=singoalla; Domain=.expressen.se; Secure",
+          "myOtherCookie=drommar; Domain=.expressen.se; Secure; HttpOnly",
+          "myNotSoSafeCookie=transfett; Domain=www.expressen.se",
+        ]
+      });
+
+      expect(page.document.body.textContent).to.equal("myCookie=singoalla;myOtherCookie=drommar;myNotSoSafeCookie=transfett");
+    });
+
     it("navigating with cookie header sets cookies on passed host", async () => {
       const browser = await Browser(app, {
         headers: {
@@ -168,6 +202,30 @@ describe("cookies", () => {
 
       const response = await browser.window.fetch("/req").then((res) => res.json());
       expect(response.cookie).to.equal("apiToken=1; remoteToken=2");
+    });
+
+    it("redirect can overwrite cookies", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        host: "www.expressen.se",
+        "x-forwarded-proto": "https",
+      });
+
+      browser.jar.setCookie("apiToken=0; Path=/; Domain=expressen.se");
+
+      nock("http://api.expressen.se")
+        .get("/")
+        .reply(307, null, {
+          "set-cookie": [
+            "apiToken=1; Path=/; Domain=expressen.se",
+            "remoteToken=2; Path=/; Domain=expressen.se",
+            "localToken=3; Path=/",
+          ],
+          location: "https://www.expressen.se/req",
+        });
+
+      await browser.window.fetch("http://api.expressen.se/");
+
+      expect(browser.document.cookie).to.equal("apiToken=1; remoteToken=2");
     });
   });
 });

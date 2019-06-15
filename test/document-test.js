@@ -63,10 +63,10 @@ describe("Document", () => {
       expect(document.referrer).to.equal("");
     });
 
-    it("referrer returns referer header if defined", () => {
+    it("referrer returns source referrer", () => {
       const doc = Document({
         url: "https://www.expressen.se/nyheter/article-slug/",
-        headers: new Map(Object.entries({"referer": "https://example.com"})),
+        referrer: "https://example.com",
         text: "<html></html>"
       });
       expect(doc).to.have.property("referrer", "https://example.com");

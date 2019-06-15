@@ -127,6 +127,16 @@ describe("Tallahassee", () => {
       expect(browser.response).to.be.ok;
     });
 
+    it("makes request to local app when the requested host matches x-forwarded-host and protocol matches x-forwarded-proto from navigation", async () => {
+      let browser = await Browser(app).navigateTo("/", {
+        host: "some-other-host.com",
+        "x-forwarded-host": "www.expressen.se",
+        "x-forwarded-proto": "https"
+      });
+      browser = await browser.navigateTo("https://www.expressen.se/");
+      expect(browser.response).to.be.ok;
+    });
+
     it("passes cookie if host is specified", async () => {
       const browser = await Browser(app).navigateTo("/reply-with-cookies", {
         host: "www.expressen.se",
@@ -264,6 +274,14 @@ describe("Tallahassee", () => {
 
       expect(browser.document).to.have.property("cookie", "cookie1=abc;cookie2=def;cookie3=ghi");
     });
+
+    it("sets referer from navigation headers", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        referer: "https://www.example.com"
+      });
+
+      expect(browser.document).to.have.property("referrer", "https://www.example.com");
+    });
   });
 
   describe("window", () => {
@@ -271,6 +289,26 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/");
 
       expect(browser.window.document === browser.document).to.be.true;
+    });
+
+    it("exposes navigator property with userAgent from options", async () => {
+      const browser = await Browser(app, {
+        headers: {
+          "User-Agent": "Mozilla 5.0"
+        }
+      }).navigateTo("/");
+
+      expect(browser.window.navigator).to.be.ok;
+      expect(browser.window.navigator).to.have.property("userAgent", "Mozilla 5.0");
+    });
+
+    it("exposes navigator property with userAgent from navigateTo headers", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        "User-Agent": "Mozilla 5.0"
+      });
+
+      expect(browser.window.navigator).to.be.ok;
+      expect(browser.window.navigator).to.have.property("userAgent", "Mozilla 5.0");
     });
   });
 

@@ -9,6 +9,7 @@ const querystring = require("querystring");
 const supertest = require("supertest");
 const url = require("url");
 const vm = require("vm");
+const {version} = require("./package.json");
 const {CookieAccessInfo, Cookie} = require("cookiejar");
 const {Document, Window} = require("./lib");
 const {normalizeHeaders, getLocationHost} = require("./lib/getHeaders");
@@ -29,13 +30,22 @@ function Tallahassee(app, options = {}) {
       ...normalizeHeaders(headers),
     };
 
+    if (requestHeaders["set-cookie"]) {
+      const setCookies = requestHeaders["set-cookie"];
+      saveToJar(setCookies);
+      requestHeaders["set-cookie"] = undefined;
+    }
+
     const webPage = WebPage(agent, requestHeaders, agent.jar);
-    return webPage.load(linkUrl, headers, statusCode);
+    return webPage.load(linkUrl, requestHeaders, statusCode);
   }
 
   function WebPage(origin, originRequestHeaders, jar) {
     const originHost = getLocationHost(originRequestHeaders);
     const protocol = `${originRequestHeaders["x-forwarded-proto"] || "http"}:`;
+
+    let userAgent = `Tallahassee/${version}`;
+    const referrer = originRequestHeaders.referer;
     const page = {
       originHost,
       load,
@@ -46,6 +56,7 @@ function Tallahassee(app, options = {}) {
 
     function load(uri, headers, statusCode = 200) {
       const requestHeaders = normalizeHeaders(headers);
+      if (requestHeaders["user-agent"]) userAgent = requestHeaders["user-agent"];
 
       if (requestHeaders.cookie) {
         const publicHost = getLocationHost(requestHeaders);
@@ -74,16 +85,7 @@ function Tallahassee(app, options = {}) {
         const setCookieHeader = res.headers.get("set-cookie");
         if (setCookieHeader) {
           const cookieDomain = url.parse(res.url).hostname;
-          let setCookies = setCookieHeader;
-
-          if (!Array.isArray(setCookies)) setCookies = setCookies.split(",").filter(Boolean);
-          for (const cookieStr of setCookies) {
-            const cookie = Cookie(cookieStr);
-
-            if (!cookie.domain) cookie.domain = cookieDomain;
-
-            agent.jar.setCookie(cookie);
-          }
+          saveToJar(setCookieHeader, cookieDomain);
         }
 
         if (res.status > 300 && res.status < 309 && requestOptions.redirect !== "manual") {
@@ -117,14 +119,18 @@ function Tallahassee(app, options = {}) {
 
       const text = await resp.text();
 
-      const document = Document({text, location}, agent.jar);
+      const document = Document({
+        text,
+        location,
+        referrer,
+      }, agent.jar);
       const window = Window(resp, {
         location,
         fetch: Fetch(fetch),
         get document() {
           return document;
         },
-      });
+      }, userAgent);
 
       Object.defineProperty(document, "window", {
         get() {
@@ -134,10 +140,11 @@ function Tallahassee(app, options = {}) {
 
       const browserContext = {
         $: document.$,
+        jar,
         document,
         focus,
         focusIframe,
-        navigateTo,
+        navigateTo: navigateAway,
         runScript,
         runScripts,
         setElementsToScroll,
@@ -162,6 +169,10 @@ function Tallahassee(app, options = {}) {
       focus();
 
       return browserContext;
+
+      function navigateAway(...args) {
+        return load(...args);
+      }
 
       function focus() {
       }
@@ -348,15 +359,13 @@ function Tallahassee(app, options = {}) {
         headers.host = parsedUri.host;
       }
 
-      if (!headers.cookie) {
-        const publicHost = getLocationHost(headers);
-        const cookieDomain = parsedUri.hostname || publicHost || originHost || "127.0.0.1";
-        const isSecure = (parsedUri.protocol || protocol) === "https:";
-        const accessInfo = CookieAccessInfo(cookieDomain, parsedUri.pathname, isSecure);
+      const publicHost = getLocationHost(headers);
+      const cookieDomain = parsedUri.hostname || publicHost || originHost || "127.0.0.1";
+      const isSecure = (parsedUri.protocol || protocol) === "https:";
+      const accessInfo = CookieAccessInfo(cookieDomain, parsedUri.pathname, isSecure);
 
-        const cookieValue = jar.getCookies(accessInfo).toValueString();
-        if (cookieValue) headers.cookie = cookieValue;
-      }
+      const cookieValue = jar.getCookies(accessInfo).toValueString();
+      if (cookieValue) headers.cookie = cookieValue;
 
       return isLocal ? originRequest(parsedUri.path, requestOptions) : NodeFetch(uri, {...requestOptions, redirect: "manual"});
 
@@ -378,7 +387,8 @@ function Tallahassee(app, options = {}) {
 
       if (requestOptions.headers) {
         for (const header in requestOptions.headers) {
-          req.set(header, requestOptions.headers[header]);
+          const headerValue = requestOptions.headers[header];
+          if (headerValue) req.set(header, requestOptions.headers[header]);
         }
       }
 
@@ -404,6 +414,17 @@ function Tallahassee(app, options = {}) {
       });
     }
   }
+
+  function saveToJar(cookieList, cookieDomain) {
+    if (!cookieList) return;
+    if (!Array.isArray(cookieList)) cookieList = cookieList.split(",").filter(Boolean);
+
+    for (const cookieStr of cookieList) {
+      const cookie = Cookie(cookieStr);
+      if (!cookie.domain) cookie.domain = cookieDomain;
+      agent.jar.setCookie(cookie);
+    }
+  }
 }
 
 function getFormData(form, submitElement) {
@@ -420,7 +441,6 @@ function getFormData(form, submitElement) {
         }
       } else if (input.tagName === "SELECT") {
         const selected = input.selectedOptions;
-
 
         if (selected.length === 1) {
           acc[input.name] = selected[0].value;
