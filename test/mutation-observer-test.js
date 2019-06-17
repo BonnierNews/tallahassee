@@ -462,5 +462,18 @@ describe("MutationObserver", () => {
       expect(record).to.have.property("attributeName", "src");
       expect(record.target === img).to.be.true;
     });
+
+    it("observer with attributes doesn't call callback when element children changes", () => {
+      const records = [];
+      const observer = new MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true});
+
+      const div = browser.document.createElement("div");
+      browser.document.body.appendChild(div);
+
+      expect(records).to.have.length(0);
+    });
   });
 });

@@ -1,6 +1,23 @@
 Changelog
 ---------
 
+# 10.2.3
+- Only call MutationObserver callback when observed change is detected - honour observe options
+
+# 10.2
+Refactor
+
+# 10.1.0
+- Introduce [RadioNodeList](https://developer.mozilla.org/en-US/docs/Web/API/RadioNodeList)
+- Expose fields of form as named properties
+- Named radio buttons is exposed on form as RadioNodeList, with value
+
+# 10.0.0
+- Introduce [HTML Collection](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection)
+
+## Breaking
+- Returns [HTML Collection](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection) from `getElementsBy*`
+
 # 9.4.0
 - Support `document.getElementsByName`. NB! with the behaviour of IE10 and lower, i.e. elements with id that match passed name are also returned (sic)
 - Close #72 bug
