@@ -448,6 +448,22 @@ describe("elements", () => {
       elm.style.marginTop = 0;
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-ms-grid-columns: auto auto;margin-top: 0;\">Test</h2>");
     });
+
+    it("handles empty string as reset value", () => {
+      const [elm] = document.getElementsByTagName("img");
+      expect(elm.style.display).to.equal("none");
+
+      elm.style.display = "";
+      expect(elm.style.display).to.equal("");
+    });
+
+    it("handles null as reset value", () => {
+      const [elm] = document.getElementsByTagName("img");
+      expect(elm.style.display).to.equal("none");
+
+      elm.style.display = null;
+      expect(elm.style.display).to.equal("");
+    });
   });
 
   describe("api", () => {
