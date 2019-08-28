@@ -670,20 +670,14 @@ describe("elements", () => {
       expect(eventFired).to.be.false;
     });
 
-    it("emits change if clicked and checked changes", (done) => {
-      const elm = document.getElementsByTagName("input")[1];
-      elm.addEventListener("change", () => done());
-      elm.click();
-    });
-
-    it("does NOT emit change if clicked again", () => {
+    it("emits change if clicked multiple times", () => {
       const elm = document.getElementsByTagName("input")[1];
       let changed = 0;
       elm.addEventListener("change", () => changed++);
       elm.click();
       elm.click();
 
-      expect(changed).to.equal(1);
+      expect(changed).to.equal(2);
     });
 
     it("emits change on form if clicked", (done) => {
