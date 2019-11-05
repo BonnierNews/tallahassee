@@ -1829,6 +1829,14 @@ describe("elements", () => {
       buttons[0].removeEventListener("click", increment);
       buttons[0].click();
       expect(clickCount).to.equal(2);
+
+      let focusCount = 0;
+      buttons[0].addEventListener("focus", () => {
+        ++focusCount;
+        this.focusCount = !this.focusCount ? 1 : this.focusCount + 1;
+      });
+      buttons[0].focus();
+      expect(focusCount).to.equal(1);
     });
 
     it("listens to event once", () => {
@@ -1846,6 +1854,13 @@ describe("elements", () => {
       buttons[2].click();
 
       expect(clickCount).to.equal(0);
+
+      let focusCount = 0;
+      buttons[2].addEventListener("focus", () => {
+        ++focusCount;
+      });
+      buttons[2].focus();
+      expect(focusCount).to.equal(0);
     });
 
     it("event listeners are invoked with element as this", () => {
