@@ -1,5 +1,11 @@
 Changelog
 ---------
+# 10.3.1
+- Allow secure cookies to be read from `document.cookie` when on a secure location
+
+# 10.3.0
+- Make sure checkbox always emits change events
+- Handles null properly as a reset value on style property
 
 # 10.2.3
 - Only call MutationObserver callback when observed change is detected - honour observe options

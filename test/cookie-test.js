@@ -166,6 +166,23 @@ describe("cookies", () => {
       const browser = await Browser(app).navigateTo("/setcookie");
       expect(browser.document.cookie).to.equal("regular_cookie=regular_cookie_value");
     });
+
+    it("disallows reading of secure cookies on insecure page", async () => {
+      const browser = await Browser(app).navigateTo("/");
+      browser.jar.setCookie("regular_cookie=1");
+      browser.jar.setCookie("secure_cookie=1; secure=true");
+      expect(browser.document.cookie).to.equal("regular_cookie=1");
+    });
+
+    it("allows reading of secure cookies on secure page", async () => {
+      const browser = await Browser(app).navigateTo("/", {
+        host: "www.expressen.se",
+        "x-forwarded-proto": "https",
+      });
+      browser.jar.setCookie("regular_cookie=1");
+      browser.jar.setCookie("secure_cookie=1; secure=true");
+      expect(browser.document.cookie).to.equal("regular_cookie=1;secure_cookie=1");
+    });
   });
 
   describe("fetch", () => {
