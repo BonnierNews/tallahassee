@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+# 10.3.2
+- Implement `IntersectionObserverEntry.isIntersecting` function
+
 # 10.3.1
 - Allow secure cookies to be read from `document.cookie` when on a secure location
 
