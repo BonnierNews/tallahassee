@@ -17,6 +17,7 @@ describe("IntersectionObserver", () => {
     expect(intersectionObserver._getObserved()).to.have.length(1);
     expect(browser.window.IntersectionObserverEntry).to.exist;
     expect(browser.window.IntersectionObserverEntry.prototype.intersectionRatio).to.exist;
+    expect(browser.window.IntersectionObserverEntry.prototype.isIntersecting).to.exist;
   });
 
   it("listens to window scroll", async () => {
