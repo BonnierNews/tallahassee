@@ -214,4 +214,29 @@ describe("Intersection Calc", () => {
       });
     });
   });
+
+  describe("isIntersecting", () => {
+    const {getIsIntersecting} = intersectionCalc;
+
+    describe("with no intersectionRatio", () => {
+      it("assumes that it's not intersecting", () => {
+        const result = getIsIntersecting();
+        expect(result).to.equal(false);
+      });
+    });
+
+    describe("with intersectionRatio equal to 0", () => {
+      it("is not intersecting", () => {
+        const result = getIsIntersecting(0);
+        expect(result).to.equal(false);
+      });
+    });
+
+    describe("with intersectionRatio greater than 0", () => {
+      it("is intersecting", () => {
+        const result = getIsIntersecting(0.01);
+        expect(result).to.equal(true);
+      });
+    });
+  });
 });
