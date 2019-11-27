@@ -1816,7 +1816,7 @@ describe("elements", () => {
       buttons = document.getElementsByTagName("button");
       clickCount = 0;
     });
-    
+
     it("listens to focus event", () => {
       let focusCount = 0;
       buttons[0].addEventListener("focus", () => {
@@ -1825,7 +1825,7 @@ describe("elements", () => {
       buttons[0].focus();
       expect(focusCount).to.equal(1);
     });
-    
+
     it("does not trigger focus event when the element is disabled", () => {
       let focusCount = 0;
       buttons[2].addEventListener("focus", () => {
@@ -1858,7 +1858,7 @@ describe("elements", () => {
       buttons[0].click();
       expect(clickCount).to.equal(1);
     });
-    
+
     it("does not fire event when the element is disabled", () => {
       buttons[2].addEventListener("click", increment);
       buttons[2].click();

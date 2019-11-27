@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+# 10.3.3
+- Support `element.focus()` unless element is disabled
+
 # 10.3.2
 - Implement `IntersectionObserverEntry.isIntersecting` function
 
