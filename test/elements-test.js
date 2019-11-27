@@ -1816,8 +1816,26 @@ describe("elements", () => {
       buttons = document.getElementsByTagName("button");
       clickCount = 0;
     });
+    
+    it("listens to focus event", () => {
+      let focusCount = 0;
+      buttons[0].addEventListener("focus", () => {
+        ++focusCount;
+      });
+      buttons[0].focus();
+      expect(focusCount).to.equal(1);
+    });
+    
+    it("does not trigger focus event when the element is disabled", () => {
+      let focusCount = 0;
+      buttons[2].addEventListener("focus", () => {
+        ++focusCount;
+      });
+      buttons[2].focus();
+      expect(focusCount).to.equal(0);
+    });
 
-    it("listens to event", () => {
+    it("listens to click event", () => {
       buttons[0].addEventListener("click", increment);
 
       buttons[0].click();
@@ -1831,7 +1849,7 @@ describe("elements", () => {
       expect(clickCount).to.equal(2);
     });
 
-    it("listens to event once", () => {
+    it("listens to click event once", () => {
       buttons[0].addEventListener("click", increment, {once: true});
 
       buttons[0].click();
@@ -1840,15 +1858,15 @@ describe("elements", () => {
       buttons[0].click();
       expect(clickCount).to.equal(1);
     });
-
-    it("does not fire event when disabled", () => {
+    
+    it("does not fire event when the element is disabled", () => {
       buttons[2].addEventListener("click", increment);
       buttons[2].click();
 
       expect(clickCount).to.equal(0);
     });
 
-    it("event listeners are invoked with element as this", () => {
+    it("can invoke click event listeners with element as this", () => {
       buttons[0].addEventListener("click", increment);
       buttons[1].addEventListener("click", increment);
 
