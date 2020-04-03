@@ -1,5 +1,8 @@
 Changelog
 ---------
+# 10.4.0
+- Support for `min-width` and `max-width` in `matchMedia`
+- Support for combining a media type and media condition in `matchMedia`
 
 # 10.3.3
 - Support `element.focus()` unless element is disabled

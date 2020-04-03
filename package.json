@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "10.3.4",
+  "version": "10.4.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
