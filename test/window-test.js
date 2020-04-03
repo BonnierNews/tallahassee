@@ -168,21 +168,49 @@ describe("Window", () => {
       expect(() => window.matchMedia()).to.throw(TypeError);
     });
 
-    it("should check towards default media object which is 'screen'", () => {
+    it("should return object that matches media type 'screen'", () => {
+      window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen");
       expect(media).to.eql({ media: "screen", matches: true });
     });
 
-    it("should return media object that does not match", () => {
+    it("should return object that does not match media type 'screen'", () => {
       window.styleMedia = { type: "print" };
       const media = window.matchMedia("screen");
       expect(media).to.eql({ media: "screen", matches: false });
     });
 
-    it("should return media object that does match", () => {
+    it("should return object that matches media type 'print'", () => {
       window.styleMedia = { type: "print" };
       const media = window.matchMedia("print");
       expect(media).to.eql({ media: "print", matches: true });
+    });
+
+    it("should return object that matches one media condition", () => {
+      window.innerWidth = 600;
+      const media = window.matchMedia("(min-width: 500px)");
+      expect(media).to.eql({ media: "(min-width: 500px)", matches: true });
+    });
+
+
+    it("should return object that does not match one media condition", () => {
+      window.innerWidth = 600;
+      const media = window.matchMedia("(max-width: 500px)");
+      expect(media).to.eql({ media: "(max-width: 500px)", matches: false });
+    });
+
+    it("should return object that matches one media type and one media condition", () => {
+      window.styleMedia = { type: "screen" };
+      window.innerWidth = 500;
+      const media = window.matchMedia("screen and (max-width: 500px)");
+      expect(media).to.eql({ media: "screen and (max-width: 500px)", matches: true });
+    });
+
+    it("should return object that does not match one media type and one media condition", () => {
+      window.innerWidth = 600;
+      window.styleMedia = { type: "screen" };
+      const media = window.matchMedia("screen and (max-width: 500px)");
+      expect(media).to.eql({ media: "screen and (max-width: 500px)", matches: false });
     });
   });
 
