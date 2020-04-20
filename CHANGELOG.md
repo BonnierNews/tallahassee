@@ -1,5 +1,8 @@
 Changelog
 ---------
+# 10.5.1
+- Fix version mismatch in documentation
+
 # 10.5.0
 - `MediaQueryList` with support for event listeners
 
