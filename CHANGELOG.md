@@ -1,5 +1,8 @@
 Changelog
 ---------
+# 10.5.0
+- `MediaQueryList` with support for event listeners
+
 # 10.4.0
 - Support for `min-width` and `max-width` in `matchMedia`
 - Support for combining a media type and media condition in `matchMedia`
