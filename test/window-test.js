@@ -221,26 +221,25 @@ describe("Window", () => {
 
     it("executes callback when match changes", () => {
       window.innerWidth = 600;
-      window.styleMedia = { type: "screen" };
-
-      const media = window.matchMedia("screen and (max-width: 500px)");
+      const media = window.matchMedia("(max-width: 500px)");
       expect(media.matches).to.be.false;
 
       const matchUpdates = [];
       const listener = (event) => matchUpdates.push(event.matches);
-
       media.addListener(listener);
 
       window._resize(400);
-      window._resize(300);
-      window._resize(700);
+      expect(matchUpdates).to.deep.equal([true]);
 
+      window._resize(300);
+      expect(matchUpdates).to.deep.equal([true]);
+
+      window._resize(700);
       expect(matchUpdates).to.deep.equal([true, false]);
 
       media.removeListener(listener);
 
       window._resize(400);
-
       expect(matchUpdates).to.deep.equal([true, false]);
     });
   });
