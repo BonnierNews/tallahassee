@@ -171,46 +171,76 @@ describe("Window", () => {
     it("should return object that matches media type 'screen'", () => {
       window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen");
-      expect(media).to.eql({ media: "screen", matches: true });
+      expect(media.media).to.equal("screen");
+      expect(media.matches).to.be.true;
     });
 
     it("should return object that does not match media type 'screen'", () => {
       window.styleMedia = { type: "print" };
       const media = window.matchMedia("screen");
-      expect(media).to.eql({ media: "screen", matches: false });
+      expect(media.media).to.equal("screen");
+      expect(media.matches).to.be.false;
     });
 
     it("should return object that matches media type 'print'", () => {
       window.styleMedia = { type: "print" };
       const media = window.matchMedia("print");
-      expect(media).to.eql({ media: "print", matches: true });
+      expect(media.media).to.equal("print");
+      expect(media.matches).to.be.true;
     });
 
     it("should return object that matches one media condition", () => {
       window.innerWidth = 600;
       const media = window.matchMedia("(min-width: 500px)");
-      expect(media).to.eql({ media: "(min-width: 500px)", matches: true });
+      expect(media.media).to.equal("(min-width: 500px)");
+      expect(media.matches).to.be.true;
     });
-
 
     it("should return object that does not match one media condition", () => {
       window.innerWidth = 600;
       const media = window.matchMedia("(max-width: 500px)");
-      expect(media).to.eql({ media: "(max-width: 500px)", matches: false });
+      expect(media.media).to.equal("(max-width: 500px)");
+      expect(media.matches).to.be.false;
     });
 
     it("should return object that matches one media type and one media condition", () => {
       window.styleMedia = { type: "screen" };
       window.innerWidth = 500;
       const media = window.matchMedia("screen and (max-width: 500px)");
-      expect(media).to.eql({ media: "screen and (max-width: 500px)", matches: true });
+      expect(media.media).to.equal("screen and (max-width: 500px)");
+      expect(media.matches).to.be.true;
     });
 
     it("should return object that does not match one media type and one media condition", () => {
       window.innerWidth = 600;
       window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen and (max-width: 500px)");
-      expect(media).to.eql({ media: "screen and (max-width: 500px)", matches: false });
+      expect(media.media).to.equal("screen and (max-width: 500px)");
+      expect(media.matches).to.be.false;
+    });
+
+    it("executes callback when match changes", () => {
+      window.innerWidth = 600;
+      const media = window.matchMedia("(max-width: 500px)");
+      expect(media.matches).to.be.false;
+
+      const matchUpdates = [];
+      const listener = (event) => matchUpdates.push(event.matches);
+      media.addListener(listener);
+
+      window._resize(400);
+      expect(matchUpdates).to.deep.equal([true]);
+
+      window._resize(300);
+      expect(matchUpdates).to.deep.equal([true]);
+
+      window._resize(700);
+      expect(matchUpdates).to.deep.equal([true, false]);
+
+      media.removeListener(listener);
+
+      window._resize(400);
+      expect(matchUpdates).to.deep.equal([true, false]);
     });
   });
 
