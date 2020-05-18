@@ -124,4 +124,34 @@ describe("DocumentFragment", () => {
       expect(fragment.firstElementChild).to.be.null;
     });
   });
+
+  describe(".childNodes", () => {
+    it("returns child nodes", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("<li><a>Item</a></li>");
+
+      const childNodes = fragment.childNodes;
+
+      expect(childNodes).to.be.ok;
+      expect(childNodes.length).to.equal(1);
+    });
+
+    it("child childNodes also returns children", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("<li><a>Item</a></li>");
+
+      const childNode = fragment.childNodes[0];
+
+      expect(childNode.childNodes).to.be.ok;
+      expect(childNode.childNodes.length).to.equal(1);
+      expect(childNode.childNodes[0].tagName).to.equal("A");
+    });
+
+    it("returns empty if no children", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("");
+
+      expect(fragment.childNodes).to.be.empty;
+    });
+  });
 });
