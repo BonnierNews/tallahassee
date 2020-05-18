@@ -55,5 +55,73 @@ describe("DocumentFragment", () => {
       expect(children).to.have.length(2);
       expect(children[1].previousElementSibling).to.have.property("tagName", "LI");
     });
+
+    it("append child returns child element fragment", () => {
+      const child = Document({text: ""}).createElement("li");
+      const returnChild = documentFragment.appendChild(child);
+      expect(returnChild).to.be.ok;
+      expect(returnChild instanceof Element).to.be.true;
+    });
+  });
+
+  describe(".firstChild", () => {
+    it("returns first child if element", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("<li><a>Item</a></li>");
+
+      const firstChild = fragment.firstChild;
+
+      expect(firstChild).to.be.ok;
+      expect(firstChild.nodeType).to.equal(1);
+      expect(firstChild.tagName).to.equal("LI");
+    });
+
+    it("returns first child if text", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("Memememe<li><a>Item</a></li>");
+
+      const firstChild = fragment.firstChild;
+
+      expect(firstChild).to.be.ok;
+      expect(firstChild.nodeType).to.equal(3);
+    });
+
+    it("returns null if no children", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("");
+
+      expect(fragment.firstChild).to.be.null;
+    });
+  });
+
+  describe(".firstElementChild", () => {
+    it("returns first child element", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("<li><a>Item</a></li>");
+
+      const firstChild = fragment.firstElementChild;
+
+      expect(firstChild).to.be.ok;
+      expect(firstChild.nodeType).to.equal(1);
+      expect(firstChild.tagName).to.equal("LI");
+    });
+
+    it("returns first element child if first child is text", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("Memememe<li><a>Item</a></li>");
+
+      const firstChild = fragment.firstElementChild;
+
+      expect(firstChild).to.be.ok;
+      expect(firstChild.nodeType).to.equal(1);
+      expect(firstChild.tagName).to.equal("LI");
+    });
+
+    it("returns null if no children", () => {
+      const fragment = DocumentFragment(Element);
+      fragment.$elm.html("Mememem");
+
+      expect(fragment.firstElementChild).to.be.null;
+    });
   });
 });
