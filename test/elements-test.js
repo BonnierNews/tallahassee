@@ -19,6 +19,7 @@ const elementProperties = [
   "lastChild",
   "lastElementChild",
   "name",
+  "nodeName",
   "nodeType",
   "innerHTML",
   "offsetHeight",
@@ -38,6 +39,7 @@ const elementApi = [
   "getElementsByTagName",
   "getElementsByClassName",
   "getBoundingClientRect",
+  "getClientRects",
   "matches",
   "remove",
 ];
@@ -201,6 +203,25 @@ describe("elements", () => {
       expect(img2).to.have.property("imageLoaded", "true");
     });
 
+    describe("nodeName", () => {
+      it("should return the tag name in uppercase for element", () => {
+        expect(document.getElementsByTagName("span")[0].nodeName).to.equal("SPAN");
+      });
+
+      it("should return #text for text node", () => {
+        expect(document.getElementsByTagName("span")[0].firstChild.nodeName).to.equal("#text");
+      });
+
+      it("cannot be changed", () => {
+        const elm = document.getElementsByTagName("span")[0];
+        expect(elm.nodeName = "SPANN").to.equal("SPANN");
+        expect(elm.nodeName).to.equal("SPAN");
+
+        const textNode = elm.firstChild;
+        expect(textNode.nodeName = "#string").to.equal("#string");
+        expect(textNode.nodeName).to.equal("#text");
+      });
+    });
 
     describe("nodeType", () => {
       it("should return the correct node type", () => {
@@ -216,6 +237,29 @@ describe("elements", () => {
       it("should return the correct node type for text node", () => {
         const elm = document.getElementsByTagName("span")[0];
         expect(elm.firstChild.nodeType).to.equal(3);
+      });
+    });
+
+    describe("nodeValue", () => {
+      it("returns null for element", () => {
+        expect(document.getElementsByTagName("span")[0].nodeValue).to.be.null;
+      });
+
+      it("returns text content for text node", () => {
+        expect(document.getElementsByTagName("span")[0].firstChild.nodeValue).to.equal("Text ");
+      });
+
+      it("ignored if set on element", () => {
+        const elm = document.getElementsByTagName("span")[0];
+        expect(elm.nodeValue = "Replaced ").to.equal("Replaced ");
+        expect(elm.nodeValue).to.be.null;
+      });
+
+      it("changes text content if set for text node", () => {
+        const textNode = document.getElementsByTagName("span")[0].firstChild;
+        expect(textNode.nodeValue = "Replaced ").to.equal("Replaced ");
+        expect(textNode.nodeValue).to.equal("Replaced ");
+        expect(textNode.textContent).to.equal("Replaced ");
       });
     });
 
@@ -396,6 +440,67 @@ describe("elements", () => {
         expect(() => {
           parent.removeChild(removed);
         }).to.throw(DOMException, "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
+      });
+    });
+
+    describe("replaceChild(newChild, oldChild)", () => {
+      let document;
+      beforeEach(() => {
+        document = Document({
+          text: `
+            <html>
+              <body id="grandparent">
+                <div id="parent-1">
+                  <span class="child">åäö</span>
+                </div>
+                <div id="parent-2"></div>
+              </body>
+            </html>`
+        });
+      });
+
+      it("replaces child element and returns old child", () => {
+        const parent = document.getElementById("parent-1");
+        const child = document.getElementsByClassName("child")[0];
+        expect(parent.children.length).to.equal(1);
+
+        const newChild = document.createElement("div");
+        newChild.id = "newChild";
+
+        const oldChild = parent.replaceChild(newChild, child);
+
+        expect(parent.firstElementChild.outerHTML).to.equal("<div id=\"newChild\"></div>");
+        expect(oldChild === child).to.be.true;
+        expect(parent.children.length, "children length").to.equal(1);
+      });
+
+      it("replaces child text node", () => {
+        const parent = document.getElementById("grandparent");
+        const child = document.getElementById("parent-1");
+        expect(parent.children.length).to.equal(2);
+
+        const newChild = document.createTextNode("new content");
+
+        const oldChild = parent.replaceChild(newChild, child);
+
+        expect(parent.textContent.trim()).to.equal("new content");
+        expect(oldChild === child).to.be.true;
+        expect(parent.children.length, "children should only contain elements").to.equal(1);
+      });
+
+      it("throws if removed twice", () => {
+        const parent = document.getElementById("parent-1");
+        const child = document.getElementsByClassName("child")[0];
+        expect(parent.children.length).to.equal(1);
+
+        const newChild = document.createElement("div");
+        newChild.id = "newChild";
+
+        parent.replaceChild(newChild, child);
+
+        expect(() => {
+          parent.replaceChild(newChild, child);
+        }).to.throw(DOMException, "Failed to execute 'replaceChild' on 'Node': The node to be replaced is not a child of this node.");
       });
     });
   });
@@ -794,6 +899,11 @@ describe("elements", () => {
       expect(elm).to.have.property("textContent", "var b = 2;");
     });
 
+    it("sets text content of text node", () => {
+      const textNode = document.getElementsByTagName("h2")[0].firstChild;
+      textNode.textContent = "Merge me";
+      expect(textNode).to.have.property("textContent", "Merge me");
+    });
   });
 
   describe(".firstElementChild", () => {
