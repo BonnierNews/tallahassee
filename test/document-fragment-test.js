@@ -128,12 +128,14 @@ describe("DocumentFragment", () => {
   describe(".childNodes", () => {
     it("returns child nodes", () => {
       const fragment = DocumentFragment(Element);
-      fragment.$elm.html("<li><a>Item</a></li>");
+      fragment.$elm.html("Mememem<li><a>Item</a></li>");
 
       const childNodes = fragment.childNodes;
 
       expect(childNodes).to.be.ok;
-      expect(childNodes.length).to.equal(1);
+      expect(childNodes.length).to.equal(2);
+      expect(childNodes[0].nodeType).to.equal(3);
+      expect(childNodes[1].nodeType).to.equal(1);
     });
 
     it("child childNodes also returns children", () => {

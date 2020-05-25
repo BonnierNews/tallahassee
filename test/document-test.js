@@ -373,4 +373,11 @@ describe("Document", () => {
       expect(calledCB).to.equal(false);
     });
   });
+
+  describe("implementation", () => {
+    it("createHTMLDocument(title) with title creates document with title", () => {
+      const newDoc = document.implementation.createHTMLDocument("New Document");
+      expect(newDoc.title).to.equal("New Document");
+    });
+  });
 });
