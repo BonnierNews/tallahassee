@@ -932,6 +932,7 @@ describe("elements", () => {
             <body>
               <h2>Test</h2>
               <script>var a = 1;</script>
+              <script type="text/ng-template"><div class="modal"></div></script>
             </body>
           </html>`
       });
@@ -953,6 +954,10 @@ describe("elements", () => {
 
     it("returns text content of script element", () => {
       expect(document.getElementsByTagName("script")[0]).to.have.property("textContent", "var a = 1;");
+    });
+
+    it(".text also returns text content of script element", () => {
+      expect(document.getElementsByTagName("script")[1]).to.have.property("text", "<div class=\"modal\"></div>");
     });
 
     it("sets text content of script element", () => {
