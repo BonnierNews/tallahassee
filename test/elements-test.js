@@ -388,7 +388,7 @@ describe("elements", () => {
         });
       });
 
-      it("returns elements that match class name", () => {
+      it("returns elements that match tag name", () => {
         const elms = document.body.getElementsByTagName("div");
         expect(elms.length).to.equal(2);
       });
