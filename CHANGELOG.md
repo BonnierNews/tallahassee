@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+# 10.5.2
+- Batched, async call to intersection observer callback on observe
+
 # 10.5.1
 - Fix version mismatch in documentation
 
