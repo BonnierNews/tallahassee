@@ -1,0 +1,31 @@
+<!doctype>
+
+<img class="lazy" src="/placeholder.gif" data-src="/image-1.avif" />
+<img class="lazy" src="/placeholder.gif" data-src="/image-2.avif" />
+<img class="lazy" src="/placeholder.gif" data-src="/image-3.avif" />
+
+<script>
+	const lazyImages = document.getElementsByClassName("lazy");
+
+	loadIfInView();
+	window.addEventListener("scroll", loadIfInView);
+
+	function loadIfInView () {
+		const loadedImages = [];
+		for (const image of lazyImages) {
+			const inView = image.getBoundingClientRect().top < window.innerHeight;
+			if (!inView) continue;
+
+			image.src = image.dataset.src;
+			loadedImages.push(image);
+		}
+
+		for (const image of loadedImages) {
+			image.classList.remove("lazy");
+		}
+
+		if (lazyImages.length > 0) return;
+
+		window.removeEventListener("scroll", loadIfInView);
+	}
+</script>

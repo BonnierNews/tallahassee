@@ -1,0 +1,35 @@
+<!doctype>
+
+<article data-next="/article-2">
+	<h1>Article 1</h1>
+	...
+</article>
+
+<script>
+	const viewportHeight = window.innerHeight;
+	continuousScroll(document.querySelector("article"));
+
+	function continuousScroll (current) {
+		const currentEndPosition = window.pageYOffset + current.getBoundingClientRect().bottom;
+
+		window.addEventListener("scroll", evaluateLoadNext);
+
+		function evaluateLoadNext () {
+			const nearEnd = (window.pageYOffset + viewportHeight * 1.5) >= currentEndPosition;
+			if (!nearEnd) return;
+			window.removeEventListener("scroll", evaluateLoadNext);
+			loadNext();
+		}
+
+		function loadNext () {
+			fetch(current.dataset.next)
+				.then(res => res.text())
+				.then(appendNext);
+		}
+
+		function appendNext (articleString) {
+			current.insertAdjacentHTML("afterend", articleString);
+			continuousScroll(current.nextElementSibling);
+		}
+	}
+</script>

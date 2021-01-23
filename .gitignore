@@ -2,12 +2,6 @@
 node_modules
 npm-debug.log
 
-# Code coverage results
-/coverage
-
-# Built package
-/*.tgz
-
 # Project files
 .tern-port
 .tern-project
@@ -32,10 +26,6 @@ config/_revision
 # Atom CTAGS
 .tags
 
-# Built service worker
-/worker.js
-
-package-lock.json
 
 # vim
 *.sw[a-z]

@@ -1,17 +1,14 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "10.5.2",
+  "version": "11.0.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" mocha",
-    "posttest": "eslint . --cache && npm run toc",
-    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md && NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./API.md",
-    "toc": "node ./scripts/generate-api-toc"
+    "test": "mocha"
   },
   "engines": {
-    "node": ">=10.15.0"
+    "node": ">=14.0.0"
   },
   "keywords": [
     "headless",
@@ -27,33 +24,20 @@
     "type": "git",
     "url": "git://github.com/ExpressenAB/tallahassee.git"
   },
+  "type": "module",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
-    "domexception": "^2.0.0",
-    "node-fetch": "^2.6.0",
-    "supertest": "^4.0.2"
+    "jsdom": "^16.4.0",
+    "nock": "^13.0.5",
+    "supertest": "^6.0.1",
+    "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
-    "@bonniernews/wichita": "^0.7.0",
-    "chai": "^4.2.0",
-    "cookiejar": "^2.1.2",
-    "eslint": "^6.7.2",
-    "express": "^4.17.0",
-    "markdown-toc": "^1.2.0",
-    "mocha": "^6.2.2",
-    "nock": "^11.7.0"
+    "express": "^4.17.1",
+    "mocha": "^8.2.1",
+    "mocha-cakes-2": "^3.3.0"
   },
-  "files": [
-    "lib/",
-    "index.js",
-    "LICENSE"
-  ],
   "bugs": {
     "url": "https://github.com/ExpressenAB/tallahassee/issues"
   },
-  "homepage": "https://github.com/ExpressenAB/tallahassee#readme",
-  "directories": {
-    "lib": "lib",
-    "test": "test"
-  }
+  "homepage": "https://github.com/ExpressenAB/tallahassee#readme"
 }

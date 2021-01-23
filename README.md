@@ -1,7 +1,7 @@
 Tallahassee
 ===========
 
-![Utilities](https://raw.github.com/ExpressenAB/tallahassee/master/app/assets/images/tallahassee-1.png)
+![Utilities](https://raw.github.com/ExpressenAB/tallahassee/master/tallahassee-1.png)
 
 [![Build Status](https://travis-ci.org/ExpressenAB/tallahassee.svg?branch=master)](https://travis-ci.org/ExpressenAB/tallahassee)[![dependencies Status](https://david-dm.org/ExpressenAB/tallahassee/status.svg)](https://david-dm.org/ExpressenAB/tallahassee)
 
