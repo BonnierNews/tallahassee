@@ -1,30 +1,33 @@
-import express from "express";
+import http from "http";
 import fs from "fs/promises";
 import path from "path";
 
-const app = express();
+export default http.createServer(async (req, res) => {
+  try {
+    const cookie = req.headers.cookie || "";
+    if (!cookie.includes("loggedIn=1")) {
+      return res.writeHead(401).end();
+    }
 
-app.get("/", authenticate, increment, async (req, res) => {
-  const documentPath = path.resolve("./test/examples/persistant-cookies/document.html");
-  const document = await fs.readFile(documentPath, "utf8");
-  res.send(document);
+    const documentPath = path.resolve("./test/examples/persistant-cookies/document.html");
+    const document = await fs.readFile(documentPath, "utf8");
+    res
+      .writeHead(200, {
+        "content-type": "text/html; charset=utf-8",
+        "set-cookie": incrementValue(cookie, "incremental"),
+      })
+      .end(document);
+  }
+  catch (err) {
+    res.writeHead(500, err.stack).end();
+  }
 });
 
-export default app;
-
-function authenticate (req, res, next) {
-  const cookie = req.get("cookie") || "";
-  if (cookie.includes("loggedIn=1")) return next();
-  res.sendStatus(401);
-}
-
-function increment (req, res, next) {
-  const cookie = req.get("cookie") || "";
-  const match = cookie.match(/incremental=(\d)/);
+function incrementValue (cookie, name) {
+  const match = cookie.match(new RegExp(`${name}=(\\d)`));
   let value = 0;
   if (match) {
     value = Number(match[1]) + 1;
   }
-  res.set("set-cookie", `incremental=${value}`);
-  next();
+  return `${name}=${value}`;
 }

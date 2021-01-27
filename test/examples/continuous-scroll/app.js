@@ -1,23 +1,30 @@
-import express from "express";
+import http from "http";
 import fs from "fs/promises";
 import path from "path";
 
-const app = express();
+export default http.createServer(async (req, res) => {
+  try {
+    let document;
 
-app.get("/", async (req, res) => {
-  const documentPath = path.resolve("./test/examples/continuous-scroll/document.html");
-  const document = await fs.readFile(documentPath, "utf8");
-  res.send(document);
+    const articleURLMatch = req.url.match(/\/article-(\d+)/);
+    if (articleURLMatch) {
+      const order = Number(articleURLMatch[1]);
+      document = `
+        <article data-next="/article-${order + 1}">
+          <h1>Article ${order}</h1>
+          ...
+        </article>
+      `;
+    } else {
+      const documentPath = path.resolve("./test/examples/continuous-scroll/document.html");
+      document = await fs.readFile(documentPath, "utf8");
+    }
+
+    res
+      .writeHead(200, {"content-type": "text/html; charset=utf-8"})
+      .end(document);
+  }
+  catch (err) {
+    res.writeHead(500, err.stack).end();
+  }
 });
-
-app.get("/article-:order", (req, res) => {
-  const order = Number(req.params.order);
-  res.send(`
-		<article data-next="/article-${order + 1}">
-			<h1>Article ${order}</h1>
-			...
-		</article>
-	`);
-});
-
-export default app;

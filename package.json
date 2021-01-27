@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --ui mocha-cakes-2"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -32,7 +32,6 @@
     "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
-    "express": "^4.17.1",
     "mocha": "^8.2.1",
     "mocha-cakes-2": "^3.3.0"
   },

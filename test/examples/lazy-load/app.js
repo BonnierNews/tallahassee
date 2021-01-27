@@ -1,13 +1,16 @@
-import express from "express";
+import http from "http";
 import fs from "fs/promises";
 import path from "path";
 
-const app = express();
-
-app.get("/", async (req, res) => {
-  const documentPath = path.resolve("./test/examples/lazy-load/document.html");
-  const document = await fs.readFile(documentPath, "utf8");
-  res.send(document);
+export default http.createServer(async (req, res) => {
+  try {
+    const documentPath = path.resolve("./test/examples/lazy-load/document.html");
+    const document = await fs.readFile(documentPath, "utf8");
+    res
+      .writeHead(200, {"content-type": "text/html; charset=utf-8"})
+      .end(document);
+  }
+  catch (err) {
+    res.writeHead(500, err.stack).end();
+  }
 });
-
-export default app;
