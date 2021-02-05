@@ -15,7 +15,7 @@ Feature("continuous scroll", () => {
 		page = browser.newPage();
 		dom = await page.navigateTo("/");
 
-		nock("http://localhost:7411")
+		nock(dom.window.location.origin)
 			.get(/.*/)
 			.reply(function forwardToApp(uri, body, callback) {
 				agent
