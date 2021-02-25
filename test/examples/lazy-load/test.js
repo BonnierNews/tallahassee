@@ -1,16 +1,22 @@
 import {strict as assert} from "assert";
 import app from "./app.js";
 import Browser from "../../../index.js";
+import Painter from "../../../lib/painter.js";
 import reset from "../helpers/reset.js";
 
 Feature("lazy load", () => {
 	before(reset);
 
-	let page, dom;
+	let page, dom, paint;
 	before("load page", async () => {
 		const browser = Browser(app);
 		page = browser.newPage();
-		dom = await page.navigateTo("/");
+		const painter = Painter();
+		dom = await page.navigateTo("/", {}, {
+			beforeParse (window) {
+				paint = painter.init(window);
+			}
+		});
 	});
 
 	let images;
@@ -28,7 +34,7 @@ Feature("lazy load", () => {
 
 	And("only the first one is located within the viewport", () => {
 		for (let i = 0; i < images.length; ++i) {
-			page.paint(images[i], { y: i * 2 * dom.window.innerHeight });
+			paint(images[i], { y: i * 2 * dom.window.innerHeight });
 		}
 	});
 
