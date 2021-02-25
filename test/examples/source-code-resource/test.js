@@ -23,10 +23,10 @@ Feature("source code resource", () => {
 	});
 
 	And("a source document", () => {
-		const referenceUrl = url.parse(script.src);
+		const referenceUrl = new URL(script.src);
 		const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 		const sourcePath = path.join(dirname, "source.js");
-		nock(referenceUrl.protocol + "//" + referenceUrl.host)
+		nock(referenceUrl.origin)
 			.get(referenceUrl.pathname)
 			.replyWithFile(200, sourcePath, {
 				"content-type": "text/javascript",
