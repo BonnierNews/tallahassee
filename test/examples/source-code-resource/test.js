@@ -14,12 +14,10 @@ class CustomResourceLoader extends jsdom.ResourceLoader {
 	}
 
 	fetch(resource, options) {
-		const resolved = this.resolve(resource);
-		if (!resolved) return super.fetch(resource, options);
-
-		// somehow forward path of source file to script runner
-		options.element.dataset.src = resolved;
-		return fs.readFile(resolved);
+		const sourceFilePath = this.resolve(resource);
+		return sourceFilePath ?
+			fs.readFile(sourceFilePath) :
+ 		super.fetch(resource, options);
 	}
 }
 
