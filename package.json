@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "mocha --ui mocha-cakes-2"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' mocha"
   },
   "engines": {
     "node": ">=14.0.0"

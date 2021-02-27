@@ -1,36 +1,55 @@
+import {promises as fs} from "fs";
 import {strict as assert} from "assert";
 import app from "./app.js";
 import Browser from "../../../index.js";
-import nock from "nock";
+import jsdom from "jsdom";
 import path from "path";
 import reset from "../helpers/reset.js";
 import url from "url";
 
+class CustomResourceLoader extends jsdom.ResourceLoader {
+	constructor (resolve) {
+		super();
+		this.resolve = resolve || (() => {});
+	}
+
+	fetch(resource, options) {
+		const resolved = this.resolve(resource);
+		if (!resolved) return super.fetch(resource, options);
+
+		// somehow forward path of source file to script runner
+		options.element.dataset.src = resolved;
+		return fs.readFile(resolved);
+	}
+}
+
 Feature("source code resource", () => {
 	before(reset);
 
+	let distUrl, sourcePath, resourceLoader;
+	Given("a source document", () => {
+		const dirname = path.dirname(url.fileURLToPath(import.meta.url));
+		distUrl = "http://localhost:7411/dist-bundle.js";
+		sourcePath = path.join(dirname, "source-entry.js");
+		resourceLoader = new CustomResourceLoader((url) => {
+			if (url === distUrl) return sourcePath;
+		});
+	});
+
 	let page, dom;
-	before("load page", async () => {
+	When("load page", async () => {
 		const browser = Browser(app);
 		page = browser.newPage();
-		dom = await page.navigateTo("/");
+		dom = await page.navigateTo("/", {}, {
+			resources: resourceLoader,
+		});
 	});
 
 	let script;
-	Given("a script reference", () => {
+	And("a script references a bundle", () => {
 		script = dom.window.document.querySelector("script");
 		assert.ok(script);
-	});
-
-	And("a source document", () => {
-		const referenceUrl = new URL(script.src);
-		const dirname = path.dirname(url.fileURLToPath(import.meta.url));
-		const sourcePath = path.join(dirname, "source.js");
-		nock(referenceUrl.origin)
-			.get(referenceUrl.pathname)
-			.replyWithFile(200, sourcePath, {
-				"content-type": "text/javascript",
-			});
+		assert.equal(script.src, distUrl);
 	});
 
 	let originalState;
@@ -39,7 +58,7 @@ Feature("source code resource", () => {
 		await page.runScripts();
 	});
 
-	Then("source file is executed", () => {
+	Then("source files is executed", () => {
 		const newState = dom.window.document.title;
 		assert.equal(newState, "Tallahassee");
 		assert.notEqual(newState, originalState);
