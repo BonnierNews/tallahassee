@@ -2,63 +2,67 @@ import {promises as fs} from "fs";
 import {strict as assert} from "assert";
 import app from "./app.js";
 import Browser from "../../../index.js";
+import Resoures from "../../../lib/resources.js";
 import jsdom from "jsdom";
 import path from "path";
 import reset from "../helpers/reset.js";
 import url from "url";
 
-class CustomResourceLoader extends jsdom.ResourceLoader {
-	constructor (resolve) {
-		super();
-		this.resolve = resolve || (() => {});
-	}
-
-	fetch(resource, options) {
-		const sourceFilePath = this.resolve(resource);
-		return sourceFilePath ?
-			fs.readFile(sourceFilePath) :
- 		super.fetch(resource, options);
-	}
-}
-
 Feature("source code resource", () => {
 	before(reset);
 
-	let distUrl, sourcePath, resourceLoader;
+	let resources;
 	Given("a source document", () => {
 		const dirname = path.dirname(url.fileURLToPath(import.meta.url));
-		distUrl = "http://localhost:7411/dist-bundle.js";
-		sourcePath = path.join(dirname, "source-entry.js");
-		resourceLoader = new CustomResourceLoader((url) => {
-			if (url === distUrl) return sourcePath;
+		resources = new Resoures({
+			resolveTag (tag) {
+				const src = tag.src || tag.dataset.sourceFile;
+				if (src?.endsWith("/dist-bundle.js"))
+					return "file://" + path.join(dirname, "source-entry.js");
+			}
 		});
 	});
 
-	let page, dom;
+	let browser, page, dom;
 	When("load page", async () => {
-		const browser = Browser(app);
+		browser = Browser(app);
 		page = browser.newPage();
 		dom = await page.navigateTo("/", {}, {
-			resources: resourceLoader,
+			resources,
 		});
 	});
 
-	let script;
-	And("a script references a bundle", () => {
-		script = dom.window.document.querySelector("script");
+	And("a script referencing a bundle", () => {
+		const script = dom.window.document.querySelector("script[src]");
 		assert.ok(script);
-		assert.equal(script.src, distUrl);
+		assert.equal(script.src, "http://localhost:7411/dist-bundle.js");
 	});
 
-	let originalState;
+	And("another inline script marked as inlined from a bundle", () => {
+		const script = dom.window.document.querySelector("script[data-source-file]");
+		assert.ok(script);
+		assert.equal(script.dataset.sourceFile, "/dist-bundle.js");
+	});
+
+	And("another inline script", () => {
+		const script = dom.window.document.querySelector("script:not([src], [data-src])");
+		assert.ok(script);
+		assert.equal(script.text.length > 0, true);
+	});
+
 	When("scripts are executed", async () => {
-		originalState = dom.window.document.title;
-		await page.runScripts();
+		assert.equal(dom.window.document.title, "Document");
+		await resources.run(dom, browser.cookieJar);
 	});
 
-	Then("source files is executed", () => {
-		const newState = dom.window.document.title;
-		assert.equal(newState, "Tallahassee");
-		assert.notEqual(newState, originalState);
+	Then("source files and inline scripts have been executed", () => {
+		assert.equal(dom.window.document.title, [
+			"Document",
+			"edit from source entry",
+			"edit from source component",
+			"edit from source entry",
+			"edit from source component",
+			"edit from inline script",
+		].join(" | "));
 	});
 });

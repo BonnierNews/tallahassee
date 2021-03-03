@@ -1,3 +1,3 @@
 export default function component () {
-  document.title = "Tallahassee";
+  document.title += " | edit from source component";
 }
