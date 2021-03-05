@@ -38,7 +38,7 @@ Feature("source code resource", () => {
 		assert.equal(script.src, "http://localhost:7411/dist-bundle.js");
 	});
 
-	And("another inline script marked as inlined from a bundle", () => {
+	And("an inline script marked as sourced from a file", () => {
 		const script = dom.window.document.querySelector("script[data-source-file]");
 		assert.ok(script);
 		assert.equal(script.dataset.sourceFile, "/dist-bundle.js");
@@ -52,7 +52,7 @@ Feature("source code resource", () => {
 
 	When("scripts are executed", async () => {
 		assert.equal(dom.window.document.title, "Document");
-		await resources.run(dom, browser.cookieJar);
+		await resources.runScripts(dom);
 	});
 
 	Then("source files and inline scripts have been executed", () => {
