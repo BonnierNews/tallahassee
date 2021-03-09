@@ -1,8 +1,8 @@
-import http from "http";
-import fs from "fs/promises";
-import path from "path";
+const http = require("http";
+const fs = require("fs/promises";
+const path = require("path";
 
-export default http.createServer(async (req, res) => {
+module.exports = http.createServer(async (req, res) => {
   try {
     const cookie = req.headers.cookie || "";
     if (!cookie.includes("loggedIn=1")) {

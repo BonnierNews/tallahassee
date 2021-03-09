@@ -1,6 +1,6 @@
-import Painter from "../lib/painter.js";
-import {JSDOM} from "jsdom";
-import {strict as assert} from "assert";
+const Painter = require("../lib/painter.js");
+const {JSDOM} = require("jsdom");
+const {strict: assert} = require("assert");
 
 describe("painter", () => {
   let dom, element;

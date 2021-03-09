@@ -1,8 +1,8 @@
-import {strict as assert} from "assert";
-import app from "./app.js";
-import Browser from "../../../index.js";
-import jsdom from "jsdom";
-import reset from "../helpers/reset.js";
+const {strict: assert} = require("assert";
+const app = require("./app.js");
+const {Browser, Resources} = require("../../../index.js");
+const jsdom = require("jsdom");
+const reset = require("../helpers/reset.js");
 
 Feature("persistant cookies", () => {
 	before(reset);
@@ -17,13 +17,14 @@ Feature("persistant cookies", () => {
 	And("it is stored in the browser", () => {
 		const cookieJar = new jsdom.CookieJar();
 		cookieJar.setCookieSync(loggedInCookie, url);
-		browser = Browser(app, cookieJar);
 	});
 
-	let page, pendingDom;
+	let page, pendingDom, resources;
 	When("visiting a page requiring authentication", () => {
 		page = browser.newPage();
-		pendingDom = page.navigateTo(url);
+		browser = Browser(app, cookieJar);
+		resources = new Resources();
+		pendingDom = page.navigateTo(url, {resources});
 	});
 
 	let dom;
@@ -36,7 +37,7 @@ Feature("persistant cookies", () => {
 	});
 
 	When("scripts are executed", async () => {
-		await page.runScripts();
+		await resources.runScripts();
 	});
 
 	Then("cookie value has been incremented" , () => {

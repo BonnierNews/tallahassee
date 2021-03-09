@@ -1,10 +1,10 @@
-import {strict as assert} from "assert";
-import app from "./app.js";
-import Browser from "../../../index.js";
-import nock from "nock";
-import Painter from "../../../lib/painter.js";
-import reset from "../helpers/reset.js";
-import supertest from "supertest";
+const {strict: assert} = require("assert");
+const app = require("./app.js");
+const Browser = require("../../../index.js");
+const nock = require("nock");
+const Painter = require("../../../lib/painter.js");
+const reset = require("../helpers/reset.js");
+const supertest = require("supertest");
 
 Feature("continuous scroll", () => {
 	before(reset);

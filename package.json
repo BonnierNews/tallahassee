@@ -24,7 +24,6 @@
     "type": "git",
     "url": "git://github.com/ExpressenAB/tallahassee.git"
   },
-  "type": "module",
   "dependencies": {
     "jsdom": "^16.4.0",
     "nock": "^13.0.5",

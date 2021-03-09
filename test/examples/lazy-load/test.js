@@ -1,8 +1,8 @@
-import {strict as assert} from "assert";
-import app from "./app.js";
-import Browser from "../../../index.js";
-import Painter from "../../../lib/painter.js";
-import reset from "../helpers/reset.js";
+const {strict: assert} = require("assert");
+const app = require("./app.js");
+const Browser = require("../../../index.js");
+const Painter = require("../../../lib/painter.js");
+const reset = require("../helpers/reset.js");
 
 Feature("lazy load", () => {
 	before(reset);

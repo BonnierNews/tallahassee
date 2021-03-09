@@ -1,3 +1,3 @@
 export default function component () {
-  document.title += " | edit from source component";
+  document.title += " | edit = require(source component";
 }

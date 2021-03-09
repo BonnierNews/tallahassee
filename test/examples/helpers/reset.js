@@ -1,5 +1,5 @@
-import nock from "nock";
+const nock = require("nock");
 
-export default function reset () {
+module.exports = function reset () {
   nock.cleanAll();
 }

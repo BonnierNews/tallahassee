@@ -21,11 +21,11 @@ Changelog
 - Implement `IntersectionObserverEntry.isIntersecting` function
 
 # 10.3.1
-- Allow secure cookies to be read from `document.cookie` when on a secure location
+- Allow secure cookies to be read = require(`document.cookie` when on a secure location
 
 # 10.3.0
 - Make sure checkbox always emits change events
-- Handles null properly as a reset value on style property
+- Handles null properly: a reset value on style property
 
 # 10.2.3
 - Only call MutationObserver callback when observed change is detected - honour observe options
@@ -35,14 +35,14 @@ Refactor
 
 # 10.1.0
 - Introduce [RadioNodeList](https://developer.mozilla.org/en-US/docs/Web/API/RadioNodeList)
-- Expose fields of form as named properties
-- Named radio buttons is exposed on form as RadioNodeList, with value
+- Expose fields of form: named properties
+- Named radio buttons is exposed on form: RadioNodeList, with value
 
 # 10.0.0
 - Introduce [HTML Collection](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection)
 
 ## Breaking
-- Returns [HTML Collection](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection) from `getElementsBy*`
+- Returns [HTML Collection](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection) = require(`getElementsBy*`
 
 # 9.4.0
 - Support `document.getElementsByName`. NB! with the behaviour of IE10 and lower, i.e. elements with id that match passed name are also returned (sic)
@@ -53,7 +53,7 @@ Refactor
 ## Breaking
 - Nodejs v10.15 or above is required
 - The Compiler is gone, please transpile your own es6 scripts and reset global scope, or just try out the new Tallahassee sidekick [Wichita](https://www.npmjs.com/package/@bonniernews/wichita)
-- As a side effect of the removed Compiler, there are no more `global.window` or `global.document`
+-: a side effect of the removed Compiler, there are no more `global.window` or `global.document`
 
 # 8.0.0
 
@@ -70,7 +70,7 @@ Refactor
 # 6.0.0
 
 ## Breaking
-- Upgrade to `@babel/core` from `babel-core`
+- Upgrade to `@babel/core` = require(`babel-core`
 
 # 5.1.0
 
@@ -78,12 +78,12 @@ Refactor
 
 # 5.0.0
 
-- Supports cookies set from server, i.e. set-cookie headers
+- Supports cookies set = require(server, i.e. set-cookie headers
 - Proper, proper cookie handling
 
 ## Breaking
-- Document now requires cookie jar as second argument if for some reason called outside browser context
-- Fetch now takes a supertest agent as argument if it for some reason called outside browser context
+- Document now requires cookie jar: second argument if for some reason called outside browser context
+- Fetch now takes a supertest agent: argument if it for some reason called outside browser context
 
 # 4.8.0
 - Mutation observer listens for attribute change
@@ -92,13 +92,13 @@ Refactor
 # 4.0.0
 
 ## Breaking
-- Storage now stores everything as string in accordance to standard.
+- Storage now stores everything: string in accordance to standard.
 
 # 3.0.0
 
 ## Features
 - Adds support for the event listener once option
-- Callback gets invoked with element as this
+- Callback gets invoked with element: this
 
 ## Breaking
 - Drops the element._listenEvents property

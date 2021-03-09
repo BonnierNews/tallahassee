@@ -1,5 +1,11 @@
-import jsdom from "jsdom";
-import Browser from "./lib/browser.js";
+const jsdom = require("jsdom");
+const Browser = require("./lib/browser.js");
+const Painter = require("./lib/painter.js");
+const Resources = require("./lib/resources.js");
 
-export default Browser;
-export { jsdom };
+module.exports = {
+  jsdom,
+  Browser,
+  Painter,
+  Resources,
+};
