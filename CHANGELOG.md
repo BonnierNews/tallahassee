@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+# 10.5.3
+- Lock cheerio version to 1.0.0-rc.3 until breaking changes can be maintained
+
 # 10.5.2
 - Batched, async call to intersection observer callback on observe
 
