@@ -1,3 +1,5 @@
+"use strict";
+
 const jsdom = require("jsdom");
 const Browser = require("./lib/browser.js");
 const Painter = require("./lib/painter.js");
