@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+# Unreleased
+- Only consider the following types as javascript `undefined`, `"text/javascript"` and legacy `"application/javascript"`
+
 # 10.5.3
 - Lock cheerio version to 1.0.0-rc.3 until breaking changes can be maintained
 

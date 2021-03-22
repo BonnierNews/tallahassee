@@ -217,7 +217,7 @@ function Tallahassee(app, options = {}) {
         const $script = script.$elm;
 
         const scriptType = $script.attr("type");
-        if (scriptType && !/javascript/i.test(scriptType)) return;
+        if (scriptType && !/(text|application)\/(javascript)/i.test(scriptType)) return;
 
         const scriptBody = $script.html();
         if (scriptBody) vm.runInNewContext(scriptBody, window);

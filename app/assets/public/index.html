@@ -7,8 +7,17 @@
       document.documentElement.classList.remove("no-js");
     })();
     </script>
+    <script type="module">
+      window.moduleScriptExecuted = true;
+    </script>
     <script type="application/ld+json">
       {"a": 1}
+    </script>
+    <script type="custom/javascript">
+      window.customScriptIgnoredFailed = true;
+    </script>
+    <script type="application/javascript">
+      window.legacyScriptExecuted = true;
     </script>
   </head>
   <body>
@@ -79,7 +88,7 @@
       <button name="named-button-with-value" value="1" formaction="https://www.example.com/2">Send name and value</button>
     </form>
     <img class="lazy-load" data-img-source="/images/tallahassee-1.png">
-    <script>
+    <script type="text/javascript">
       (function IIFE() {
         window.scriptsAreExecutedInBody = true;
       })();

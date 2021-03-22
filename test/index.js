@@ -194,13 +194,38 @@ describe("Tallahassee", () => {
       expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
     });
 
-    it("does not run if script type is not JavaScript", () => {
+    it("does not run if script type is 'module'", () => {
       const scriptElement = browser.document.getElementsByTagName("script")[1];
-      const scriptType = scriptElement.$elm.attr("type");
+      expect(scriptElement.type).to.equal("module");
 
-      expect(scriptType).to.be.ok;
-      expect(scriptType).to.not.include("javascript");
       browser.runScript(scriptElement);
+
+      expect(browser.window.moduleScriptExecuted).to.be.undefined;
+    });
+
+    it("does not run if script is not JavaScript", () => {
+      const dataBlockScript = browser.document.getElementsByTagName("script")[2];
+      expect(dataBlockScript.type).to.equal("application/ld+json");
+
+      const customScript = browser.document.getElementsByTagName("script")[3];
+      expect(customScript.type).to.equal("custom/javascript");
+
+      browser.runScript(dataBlockScript);
+      browser.runScript(customScript);
+
+      expect(browser.window.customScriptIgnoredFailed).to.be.undefined;
+      expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
+    });
+
+    it("runs supplied legacy script", () => {
+      expect(browser.window.legacyScriptExecuted).to.be.undefined;
+
+      const legacyScript = browser.document.getElementsByTagName("script")[4];
+      expect(legacyScript.type).to.equal("application/javascript");
+
+      browser.runScript(legacyScript);
+
+      expect(browser.window.legacyScriptExecuted).to.be.true;
     });
   });
 
