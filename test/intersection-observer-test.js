@@ -61,14 +61,14 @@ describe("IntersectionObserver", () => {
 
     expect(intersectingEntries).to.have.length(0);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     expect(intersectingEntries).to.have.length(2);
     expect(intersectingEntries[0]).to.have.property("target", element1);
     expect(intersectingEntries[1]).to.have.property("target", element2);
 
     observer.observe(element3);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     expect(intersectingEntries).to.have.length(1);
     expect(intersectingEntries[0]).to.have.property("target", element3);
@@ -96,7 +96,7 @@ describe("IntersectionObserver", () => {
 
     observer.observe(element1);
     observer.observe(element2);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     timesCalled = 0;
     intersectingEntries.length = 0;
@@ -149,7 +149,7 @@ describe("IntersectionObserver", () => {
 
     observer.observe(element1);
     observer.observe(element2);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     timesCalled = 0;
 
@@ -167,7 +167,7 @@ describe("IntersectionObserver", () => {
     expect(timesCalled).to.equal(0);
 
     observer.observe(element1);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     timesCalled = 0;
 
