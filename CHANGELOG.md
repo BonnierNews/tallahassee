@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+# Unreleased
+- Use `process.nextTick` instead of `setTimeout` for deferring calls to intersection observer callback
+
 # 10.5.3
 - Lock cheerio version to 1.0.0-rc.3 until breaking changes can be maintained
 
