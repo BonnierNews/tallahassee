@@ -1,4 +1,4 @@
-const {strict: assert} = require("assert";
+const {strict: assert} = require("assert");
 const app = require("./app.js");
 const {Browser, Resources} = require("../../../index.js");
 const jsdom = require("jsdom");
