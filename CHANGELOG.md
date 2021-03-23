@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-# Unreleased
+# 10.5.5
 - Only consider the following types as javascript `undefined`, `"text/javascript"` and legacy `"application/javascript"`
 
 # 10.5.4
