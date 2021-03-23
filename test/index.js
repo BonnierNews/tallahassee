@@ -186,7 +186,9 @@ describe("Tallahassee", () => {
       expect(browser.document.documentElement.classList.contains("no-js")).to.be.true;
       expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
 
-      const scriptElement = browser.document.getElementsByTagName("script")[0];
+      const scriptElement = browser.document.getElementById("implicit-javascript-script");
+      expect(scriptElement).to.exist;
+
 
       browser.runScript(scriptElement);
 
@@ -194,13 +196,42 @@ describe("Tallahassee", () => {
       expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
     });
 
-    it("does not run if script type is not JavaScript", () => {
-      const scriptElement = browser.document.getElementsByTagName("script")[1];
-      const scriptType = scriptElement.$elm.attr("type");
+    it("does not run if script type is 'module'", () => {
+      const scriptElement = browser.document.getElementById("module-script");
+      expect(scriptElement).to.exist;
+      expect(scriptElement.type).to.equal("module");
 
-      expect(scriptType).to.be.ok;
-      expect(scriptType).to.not.include("javascript");
       browser.runScript(scriptElement);
+
+      expect(browser.window.moduleScriptExecuted).to.be.undefined;
+    });
+
+    it("does not run if script is not JavaScript", () => {
+      const dataBlockScript = browser.document.getElementById("data-block-script");
+      expect(dataBlockScript).to.exist;
+      expect(dataBlockScript.type).to.equal("application/ld+json");
+
+      const customScript = browser.document.getElementById("custom-script");
+      expect(customScript).to.exist;
+      expect(customScript.type).to.equal("custom/javascript");
+
+      browser.runScript(dataBlockScript);
+      browser.runScript(customScript);
+
+      expect(browser.window.customScriptIgnoredFailed).to.be.undefined;
+      expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
+    });
+
+    it("runs supplied legacy script", () => {
+      expect(browser.window.legacyScriptExecuted).to.be.undefined;
+
+      const legacyScript = browser.document.getElementById("legacy-script");
+      expect(legacyScript).to.exist;
+      expect(legacyScript.type).to.equal("application/javascript");
+
+      browser.runScript(legacyScript);
+
+      expect(browser.window.legacyScriptExecuted).to.be.true;
     });
   });
 
