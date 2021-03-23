@@ -61,17 +61,43 @@ describe("IntersectionObserver", () => {
 
     expect(intersectingEntries).to.have.length(0);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     expect(intersectingEntries).to.have.length(2);
     expect(intersectingEntries[0]).to.have.property("target", element1);
     expect(intersectingEntries[1]).to.have.property("target", element2);
 
     observer.observe(element3);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     expect(intersectingEntries).to.have.length(1);
     expect(intersectingEntries[0]).to.have.property("target", element3);
+  });
+
+
+  it("unobserves element", async () => {
+    const browser = await Browser(app).navigateTo("/");
+    const [element1] = browser.document.getElementsByClassName("observer-test-1");
+    const [element2] = browser.document.getElementsByClassName("observer-test-2");
+
+    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    let intersectingEntries = [];
+
+    const observer = browser.window.IntersectionObserver((entries) => {
+      intersectingEntries = entries.slice();
+    });
+
+    observer.observe(element1);
+    observer.observe(element2);
+
+    expect(intersectingEntries).to.have.length(0);
+
+    observer.unobserve(element2);
+
+    await new Promise((resolve) => process.nextTick(resolve));
+
+    expect(intersectingEntries).to.have.length(1);
+    expect(intersectingEntries[0]).to.have.property("target", element1);
   });
 
   it("calls viewPortUpdate with correct element when scrolling", async () => {
@@ -96,7 +122,7 @@ describe("IntersectionObserver", () => {
 
     observer.observe(element1);
     observer.observe(element2);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     timesCalled = 0;
     intersectingEntries.length = 0;
@@ -149,7 +175,7 @@ describe("IntersectionObserver", () => {
 
     observer.observe(element1);
     observer.observe(element2);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     timesCalled = 0;
 
@@ -167,7 +193,7 @@ describe("IntersectionObserver", () => {
     expect(timesCalled).to.equal(0);
 
     observer.observe(element1);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => process.nextTick(resolve));
 
     timesCalled = 0;
 
