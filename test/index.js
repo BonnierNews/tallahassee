@@ -186,7 +186,9 @@ describe("Tallahassee", () => {
       expect(browser.document.documentElement.classList.contains("no-js")).to.be.true;
       expect(browser.window).to.not.have.property("scriptsAreExecutedInBody");
 
-      const scriptElement = browser.document.getElementsByTagName("script")[0];
+      const scriptElement = browser.document.getElementById("implicit-javascript-script");
+      expect(scriptElement).to.exist;
+
 
       browser.runScript(scriptElement);
 
@@ -195,7 +197,8 @@ describe("Tallahassee", () => {
     });
 
     it("does not run if script type is 'module'", () => {
-      const scriptElement = browser.document.getElementsByTagName("script")[1];
+      const scriptElement = browser.document.getElementById("module-script");
+      expect(scriptElement).to.exist;
       expect(scriptElement.type).to.equal("module");
 
       browser.runScript(scriptElement);
@@ -204,10 +207,12 @@ describe("Tallahassee", () => {
     });
 
     it("does not run if script is not JavaScript", () => {
-      const dataBlockScript = browser.document.getElementsByTagName("script")[2];
+      const dataBlockScript = browser.document.getElementById("data-block-script");
+      expect(dataBlockScript).to.exist;
       expect(dataBlockScript.type).to.equal("application/ld+json");
 
-      const customScript = browser.document.getElementsByTagName("script")[3];
+      const customScript = browser.document.getElementById("custom-script");
+      expect(customScript).to.exist;
       expect(customScript.type).to.equal("custom/javascript");
 
       browser.runScript(dataBlockScript);
@@ -220,7 +225,8 @@ describe("Tallahassee", () => {
     it("runs supplied legacy script", () => {
       expect(browser.window.legacyScriptExecuted).to.be.undefined;
 
-      const legacyScript = browser.document.getElementsByTagName("script")[4];
+      const legacyScript = browser.document.getElementById("legacy-script");
+      expect(legacyScript).to.exist;
       expect(legacyScript.type).to.equal("application/javascript");
 
       browser.runScript(legacyScript);
