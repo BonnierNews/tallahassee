@@ -74,6 +74,32 @@ describe("IntersectionObserver", () => {
     expect(intersectingEntries[0]).to.have.property("target", element3);
   });
 
+
+  it("unobserves element", async () => {
+    const browser = await Browser(app).navigateTo("/");
+    const [element1] = browser.document.getElementsByClassName("observer-test-1");
+    const [element2] = browser.document.getElementsByClassName("observer-test-2");
+
+    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    let intersectingEntries = [];
+
+    const observer = browser.window.IntersectionObserver((entries) => {
+      intersectingEntries = entries.slice();
+    });
+
+    observer.observe(element1);
+    observer.observe(element2);
+
+    expect(intersectingEntries).to.have.length(0);
+
+    observer.unobserve(element2);
+
+    await new Promise((resolve) => process.nextTick(resolve));
+
+    expect(intersectingEntries).to.have.length(1);
+    expect(intersectingEntries[0]).to.have.property("target", element1);
+  });
+
   it("calls viewPortUpdate with correct element when scrolling", async () => {
     const browser = await Browser(app).navigateTo("/");
     browser.window._resize(1024, 768);
