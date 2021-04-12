@@ -46,6 +46,60 @@ describe("window.fetch", () => {
     expect(body).to.eql({data: 1});
   });
 
+  it("external delete is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const json = JSON.stringify({ foo: "bar" });
+    nock("http://example.com")
+      .delete("/", json)
+      .reply(200, {data: 1});
+
+    const body = await browser.window.fetch("http://example.com/", {
+      method: "DELETE",
+      body: json
+    }).then((res) => res.json());
+    expect(body).to.eql({data: 1});
+  });
+
+  it("local delete is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const json = JSON.stringify({ foo: "bar" });
+
+    const body = await browser.window.fetch("/delete", {
+      method: "DELETE",
+      body: json
+    }).then((res) => res.json());
+    expect(body).to.eql({data: 1});
+  });
+
+  it("external put is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const json = JSON.stringify({ foo: "bar" });
+    nock("http://example.com")
+      .put("/", json)
+      .reply(200, {data: 1});
+
+    const body = await browser.window.fetch("http://example.com/", {
+      method: "PUT",
+      body: json
+    }).then((res) => res.json());
+    expect(body).to.eql({data: 1});
+  });
+
+  it("local put is supported", async () => {
+    const browser = await Browser(app).navigateTo("/");
+
+    const json = JSON.stringify({ foo: "bar" });
+
+    const body = await browser.window.fetch("/put", {
+      method: "PUT",
+      body: json
+    }).then((res) => res.json());
+    expect(body).to.eql({data: 1});
+  });
+
   it("local head is supported", async () => {
     const browser = await Browser(app).navigateTo("/");
     const status = await browser.window.fetch("/head", {

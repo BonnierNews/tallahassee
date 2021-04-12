@@ -16,6 +16,8 @@ app.post("/", express.urlencoded({extended: true}), (req, res) => {
 });
 
 app.post("/post", (req, res) => res.send({data: 1}));
+app.delete("/delete", (req, res) => res.send({data: 1}));
+app.put("/put", (req, res) => res.send({data: 1}));
 app.head("/head", (req, res) => res.status(418).end());
 app.get("/api", (req, res) => res.send({data: 1}));
 app.get("/req", (req, res) => {
