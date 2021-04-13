@@ -376,15 +376,7 @@ function Tallahassee(app, options = {}) {
     }
 
     function originRequest(uri, requestOptions) {
-      let req;
-      if (requestOptions.method === "POST") {
-        req = agent.post(uri).send(requestOptions.body);
-      } else if (requestOptions.method === "HEAD") {
-        req = agent.head(uri);
-      } else {
-        req = agent.get(uri);
-      }
-
+      const req = buildRequest(uri, requestOptions);
       if (requestOptions.headers) {
         for (const header in requestOptions.headers) {
           const headerValue = requestOptions.headers[header];
@@ -412,6 +404,21 @@ function Tallahassee(app, options = {}) {
           return res.request.url;
         }
       });
+    }
+
+    function buildRequest(uri, requestOptions) {
+      switch (requestOptions.method) {
+        case "POST":
+          return agent.post(uri).send(requestOptions.body);
+        case "DELETE":
+          return agent.delete(uri).send(requestOptions.body);
+        case "PUT":
+          return agent.put(uri).send(requestOptions.body);
+        case "HEAD":
+          return agent.head(uri);
+        default:
+          return agent.get(uri);
+      }
     }
   }
 
