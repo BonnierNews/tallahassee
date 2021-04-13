@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+# 10.6.0
+- Support for methods DELETE and PUT on fetch
+
 # 10.5.5
 - Only consider the following types as javascript `undefined`, `"text/javascript"` and legacy `"application/javascript"`
 
