@@ -42,6 +42,10 @@ describe("Window", () => {
       expect(window.history).to.have.property("replaceState").that.is.a("function");
     });
 
+    it("history has pushState function", () => {
+      expect(window.history).to.have.property("replaceState").that.is.a("function");
+    });
+
     it("replaceState() sets new location", () => {
       window.history.replaceState(null, null, "/?a=1");
 
@@ -54,6 +58,20 @@ describe("Window", () => {
       expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
       expect(window.location).to.have.property("search").to.be.null;
     });
+
+    it("pushState() sets new location", () => {
+      window.history.pushState(null, null, "/?a=1");
+
+      expect(window.location).to.have.property("hostname", "www.expressen.se");
+      expect(window.location).to.have.property("protocol", "https:");
+      expect(window.location).to.have.property("pathname", "/");
+      expect(window.location).to.have.property("search", "?a=1");
+
+      window.history.pushState(null, null, "/nyheter/article-slug-2/");
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
+      expect(window.location).to.have.property("search").to.be.null;
+    });
+
   });
 
   describe("requestAnimationFrame", () => {
