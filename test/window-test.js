@@ -38,12 +38,87 @@ describe("Window", () => {
       expect(window).to.have.property("history");
     });
 
+    it("history has back function", () => {
+      expect(window.history).to.have.property("back").that.is.a("function");
+    });
+
+    it("history has forward function", () => {
+      expect(window.history).to.have.property("forward").that.is.a("function");
+    });
+
+    it("history has go function", () => {
+      expect(window.history).to.have.property("go").that.is.a("function");
+    });
+
     it("history has replaceState function", () => {
       expect(window.history).to.have.property("replaceState").that.is.a("function");
     });
 
     it("history has pushState function", () => {
-      expect(window.history).to.have.property("replaceState").that.is.a("function");
+      expect(window.history).to.have.property("pushState").that.is.a("function");
+    });
+
+    it("pushState() sets new location and adds the location to history state", () => {
+      window.history.pushState(null, null, "/?a=1");
+
+      expect(window.location).to.have.property("hostname", "www.expressen.se");
+      expect(window.location).to.have.property("protocol", "https:");
+      expect(window.location).to.have.property("pathname", "/");
+      expect(window.location).to.have.property("search", "?a=1");
+
+      window.history.pushState(null, null, "/nyheter/article-slug-2/");
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
+      expect(window.location).to.have.property("search").to.be.null;
+    });
+
+    it("back() sets the history state to the previous one", () => {
+      window.history.pushState(null, null, "/nyheter/article-slug-2/");
+      window.history.back();
+
+      expect(window.location).to.have.property("hostname", "www.expressen.se");
+      expect(window.location).to.have.property("protocol", "https:");
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+    });
+
+    it("back() should not set the history state to the previous one, if no previous state exists", () => {
+      window.history.back();
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+    });
+
+    it("forward() sets the history state to the next one", () => {
+      window.history.pushState(null, null, "/nyheter/article-slug-2/");
+      window.history.back();
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+
+      window.history.forward();
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
+    });
+
+    it("forward() should not set the history state to the next one, if no next state exists", () => {
+      window.history.forward();
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+    });
+
+    it("go() sets the history state to the specified one", () => {
+      window.history.pushState(null, null, "/nyheter/article-slug-2/");
+      window.history.back();
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+
+      window.history.go(1);
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
+    });
+
+    it("go() should not change state if invalid state is passed", () => {
+      // State nr 10 does not exist
+      window.history.go(10);
+
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
     });
 
     it("replaceState() sets new location", () => {
@@ -59,17 +134,22 @@ describe("Window", () => {
       expect(window.location).to.have.property("search").to.be.null;
     });
 
-    it("pushState() sets new location", () => {
-      window.history.pushState(null, null, "/?a=1");
-
-      expect(window.location).to.have.property("hostname", "www.expressen.se");
-      expect(window.location).to.have.property("protocol", "https:");
-      expect(window.location).to.have.property("pathname", "/");
-      expect(window.location).to.have.property("search", "?a=1");
-
+    it("pushState() should remove all the history states that are in front the current state", () => {
       window.history.pushState(null, null, "/nyheter/article-slug-2/");
+      window.history.back();
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+
+      window.history.forward();
       expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
-      expect(window.location).to.have.property("search").to.be.null;
+
+      window.history.back();
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug/");
+
+      window.history.pushState(null, null, "/nyheter/article-slug-3/");
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug-3/");
+
+      window.history.forward();
+      expect(window.location).to.have.property("pathname", "/nyheter/article-slug-3/");
     });
 
   });
