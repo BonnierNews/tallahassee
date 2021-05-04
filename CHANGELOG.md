@@ -1,7 +1,7 @@
 Changelog
 ---------
 # 10.7.0
-- Support for functions `back`, `forward`, `go` and `pushState` on the
+- Support for functions `back`, `forward`, `go` and `pushState` on the `window.history` object
 
 # 10.6.0
 - Support for methods DELETE and PUT on fetch
