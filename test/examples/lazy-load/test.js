@@ -1,7 +1,6 @@
-const {strict: assert} = require("assert");
+const { Browser, Painter } = require("../../../index.js");
+const { strict: assert } = require("assert");
 const app = require("./app.js");
-const Browser = require("../../../index.js");
-const Painter = require("../../../lib/painter.js");
 const reset = require("../helpers/reset.js");
 
 Feature("lazy load", () => {

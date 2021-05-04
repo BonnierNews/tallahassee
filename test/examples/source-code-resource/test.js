@@ -1,12 +1,9 @@
-const {promises: fs} = require("fs");
-const {strict: assert} = require("assert");
+const { Browser, Resources } = require("../../../index.js");
+const { promises: fs } = require("fs");
+const { strict: assert } = require("assert");
 const app = require("./app.js");
-const Browser = require("../../../index.js");
-const Resoures = require("../../../lib/resources.js");
-const jsdom = require("jsdom");
 const path = require("path");
 const reset = require("../helpers/reset.js");
-const url = require("url");
 
 Feature("source code resource", () => {
 	before(reset);
