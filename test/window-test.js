@@ -465,6 +465,21 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("search", null);
     });
 
+    it("supports reload", () => {
+      const wdw = Window({}, {
+        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      });
+
+      wdw.location.reload();
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/article-slug/?q=1");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/article-slug/");
+      expect(wdw.location).to.not.have.property("path");
+      expect(wdw.location).to.have.property("search", "?q=1");
+    });
+
     it("emits unload on window if set", (done) => {
       const wdw = Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")

@@ -1,5 +1,8 @@
 Changelog
 ---------
+# x.x
+- Support for window.location.reload()
+
 # 10.7.0
 - Support for functions `back`, `forward`, `go` and `pushState` on the `window.history` object
 
