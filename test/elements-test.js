@@ -1941,6 +1941,21 @@ describe("elements", () => {
       expect(bubbled).to.eql(["button"]);
     });
 
+    it("should NOT propagate click when immediate propagation is stopped", () => {
+      let result = false;
+      document.body.addEventListener("click", () => {
+        result = true;
+      });
+
+      buttons[0].addEventListener("click", (e) => {
+        e.stopImmediatePropagation();
+      });
+
+      buttons[0].click();
+
+      expect(result).to.equal(false);
+    });
+
     it("should NOT propagate click to parent when propagation stopped", () => {
       let result = false;
       document.body.addEventListener("click", () => {
