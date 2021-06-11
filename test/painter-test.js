@@ -1,3 +1,5 @@
+"use strict";
+
 const Painter = require("../lib/painter.js");
 const {JSDOM} = require("jsdom");
 const {strict: assert} = require("assert");
@@ -5,7 +7,7 @@ const {strict: assert} = require("assert");
 describe("painter", () => {
   let dom, element;
   beforeEach("load DOM", () => {
-    dom = new JSDOM(`<div>HTMLElement</div>`);
+    dom = new JSDOM("<div>HTMLElement</div>");
     element = dom.window.document.querySelector("div");
     assert(element, "expected element");
   });
@@ -74,9 +76,9 @@ describe("painter", () => {
     });
   });
 
-  describe("default bounding box", () => {
+  describe("stylesheet", () => {
     it("defaults bounding box values to 0", async () => {
-     assert.deepEqual(element.getBoundingClientRect(), {
+      assert.deepEqual(element.getBoundingClientRect(), {
         width: 0,
         height: 0,
         x: 0,
@@ -88,15 +90,19 @@ describe("painter", () => {
       });
     });
 
-    it("default bounding box can be changed", async () => {
+    it("can change default bounding box", async () => {
       const dom = new JSDOM(`<div>HTMLElement</div>`);
       const element = dom.window.document.querySelector("div");
       assert(element, "expected element");
       const customPainter = Painter({
-        x: 50,
-        y: 20,
-        width: 150,
-        height: 250,
+        stylesheet: {
+          "*": {
+            x: 50,
+            y: 20,
+            width: 150,
+            height: 250,
+          }
+        }
       });
       customPainter.init(dom.window);
       assert.deepEqual(element.getBoundingClientRect(), {
@@ -108,6 +114,50 @@ describe("painter", () => {
         right: 200,
         top: 20,
         bottom: 270,
+      });
+    });
+
+    it("compounds multiple matching styles", async () => {
+      const dom = new JSDOM(`
+        <h1>A heading</h1>
+        <p>A paragraph…</p>
+      `);
+      const customPainter = Painter({
+        stylesheet: {
+          "*": {
+            width: 375,
+          },
+          "h1": {
+            height: 36,
+          },
+          "p": {
+            height: 160,
+            y: 36,
+          }
+        }
+      });
+      customPainter.init(dom.window);
+
+      const [h1, p] = dom.window.document.body.children;
+      assert.deepEqual(h1.getBoundingClientRect(), {
+        width: 375,
+        height: 36,
+        x: 0,
+        y: 0,
+        left: 0,
+        right: 375,
+        top: 0,
+        bottom: 36,
+      });
+      assert.deepEqual(p.getBoundingClientRect(), {
+        width: 375,
+        height: 160,
+        x: 0,
+        y: 36,
+        left: 0,
+        right: 375,
+        top: 36,
+        bottom: 196,
       });
     });
   });
