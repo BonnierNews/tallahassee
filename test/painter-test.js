@@ -4,23 +4,23 @@ const Painter = require("../lib/painter.js");
 const {JSDOM} = require("jsdom");
 const {strict: assert} = require("assert");
 
-describe("painter", () => {
-  let dom, element;
-  beforeEach("load DOM", () => {
-    dom = new JSDOM("<div>HTMLElement</div>");
-    element = dom.window.document.querySelector("div");
-    assert(element, "expected element");
-  });
+describe("Painter", () => {
+  describe("Web APIs", () => {
+    let dom, element;
+    beforeEach("load DOM", () => {
+      dom = new JSDOM("<div>HTMLElement</div>");
+      element = dom.window.document.querySelector("div");
+      assert(element, "expected element");
+    });
 
-  let paint;
-  beforeEach("initialize painter", () => {
-    const painter = Painter();
-    paint = painter.init(dom.window);
-  });
+    let painter;
+    beforeEach("initialize painter", () => {
+      painter = Painter();
+      painter.init(dom.window);
+    });
 
-  describe("dimensions", () => {
-    beforeEach(() => {
-      paint(element, {
+    beforeEach("paint non-default layout", () => {
+      painter.paint(element, {
         x: 50,
         y: 20,
         width: 150,
@@ -70,14 +70,12 @@ describe("painter", () => {
     });
   });
 
-  describe("change dimensions", () => {
-    it("bounding box can be changed by paint", () => {
-
-    });
-  });
-
-  describe("stylesheet", () => {
-    it("defaults bounding box values to 0", async () => {
+  describe("Stylesheet", () => {
+    before("defaults bounding box values to 0", async () => {
+      const dom = new JSDOM(`<blockquote>HTMLElement</blockquote>`);
+      const element = dom.window.document.querySelector("blockquote");
+      assert(element, "expected element");
+      Painter().init(dom.window);
       assert.deepEqual(element.getBoundingClientRect(), {
         width: 0,
         height: 0,
@@ -133,7 +131,7 @@ describe("painter", () => {
           "p": {
             height: 160,
             y: 36,
-          }
+          },
         }
       });
       customPainter.init(dom.window);
@@ -159,6 +157,26 @@ describe("painter", () => {
         top: 36,
         bottom: 196,
       });
+    });
+
+    it("uses selector specificity to resolve conflicting styles", async () => {
+      const dom = new JSDOM(`
+        <h1 id="the-heading" class="heading">
+          A heading
+        </h1>
+      `);
+      const customPainter = Painter({
+        stylesheet: {
+          "#the-heading": {height: 30 },
+          "h1, h2": { height: 10 },
+          ".heading": { height: 20 },
+          "*": { height: 0 },
+        }
+      });
+      customPainter.init(dom.window);
+
+      const [h1] = dom.window.document.body.children;
+      assert.deepEqual(h1.getBoundingClientRect().height, 30);
     });
   });
 });
