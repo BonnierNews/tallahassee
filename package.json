@@ -5,7 +5,8 @@
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' mocha"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' mocha",
+    "lint": "eslint ."
   },
   "engines": {
     "node": ">=14.0.0"
@@ -32,6 +33,7 @@
     "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
+    "eslint": "^7.28.0",
     "mocha": "^8.2.1",
     "mocha-cakes-2": "^3.3.0"
   },

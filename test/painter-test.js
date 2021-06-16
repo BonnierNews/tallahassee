@@ -1,8 +1,8 @@
 "use strict";
 
 const Painter = require("../lib/painter.js");
-const {JSDOM} = require("jsdom");
-const {strict: assert} = require("assert");
+const { JSDOM } = require("jsdom");
+const { strict: assert } = require("assert");
 
 describe("Painter", () => {
   describe("Web APIs", () => {
@@ -70,7 +70,7 @@ describe("Painter", () => {
 
   describe("options.stylesheet", () => {
     before("defaults bounding box values to 0", async () => {
-      const dom = new JSDOM(`<div>HTMLElement</div>`);
+      const dom = new JSDOM("<div>HTMLElement</div>");
       Painter().init(dom.window);
 
       const element = dom.window.document.querySelector("div");
@@ -94,7 +94,7 @@ describe("Painter", () => {
       const stylesheet = {
         "*": { x: 50, y: 20, width: 150, height: 250 },
       };
-      Painter({stylesheet}).init(dom.window);
+      Painter({ stylesheet }).init(dom.window);
 
       const matchingElements = dom.window.document.querySelectorAll("*");
       for (const element of matchingElements) {
@@ -121,9 +121,9 @@ describe("Painter", () => {
         "h1": { height: 36 },
         "p": { height: 160, y: 36 },
       };
-      Painter({stylesheet}).init(dom.window);
+      Painter({ stylesheet }).init(dom.window);
 
-      const [h1, p] = dom.window.document.body.children;
+      const [ h1, p ] = dom.window.document.body.children;
       assert.deepEqual(h1.getBoundingClientRect(), {
         width: 375,
         height: 36,
@@ -158,7 +158,7 @@ describe("Painter", () => {
         ".heading": { height: 20 },
         "*": { height: 0 },
       };
-      Painter({stylesheet}).init(dom.window);
+      Painter({ stylesheet }).init(dom.window);
 
       const h1 = dom.window.document.body.querySelector("h1");
       assert.deepEqual(h1.offsetHeight, 30);
@@ -169,9 +169,9 @@ describe("Painter", () => {
         <div id="element">HTMLElement</div>
       `);
       const stylesheet = {
-        "#element": { width: 100, height: 100},
+        "#element": { width: 100, height: 100 },
       };
-      const painter = Painter({stylesheet}).init(dom.window);
+      const painter = Painter({ stylesheet }).init(dom.window);
 
       const element = dom.window.document.getElementById("element");
       painter.paint(element, { width: 200 });
@@ -191,7 +191,7 @@ describe("Painter", () => {
     });
 
     it("paints element", () => {
-      const [element] = elements;
+      const [ element ] = elements;
       painter.paint(element, { height: 16, y: 10 });
       assert.equal(element.offsetHeight, 16);
       assert.equal(element.offsetTop, 10);
@@ -206,7 +206,7 @@ describe("Painter", () => {
     });
 
     it("repaints element, updating element styles", () => {
-      const [element] = elements;
+      const [ element ] = elements;
       painter.paint(element, { height: 16, y: 10 });
       assert.equal(element.offsetHeight, 16);
       assert.equal(element.offsetTop, 10);

@@ -1,3 +1,5 @@
+"use strict";
+
 const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
@@ -5,9 +7,9 @@ const path = require("path");
 module.exports = http.createServer(async (req, res) => {
   try {
     const cookie = req.headers.cookie || "";
-    if (!cookie.includes("loggedIn=1")) {
+    if (!cookie.includes("loggedIn=1"))
       return res.writeHead(401).end();
-    }
+
 
     const documentPath = path.resolve("./test/examples/persistant-cookies/document.html");
     const document = await fs.readFile(documentPath, "utf8");
@@ -26,8 +28,8 @@ module.exports = http.createServer(async (req, res) => {
 function incrementValue (cookie, name) {
   const match = cookie.match(new RegExp(`${name}=(\\d)`));
   let value = 0;
-  if (match) {
+  if (match)
     value = Number(match[1]) + 1;
-  }
+
   return `${name}=${value}`;
 }

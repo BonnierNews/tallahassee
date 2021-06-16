@@ -1,3 +1,5 @@
+"use strict";
+
 const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
@@ -15,13 +17,14 @@ module.exports = http.createServer(async (req, res) => {
           ...
         </article>
       `;
-    } else {
+    }
+    else {
       const documentPath = path.resolve("./test/examples/continuous-scroll/document.html");
       document = await fs.readFile(documentPath, "utf8");
     }
 
     res
-      .writeHead(200, {"content-type": "text/html; charset=utf-8"})
+      .writeHead(200, { "content-type": "text/html; charset=utf-8" })
       .end(document);
   }
   catch (err) {
