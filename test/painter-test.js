@@ -14,8 +14,7 @@ describe("Painter", () => {
 
     let painter;
     beforeEach("initialize painter", () => {
-      painter = Painter();
-      painter.init(dom.window);
+      painter = Painter().init(dom.window);
     });
 
     beforeEach("paint non-default layout", () => {
@@ -69,7 +68,7 @@ describe("Painter", () => {
     });
   });
 
-  describe("Stylesheet", () => {
+  describe("options.stylesheet", () => {
     before("defaults bounding box values to 0", async () => {
       const dom = new JSDOM(`<div>HTMLElement</div>`);
       Painter().init(dom.window);
@@ -164,6 +163,21 @@ describe("Painter", () => {
       const h1 = dom.window.document.body.querySelector("h1");
       assert.deepEqual(h1.offsetHeight, 30);
     });
+
+    it("element styles trump stylesheet styles", async () => {
+      const dom = new JSDOM(`
+        <div id="element">HTMLElement</div>
+      `);
+      const stylesheet = {
+        "#element": { width: 100, height: 100},
+      };
+      const painter = Painter({stylesheet}).init(dom.window);
+
+      const element = dom.window.document.getElementById("element");
+      painter.paint(element, { width: 200 });
+      assert.deepEqual(element.offsetWidth, 200);
+      assert.deepEqual(element.offsetHeight, 100);
+    });
   });
 
   describe(".paint", () => {
@@ -172,8 +186,7 @@ describe("Painter", () => {
       const dom = new JSDOM(`
         <div>HTMLElement</div>
       `);
-      painter = Painter();
-      painter.init(dom.window);
+      painter = Painter().init(dom.window);
       elements = dom.window.document.querySelectorAll("div");
     });
 
