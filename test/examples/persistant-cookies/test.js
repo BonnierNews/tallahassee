@@ -7,22 +7,17 @@ const reset = require("../helpers/reset.js");
 Feature("persistant cookies", () => {
 	before(reset);
 
-	let loggedInCookie;
-	Given("logged in information in a cookie", () => {
-		loggedInCookie = new jsdom.toughCookie.Cookie.parse("loggedIn=1; HttpOnly;");
-	});
-
-	let browser;
 	const url = "https://tallahassee.io/";
-	And("it is stored in the browser", () => {
-		const cookieJar = new jsdom.CookieJar();
-		cookieJar.setCookieSync(loggedInCookie, url);
+	let cookieJar;
+	Given("credentials in a cookie", () => {
+		cookieJar = new jsdom.CookieJar();
+		cookieJar.setCookieSync("loggedIn=1; HttpOnly", url);
 	});
 
-	let page, pendingDom, resources;
+	let browser, page, pendingDom, resources;
 	When("visiting a page requiring authentication", () => {
-		page = browser.newPage();
 		browser = Browser(app, cookieJar);
+		page = browser.newPage();
 		resources = new Resources();
 		pendingDom = page.navigateTo(url, {resources});
 	});
@@ -37,7 +32,7 @@ Feature("persistant cookies", () => {
 	});
 
 	When("scripts are executed", async () => {
-		await resources.runScripts();
+		await resources.runScripts(dom);
 	});
 
 	Then("cookie value has been incremented" , () => {

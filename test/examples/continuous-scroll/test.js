@@ -1,4 +1,4 @@
-const { Browser, Painter } = require("../../../index.js");
+const { Browser, Painter, Resources } = require("../../../index.js");
 const { strict: assert } = require("assert");
 const app = require("./app.js");
 const nock = require("nock");
@@ -8,15 +8,16 @@ const supertest = require("supertest");
 Feature("continuous scroll", () => {
 	before(reset);
 
-	let page, dom, paint;
+	let page, painter, resources, dom;
 	before("load page", async () => {
 		const agent = supertest.agent(app);
 		const browser = Browser(agent);
 		page = browser.newPage();
-		const painter = Painter();
+		painter = Painter();
+		resources = new Resources();
 		dom = await page.navigateTo("/", {}, {
 			beforeParse (window) {
-				paint = painter.init(window);
+				painter.init(window);
 			}
 		});
 
@@ -36,11 +37,11 @@ Feature("continuous scroll", () => {
 	Given("one article", () => {
 		articles = dom.window.document.getElementsByTagName("article");
 		assert.equal(articles.length, 1);
-		paint(articles[0], { y: 0, height: dom.window.innerHeight * 2 });
+		painter.paint(articles[0], { y: 0, height: dom.window.innerHeight * 2 });
 	});
 
 	When("scripts are executed", async () => {
-		await page.runScripts();
+		await resources.runScripts(dom);
 	});
 
 	let resolvePendingInsertion;
@@ -60,7 +61,7 @@ Feature("continuous scroll", () => {
 		await pendingInsertion;
 		assert.equal(articles.length, 2);
 		const { bottom: previousArticleBottom } = articles[0].getBoundingClientRect();
-		paint(articles[1], { y: previousArticleBottom, height: dom.window.innerHeight * 2 });
+		painter.paint(articles[1], { y: previousArticleBottom, height: dom.window.innerHeight * 2 });
 	});
 
 	When("document is scrolled towards the end of the second article", () => {

@@ -1,4 +1,4 @@
-const { Browser, Painter } = require("../../../index.js");
+const { Browser, Painter, Resources } = require("../../../index.js");
 const { strict: assert } = require("assert");
 const app = require("./app.js");
 const reset = require("../helpers/reset.js");
@@ -6,14 +6,15 @@ const reset = require("../helpers/reset.js");
 Feature("lazy load", () => {
 	before(reset);
 
-	let page, dom, paint;
+	let page, painter, resources, dom;
 	before("load page", async () => {
 		const browser = Browser(app);
 		page = browser.newPage();
-		const painter = Painter();
+		painter = Painter();
+		resources = new Resources();
 		dom = await page.navigateTo("/", {}, {
 			beforeParse (window) {
-				paint = painter.init(window);
+				painter.init(window);
 			}
 		});
 	});
@@ -33,12 +34,12 @@ Feature("lazy load", () => {
 
 	And("only the first one is located within the viewport", () => {
 		for (let i = 0; i < images.length; ++i) {
-			paint(images[i], { y: i * 2 * dom.window.innerHeight });
+			painter.paint(images[i], { y: i * 2 * dom.window.innerHeight });
 		}
 	});
 
 	When("scripts are executed", async () => {
-		await page.runScripts();
+		await resources.runScripts(dom);
 	});
 
 	Then("the first image is loaded", () => {
