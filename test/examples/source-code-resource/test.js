@@ -10,7 +10,7 @@ Feature("source code resource", () => {
 
 	let resources;
 	Given("a source document", () => {
-		resources = new Resoures({
+		resources = new Resources({
 			resolveTag (tag) {
 				const src = tag.src || tag.dataset.sourceFile;
 				if (src?.endsWith("/dist-bundle.js"))
@@ -34,7 +34,7 @@ Feature("source code resource", () => {
 		assert.equal(script.src, "http://localhost:7411/dist-bundle.js");
 	});
 
-	And("an inline script marked: sourced = require(a file", () => {
+	And("an inline script marked: sourced from a file", () => {
 		const script = dom.window.document.querySelector("script[data-source-file]");
 		assert.ok(script);
 		assert.equal(script.dataset.sourceFile, "/dist-bundle.js");
@@ -43,7 +43,7 @@ Feature("source code resource", () => {
 	And("another inline script", () => {
 		const script = dom.window.document.querySelector("script:not([src], [data-src])");
 		assert.ok(script);
-		assert.equal(script.text.length > 0, true);
+		assert.equal(script.text.trim().length > 0, true);
 	});
 
 	When("scripts are executed", async () => {
@@ -54,11 +54,11 @@ Feature("source code resource", () => {
 	Then("source files and inline scripts have been executed", () => {
 		assert.equal(dom.window.document.title, [
 			"Document",
-			"edit = require(source entry",
-			"edit = require(source component",
-			"edit = require(source entry",
-			"edit = require(source component",
-			"edit = require(inline script",
+			"edit from source entry",
+			"edit from source component",
+			"edit from source entry",
+			"edit from source component",
+			"edit from inline script",
 		].join(" | "));
 	});
 });
