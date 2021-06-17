@@ -35,9 +35,9 @@ Feature("lazy load", () => {
   });
 
   And("only the first one is located within the viewport", () => {
-    for (let i = 0; i < images.length; ++i)
+    for (let i = 0; i < images.length; ++i) {
       painter.paint(images[i], { y: i * 2 * dom.window.innerHeight });
-
+    }
   });
 
   When("scripts are executed", async () => {
