@@ -15,7 +15,7 @@ Feature("source code resource", () => {
       resolveTag (tag) {
         const src = tag.src || tag.dataset.sourceFile;
         if (src?.endsWith("/dist-bundle.js")) {
-          return `file://${path.join(__dirname, "source-entry.js")}`;
+          return `file://${path.join(__dirname, "source-entry.mjs")}`;
         }
       }
     });
