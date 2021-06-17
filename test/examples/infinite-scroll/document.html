@@ -7,9 +7,9 @@
 
 <script>
 	const viewportHeight = window.innerHeight;
-	continuousScroll(document.querySelector("article"));
+	infiniteScroll(document.querySelector("article"));
 
-	function continuousScroll (current) {
+	function infiniteScroll (current) {
 		const currentEndPosition = window.pageYOffset + current.getBoundingClientRect().bottom;
 
 		window.addEventListener("scroll", evaluateLoadNext);
@@ -29,7 +29,7 @@
 
 		function appendNext (articleString) {
 			current.insertAdjacentHTML("afterend", articleString);
-			continuousScroll(current.nextElementSibling);
+			infiniteScroll(current.nextElementSibling);
 		}
 	}
 </script>

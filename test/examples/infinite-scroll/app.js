@@ -19,7 +19,7 @@ module.exports = http.createServer(async (req, res) => {
       `;
     }
     else {
-      const documentPath = path.resolve("./test/examples/continuous-scroll/document.html");
+      const documentPath = path.resolve("./test/examples/infinite-scroll/document.html");
       document = await fs.readFile(documentPath, "utf8");
     }
 

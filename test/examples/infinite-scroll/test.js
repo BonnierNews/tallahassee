@@ -7,7 +7,7 @@ const nock = require("nock");
 const reset = require("../helpers/reset.js");
 const supertest = require("supertest");
 
-Feature("continuous scroll", () => {
+Feature("infinite scroll", () => {
   before(reset);
 
   let page, painter, resources, dom;
