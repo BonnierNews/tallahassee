@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-const nock = require("nock");
+const nock = require('nock');
 
 module.exports = function reset () {
-  nock.cleanAll();
+	nock.cleanAll();
 };

@@ -1,44 +1,44 @@
 {
-  "name": "@expressen/tallahassee",
-  "version": "11.0.0",
-  "description": "Expressen client testing framework",
-  "main": "index.js",
-  "license": "BSD-3-Clause",
-  "scripts": {
-    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' mocha",
-    "lint": "eslint ."
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "keywords": [
-    "headless",
-    "browser",
-    "fake",
-    "mock",
-    "IntersectionObserver",
-    "MutationObserver",
-    "iframe"
-  ],
-  "author": "AB Kvällstidningen Expressen",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/ExpressenAB/tallahassee.git"
-  },
-  "dependencies": {
-    "jsdom": "^16.4.0",
-    "nock": "^13.0.5",
-    "specificity": "^0.4.1",
-    "supertest": "^6.0.1",
-    "whatwg-fetch": "^3.5.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.28.0",
-    "mocha": "^8.2.1",
-    "mocha-cakes-2": "^3.3.0"
-  },
-  "bugs": {
-    "url": "https://github.com/ExpressenAB/tallahassee/issues"
-  },
-  "homepage": "https://github.com/ExpressenAB/tallahassee#readme"
+	"name": "@expressen/tallahassee",
+	"version": "11.0.0",
+	"description": "Expressen client testing framework",
+	"main": "index.js",
+	"license": "BSD-3-Clause",
+	"scripts": {
+		"test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' mocha",
+		"lint": "eslint ."
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"keywords": [
+		"headless",
+		"browser",
+		"fake",
+		"mock",
+		"IntersectionObserver",
+		"MutationObserver",
+		"iframe"
+	],
+	"author": "AB Kvällstidningen Expressen",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/ExpressenAB/tallahassee.git"
+	},
+	"dependencies": {
+		"jsdom": "^16.4.0",
+		"nock": "^13.0.5",
+		"specificity": "^0.4.1",
+		"supertest": "^6.0.1",
+		"whatwg-fetch": "^3.5.0"
+	},
+	"devDependencies": {
+		"eslint": "^7.28.0",
+		"mocha": "^8.2.1",
+		"mocha-cakes-2": "^3.3.0"
+	},
+	"bugs": {
+		"url": "https://github.com/ExpressenAB/tallahassee/issues"
+	},
+	"homepage": "https://github.com/ExpressenAB/tallahassee#readme"
 }

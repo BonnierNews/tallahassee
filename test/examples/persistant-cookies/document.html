@@ -1,10 +1,10 @@
 <!doctype html>
 <script>
-  var cookie = document.cookie || "";
-  var match = cookie.match(/incremental=(\d)/);
-  var value = 0;
-  if (match) {
-    value = Number(match[1]) + 1;
-  }
-  document.cookie = `incremental=${value}`;
+	var cookie = document.cookie || "";
+	var match = cookie.match(/incremental=(\d)/);
+	var value = 0;
+	if (match) {
+		value = Number(match[1]) + 1;
+	}
+	document.cookie = `incremental=${value}`;
 </script>
