@@ -1,83 +1,77 @@
-Tallahassee
-===========
+# Zombieland draft
 
-![Utilities](https://raw.github.com/ExpressenAB/tallahassee/master/tallahassee-1.png)
+Tallahassee is great! It's powerful enough to test your applications entire client side. It's "hackable" enough to emulate most scenarios / quirks occurring in an actual browser, making it suitable for both feature and unit style testing. It's lightweight enough to not be an excuse for skimping on testing.
 
-[![Build Status](https://travis-ci.org/ExpressenAB/tallahassee.svg?branch=master)](https://travis-ci.org/ExpressenAB/tallahassee)[![dependencies Status](https://david-dm.org/ExpressenAB/tallahassee/status.svg)](https://david-dm.org/ExpressenAB/tallahassee)
+[However it isn't perfect...](https://github.com/BonnierNews/tallahassee/blob/next-draft/BACKGROUND.md)
 
-Test your client scripts in a headless browser.
+Proposed solution is to delegete all the DOM stuff to [jsdom](https://github.com/jsdom/jsdom). Other key features are built as **a toolkit of independent _single_ purpose extensions**.
 
-# Introduction
+## Tallahassee
 
-Supports just about everything except `querySelectorAll()` which we don´t want developers to use.
+A browser module for loading pages, containing subsequent requests, persisting cookies etc.
 
-- IntersectionObserver? Yes, check [here](/API.md#intersectionobserver)
+More or less a convenient wrapper around [SuperTest](https://github.com/visionmedia/supertest), [Tough Cookie](https://github.com/salesforce/tough-cookie) and jsdom. The browser scope will also make it easy to test a session, or multiple parallell sessions, as opposed to a single page load.
 
-# Example:
+SuperTest also enables passing along HTTP headers with a request which doesn't seem to be supported by the [jsdom `fromURL`](https://github.com/jsdom/jsdom#fromurl).
 
-```javascript
-"use strict";
+> I really want the name Tallahassee to remain, although Columbus sounds more _browsery_.
 
-const app = require("../app/app");
-const Browser = require("@expressen/tallahassee");
-const Script = require("@bonniernews/wichita");
+## Little Rock
 
-describe("Tallahassee", () => {
-  describe("navigateTo()", () => {
-    it("navigates to url", async () => {
-      await Browser(app).navigateTo("/");
-    });
+A layout module implementing everything visual.
 
-    it("throws if not 200", async () => {
-      try {
-        await Browser(app).navigateTo("/404");
-      } catch (e) {
-        var err = e; // eslint-disable-line no-var
-      }
-      expect(err).to.be.ok;
-    });
+JSDOM does not provide a way to emulate layout out of the box. When major part of an application's client side JS consists of lazy loading / sticky behaviour etc. this is required.
 
-    it("unless you override status code", async () => {
-      const browser = await Browser(app).navigateTo("/404", null, 404);
-      expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
-    });
-  });
+## Wichita
 
-  describe("run script", () => {
-    it("run es6 script sources with @bonniernews/wichita", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        Cookie: "_ga=1"
-      });
+A resource module for running client side JS and resolving assets.
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+JSDOM does run scripts quite well. It does however not provide a controlled way to execute scripts at a _convenient time_. A pattern when testing something is asserting an element original state, running the scripts then asserting the element's new state. JSDOM will, like a browser, run any client script as soon as it has loaded making it _tricky_ to run assertions prior to script execution.
 
-      expect(browser.document.cookie).to.equal("_ga=1");
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
-    });
+Custom script executor enables running code at any given time. Also it enables running source code over a built resource which is good for rapid retesting.
 
-    it("again", async () => {
-      const browser = await Browser(app).navigateTo("/");
+Resolver enables "binding" script tags to files making the test suite less verbose and less prone to mistakes.
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+This could be achieved by extending the `jsdom.ResourceLoader` interface with some execution code - a sort of rewrite of existing package [Wichita](https://github.com/BonnierNews/wichita).
 
-      expect(browser.document.cookie).to.equal("");
-      expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);
-    });
-  });
-});
-```
+## ?
 
-# External scripts
+Any other key features?
 
-May we suggest you to use Wichita, the Tallahassee sidekick. It can be found here https://www.npmjs.com/package/@bonniernews/wichita
+> Would be nice with at least 4 core modules so that all main characters are represented ;D
 
-# Timers
 
-If overriding timers on window, e.g. `setTimeout` it can be a good idea to make them asynchronous since they tend to be recurring.
+## Drawbacks
 
-Example:
-```js
-browser.window.setTimeout = function mySetTimeout(fn, ms, ...args) {
-  process.nextTick(fn, ...args);
-};
-```
+### JSDOM
+JSDOM is kind of a black box compared to current Tallahassee browser environment. Read only properties are read only. Don't know if this is a big problem.
+
+It is not as fully featured as it appears. Polyfills are required for some basic functions, such as `fetch`.
+
+### "Independent _single_ purpose extensions"
+The intention of making each tool independent sounds like a good idea but is it? Could make the API's overly complex! Does anyone want / need a setup like JSDOM, Tallahasse and Little Rock but not Whichita?
+
+### Custom script executor
+Useful but feels wrong. [The VM source text module is experimental](https://nodejs.org/api/vm.html#vm_class_vm_sourcetextmodule).
+
+
+## TODO
+
+### Tallahassee
+Containing requests to the app is currently done by setting up a `nock` scope around app origin which intercepts all reqs and proxies them through `supertest`. Not ideal for a bunch of reasons:
+
+- There is no built in way to clear a specific scope - [creative workaround](https://github.com/nock/nock/issues/1495#issuecomment-499594455)
+- Clearing an interceptor would need to be done in an after hook
+
+### Little Rock
+Paint method behaves different when used on an element and a selector. Maybe it should. Styles applied to element will overwrite previous styles. Styles applied to selector will be appended to stylesheet.
+
+Scrolling behavior is **very** bare bones.
+
+Painting with both "stylesheets" and "elements" might not cause expected behavior. When scrolling an initial paint will read from all style sources: first stylesheet then element. Then compiled diff will be applied to element giving it the "importance" of inline styles.
+
+### Whichita
+Not using the ES module feature mustn't require the `--experimental-vm-modules` flag.
+
+Have not been able to make a working example using `fetch` along with [the community recommended polyfill](https://github.com/jsdom/jsdom/issues/1724#issuecomment-720727999). Did make it with another polyfill though :fingers_crossed:
+
