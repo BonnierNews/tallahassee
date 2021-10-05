@@ -8,17 +8,16 @@ const reset = require('../helpers/reset.js');
 Feature('lazy load', () => {
 	before(reset);
 
-	let page, painter, resources, dom;
+	let painter, resources, dom;
 	before('load page', async () => {
-		const browser = Browser(app);
-		page = browser.newPage();
 		painter = Painter();
 		resources = new Resources();
-		dom = await page.navigateTo('/', {}, {
-			beforeParse (window) {
-				painter.init(window);
-			}
-		});
+		dom = await new Browser(app)
+			.navigateTo('/', {}, {
+				beforeParse (window) {
+					painter.init(window);
+				}
+			});
 	});
 
 	let images;
@@ -28,8 +27,7 @@ Feature('lazy load', () => {
 	});
 
 	And('they are not loaded', () => {
-		for (let i = 0; i < images.length; ++i) {
-			const image = images[i];
+		for (const image of images) {
 			assert.equal(image.getAttribute('src'), '/placeholder.gif');
 		}
 	});

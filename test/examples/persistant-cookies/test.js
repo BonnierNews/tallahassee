@@ -16,12 +16,11 @@ Feature('persistant cookies', () => {
 		cookieJar.setCookieSync('loggedIn=1; HttpOnly', url);
 	});
 
-	let browser, page, pendingDom, resources;
+	let browser, pendingDom, resources;
 	When('visiting a page requiring authentication', () => {
-		browser = Browser(app, cookieJar);
-		page = browser.newPage();
+		browser = new Browser(app, cookieJar);
 		resources = new Resources();
-		pendingDom = page.navigateTo(url, { resources });
+		pendingDom = browser.navigateTo(url, { resources });
 	});
 
 	let dom;
@@ -42,8 +41,7 @@ Feature('persistant cookies', () => {
 	});
 
 	When('visiting the page again', () => {
-		page = browser.newPage();
-		pendingDom = page.navigateTo(url);
+		pendingDom = browser.navigateTo(url);
 	});
 
 	Then('we are still allowed in', async () => {

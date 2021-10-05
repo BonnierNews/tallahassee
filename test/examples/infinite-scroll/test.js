@@ -14,8 +14,7 @@ Feature('infinite scroll', () => {
 		const agent = supertest.agent(app);
 		painter = Painter();
 		resources = new Resources();
-		dom = await Browser(agent)
-			.newPage()
+		dom = await new Browser(agent)
 			.navigateTo('/', {}, {
 				beforeParse (window) {
 					painter.init(window);

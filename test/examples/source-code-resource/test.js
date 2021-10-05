@@ -21,13 +21,12 @@ Feature('source code resource', () => {
 		});
 	});
 
-	let browser, page, dom;
+	let dom;
 	When('load page', async () => {
-		browser = Browser(app);
-		page = browser.newPage();
-		dom = await page.navigateTo('/', {}, {
-			resources,
-		});
+		dom = await new Browser(app)
+			.navigateTo('/', {}, {
+				resources,
+			});
 	});
 
 	And('a script referencing a bundle', () => {
