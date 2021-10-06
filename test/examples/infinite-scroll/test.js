@@ -4,17 +4,15 @@ const { Browser, Painter, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
 const app = require('./app.js');
 const reset = require('../helpers/reset.js');
-const supertest = require('supertest');
 
 Feature('infinite scroll', () => {
 	before(reset);
 
 	let painter, resources, dom;
 	before('load page', async () => {
-		const agent = supertest.agent(app);
 		painter = Painter();
 		resources = new Resources();
-		dom = await new Browser(agent)
+		dom = await new Browser(app)
 			.navigateTo('/', {}, {
 				beforeParse (window) {
 					painter.init(window);
