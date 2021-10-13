@@ -6,7 +6,7 @@ const {Document} = require("../lib");
 describe("HTMLCollection", () => {
   let document;
   beforeEach(() => {
-    document = Document({
+    document = new Document({
       text: `
         <html>
           <body>

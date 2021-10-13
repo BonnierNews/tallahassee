@@ -10,7 +10,7 @@ describe("Document", () => {
   beforeEach(() => {
     const jar = CookieJar();
     jar.setCookies("_ga=1");
-    document = Document({
+    document = new Document({
       url: "https://www.expressen.se/nyheter/article-slug/",
       headers: new Map(Object.entries({})),
       location: {
@@ -64,7 +64,7 @@ describe("Document", () => {
     });
 
     it("referrer returns source referrer", () => {
-      const doc = Document({
+      const doc = new Document({
         url: "https://www.expressen.se/nyheter/article-slug/",
         referrer: "https://example.com",
         text: "<html></html>"

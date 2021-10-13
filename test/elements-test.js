@@ -46,7 +46,7 @@ describe("elements", () => {
   describe("Properties", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         url: "https://www.expressen.se/",
         location: url.parse("https://www.expressen.se/"),
         text: `
@@ -259,7 +259,7 @@ describe("elements", () => {
     describe("getElementsByClassName(className)", () => {
       let document;
       beforeEach(() => {
-        document = Document({
+        document = new Document({
           text: `
             <html>
               <body>
@@ -291,7 +291,7 @@ describe("elements", () => {
     describe("appendChild(aChild)", () => {
       let document;
       beforeEach(() => {
-        document = Document({
+        document = new Document({
           text: `
             <html>
               <body id="grandparent">
@@ -351,7 +351,7 @@ describe("elements", () => {
     describe("removeChild(child)", () => {
       let document;
       beforeEach(() => {
-        document = Document({
+        document = new Document({
           text: `
             <html>
               <body id="grandparent">
@@ -403,7 +403,7 @@ describe("elements", () => {
   describe(".style", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -469,7 +469,7 @@ describe("elements", () => {
   describe("api", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -495,7 +495,7 @@ describe("elements", () => {
   describe("input[type=radio]", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -580,7 +580,7 @@ describe("elements", () => {
     });
 
     it("unsets checked on siblings in same form", () => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -609,7 +609,7 @@ describe("elements", () => {
   describe("input[type=checkbox]", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -691,7 +691,7 @@ describe("elements", () => {
   describe("_setBoundingClientRect", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -759,7 +759,7 @@ describe("elements", () => {
   describe(".textContent", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -799,7 +799,7 @@ describe("elements", () => {
   describe(".firstElementChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -828,7 +828,7 @@ describe("elements", () => {
   describe(".firstChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body><h2>Test</h2>
@@ -857,7 +857,7 @@ describe("elements", () => {
   describe(".lastElementChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -886,7 +886,7 @@ describe("elements", () => {
   describe(".lastChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -918,7 +918,7 @@ describe("elements", () => {
   describe(".contains", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
           <body>
@@ -964,7 +964,7 @@ describe("elements", () => {
   describe(".closest", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -994,7 +994,7 @@ describe("elements", () => {
   describe(".className", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html class="no-js">
             <body>
@@ -1017,7 +1017,7 @@ describe("elements", () => {
   describe(".scrollWidth", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1048,7 +1048,7 @@ describe("elements", () => {
   describe(".scrollHeight", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1079,7 +1079,7 @@ describe("elements", () => {
   describe(".outerHTML", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1098,7 +1098,7 @@ describe("elements", () => {
   describe(".innerText", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1123,7 +1123,7 @@ describe("elements", () => {
   describe(".cloneNode", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1162,7 +1162,7 @@ describe("elements", () => {
   describe("forms", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1317,7 +1317,7 @@ describe("elements", () => {
   describe("select", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1421,7 +1421,7 @@ describe("elements", () => {
   describe("video element", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1477,7 +1477,7 @@ describe("elements", () => {
   describe("template element", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1502,7 +1502,7 @@ describe("elements", () => {
   describe("instanceof", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1529,7 +1529,7 @@ describe("elements", () => {
   describe("dataset", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1578,7 +1578,7 @@ describe("elements", () => {
   describe("previous- and nextElementSibling", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1616,7 +1616,7 @@ describe("elements", () => {
   describe("insertBefore", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1704,7 +1704,7 @@ describe("elements", () => {
   describe("insertAdjacentHTML", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1767,7 +1767,7 @@ describe("elements", () => {
   describe("matches", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body class="parent-element">
@@ -1807,7 +1807,7 @@ describe("elements", () => {
     let clickCount;
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `<html>
             <body>
               <div>
@@ -2016,7 +2016,7 @@ describe("elements", () => {
   describe("requestFullscreen", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -2040,7 +2040,7 @@ describe("elements", () => {
   describe("scrollLeft", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -2102,7 +2102,7 @@ describe("elements", () => {
   describe("scrollTop", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -2167,7 +2167,7 @@ describe("elements", () => {
     const clickListener = () => {};
 
     before(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>

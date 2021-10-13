@@ -6,7 +6,7 @@ const {Window, Document} = require("../lib");
 describe("Window", () => {
   let window, document;
   beforeEach(() => {
-    document = Document({
+    document = new Document({
       url: "https://www.expressen.se/nyheter/article-slug/",
       text: `
         <html>

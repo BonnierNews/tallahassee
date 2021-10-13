@@ -119,7 +119,7 @@ function Tallahassee(app, options = {}) {
 
       const text = await resp.text();
 
-      const document = Document({
+      const document = new Document({
         text,
         location,
         referrer,

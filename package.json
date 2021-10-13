@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.3",
-    "domexception": "^2.0.0",
-    "node-fetch": "^2.6.0",
+    "domexception": "^4.0.0",
+    "node-fetch": "^2.6.5",
     "supertest": "^6.1.6"
   },
   "devDependencies": {

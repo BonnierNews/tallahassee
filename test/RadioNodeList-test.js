@@ -5,7 +5,7 @@ const {Document} = require("../lib");
 describe("RadioNodeList", () => {
   let document;
   beforeEach(() => {
-    document = Document({
+    document = new Document({
       text: `
         <html>
           <body>
