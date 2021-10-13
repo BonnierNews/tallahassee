@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "10.7.0",
+  "version": "11.0.0",
   "description": "Expressen client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -11,7 +11,7 @@
     "toc": "node ./scripts/generate-api-toc"
   },
   "engines": {
-    "node": ">=10.15.0"
+    "node": ">=14"
   },
   "keywords": [
     "headless",
@@ -31,16 +31,16 @@
     "cheerio": "1.0.0-rc.3",
     "domexception": "^2.0.0",
     "node-fetch": "^2.6.0",
-    "supertest": "^4.0.2"
+    "supertest": "^6.1.6"
   },
   "devDependencies": {
     "@bonniernews/wichita": "^0.7.0",
     "chai": "^4.2.0",
-    "cookiejar": "^2.1.2",
-    "eslint": "^6.7.2",
+    "cookiejar": "2.1.2",
+    "eslint": "^8.0.0",
     "express": "^4.17.0",
     "markdown-toc": "^1.2.0",
-    "mocha": "^6.2.2",
+    "mocha": "^9.1.2",
     "nock": "^11.7.0"
   },
   "files": [
