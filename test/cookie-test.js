@@ -63,7 +63,7 @@ describe("cookies", () => {
         ]
       });
 
-      expect(page.document.body.textContent).to.equal("myCookie=singoalla; myOtherCookie=drommar; myNotSoSafeCookie=transfett");
+      expect(page.document.body.textContent).to.equal("myCookie=singoalla;myOtherCookie=drommar;myNotSoSafeCookie=transfett");
     });
 
     it("navigating with cookie header sets cookies on passed host", async () => {
