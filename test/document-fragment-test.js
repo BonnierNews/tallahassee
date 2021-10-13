@@ -2,12 +2,12 @@
 
 const Document = require("../lib/Document");
 const DocumentFragment = require("../lib/DocumentFragment");
-const Element = require("../lib/Element");
+const {elementFactory} = require("../lib/Element");
 
 describe("DocumentFragment", () => {
   let documentFragment;
   beforeEach(() => {
-    documentFragment = DocumentFragment(Element);
+    documentFragment = DocumentFragment(elementFactory);
     documentFragment.$elm.html(`
       <li><a>Item</a></li>
     `);

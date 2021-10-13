@@ -1,7 +1,7 @@
 "use strict";
 
 const DOMException = require("domexception");
-const Element = require("../lib/Element");
+const {Element, Form} = require("../lib/Element");
 const DocumentFragment = require("../lib/DocumentFragment");
 const url = require("url");
 const {Document} = require("../lib");
@@ -1518,6 +1518,11 @@ describe("elements", () => {
     it("instance has an instanceof Element", () => {
       const element = document.getElementById("get-form");
       expect(element instanceof Element).to.be.true;
+    });
+
+    it("form instance has an instanceof Form", () => {
+      const element = document.getElementById("get-form");
+      expect(element instanceof Form).to.be.true;
     });
   });
 

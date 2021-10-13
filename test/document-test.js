@@ -230,34 +230,34 @@ describe("Document", () => {
 
     it("can set cookie", () => {
       document.cookie = "_new=2";
-      expect(document.cookie).to.equal("_ga=1;_new=2");
+      expect(document.cookie).to.equal("_ga=1; _new=2");
     });
 
     it("overwrites cookie with same name", () => {
       document.cookie = "_writable=2";
       document.cookie = "_writable=3";
-      expect(document.cookie).to.equal("_ga=1;_writable=3");
+      expect(document.cookie).to.equal("_ga=1; _writable=3");
     });
 
     it("does not URI encodes when setting value", () => {
       document.cookie = "_writable=2 3";
-      expect(document.cookie).to.equal("_ga=1;_writable=2 3");
+      expect(document.cookie).to.equal("_ga=1; _writable=2 3");
     });
 
     it("can set cookie value to blank", () => {
       document.cookie = "_writable=4";
-      expect(document.cookie).to.equal("_ga=1;_writable=4");
+      expect(document.cookie).to.equal("_ga=1; _writable=4");
 
       document.cookie = "_writable=";
-      expect(document.cookie).to.equal("_ga=1;_writable=");
+      expect(document.cookie).to.equal("_ga=1; _writable=");
 
       document.cookie = "_writable=44 ";
-      expect(document.cookie).to.equal("_ga=1;_writable=44 ");
+      expect(document.cookie).to.equal("_ga=1; _writable=44 ");
     });
 
     it("can set cookie with expires", () => {
-      document.cookie = "termsAware=1;path=/;domain=.expressen.se;expires=Wed, 20 Sep 2028 08:38:44 GMT";
-      expect(document.cookie).to.equal("_ga=1;termsAware=1");
+      document.cookie = "termsAware=1; path=/;domain=.expressen.se;expires=Wed, 20 Sep 2028 08:38:44 GMT";
+      expect(document.cookie).to.equal("_ga=1; termsAware=1");
     });
   });
 
