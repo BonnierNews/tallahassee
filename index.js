@@ -124,8 +124,7 @@ function Tallahassee(app, options = {}) {
         location,
         referrer,
       }, agent.jar);
-      const window = Window(resp, {
-        location,
+      const window = new Window(resp, {
         fetch: Fetch(fetch),
         get document() {
           return document;
@@ -228,7 +227,6 @@ function Tallahassee(app, options = {}) {
 
         context.$elm.find("script").each((idx, elm) => {
           const script = document._getElement(document.$(elm));
-
           runScript(script);
         });
       }

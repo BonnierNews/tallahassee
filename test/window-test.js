@@ -18,7 +18,7 @@ describe("Window", () => {
         </html>`
     });
 
-    window = Window({
+    window = new Window({
       url: "https://www.expressen.se/nyheter/article-slug/"
     },
     {
@@ -184,7 +184,7 @@ describe("Window", () => {
 
   describe("navigator", () => {
     it(".userAgent returns Tallahassee by default", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
       }, {document});
 
@@ -192,7 +192,7 @@ describe("Window", () => {
     });
 
     it(".userAgent is returns User-Agent header", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
       }, {document}, "Mozilla/5.0");
 
@@ -200,7 +200,7 @@ describe("Window", () => {
     });
 
     it(".userAgent is read only", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
         url: "https://www.expressen.se/nyheter/article-slug/"
       }, {document});
@@ -210,7 +210,7 @@ describe("Window", () => {
     });
 
     it(".geolocation is returns expected api", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
         url: "https://www.expressen.se/nyheter/article-slug/"
       }, {document});
@@ -222,7 +222,7 @@ describe("Window", () => {
     });
 
     it(".geolocation is read only", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
         url: "https://www.expressen.se/nyheter/article-slug/"
       }, {document});
@@ -288,14 +288,14 @@ describe("Window", () => {
     });
 
     it("should return object that matches one media condition", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       const media = window.matchMedia("(min-width: 500px)");
       expect(media.media).to.equal("(min-width: 500px)");
       expect(media.matches).to.be.true;
     });
 
     it("should return object that does not match one media condition", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       const media = window.matchMedia("(max-width: 500px)");
       expect(media.media).to.equal("(max-width: 500px)");
       expect(media.matches).to.be.false;
@@ -303,14 +303,14 @@ describe("Window", () => {
 
     it("should return object that matches one media type and one media condition", () => {
       window.styleMedia = { type: "screen" };
-      window.innerWidth = 500;
+      window._resize(500);
       const media = window.matchMedia("screen and (max-width: 500px)");
       expect(media.media).to.equal("screen and (max-width: 500px)");
       expect(media.matches).to.be.true;
     });
 
     it("should return object that does not match one media type and one media condition", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen and (max-width: 500px)");
       expect(media.media).to.equal("screen and (max-width: 500px)");
@@ -318,7 +318,7 @@ describe("Window", () => {
     });
 
     it("executes callback when match changes", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       const media = window.matchMedia("(max-width: 500px)");
       expect(media.matches).to.be.false;
 
@@ -393,7 +393,7 @@ describe("Window", () => {
 
   describe("location", () => {
     it("exposes location", () => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
       });
 
@@ -408,7 +408,7 @@ describe("Window", () => {
     });
 
     it("exposes location with port", () => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se:443/nyheter/article-slug/?q=1")
       });
 
@@ -424,7 +424,7 @@ describe("Window", () => {
     });
 
     it("has setter", () => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
       });
 
@@ -439,7 +439,7 @@ describe("Window", () => {
     });
 
     it.skip("property can be replaced for testing purposes", () => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
       });
 
@@ -451,7 +451,7 @@ describe("Window", () => {
     });
 
     it("supports relative path", () => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
       });
 
@@ -466,7 +466,7 @@ describe("Window", () => {
     });
 
     it("emits unload on window if set", (done) => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
       });
 
@@ -478,7 +478,7 @@ describe("Window", () => {
     });
 
     it("emits unload even if changed to the same url", (done) => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
       });
 
@@ -490,7 +490,7 @@ describe("Window", () => {
     });
 
     it("doesn't emit unload if changed to the same url with hash", () => {
-      const wdw = Window({}, {
+      const wdw = new Window({}, {
         location: getLocation("https://www.expressen.se/nyheter/article-slug/")
       });
 
@@ -507,7 +507,7 @@ describe("Window", () => {
 
   describe("window.atob()", () => {
     it("decodes base64 encoded string", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -517,7 +517,7 @@ describe("Window", () => {
     });
 
     it("throws if trying to decode invalid base64 string", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -526,7 +526,7 @@ describe("Window", () => {
     });
 
     it("called with no arg is NOT ok", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -536,7 +536,7 @@ describe("Window", () => {
 
   describe("window.btoa()", () => {
     it("decodes base64 encoded string as latin1", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -544,7 +544,7 @@ describe("Window", () => {
     });
 
     it("throws if trying to encode chars outside latin1 range (>255)", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -554,7 +554,7 @@ describe("Window", () => {
     });
 
     it("called with undefined is ok", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -562,7 +562,7 @@ describe("Window", () => {
     });
 
     it("called with no arg is NOT ok", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 

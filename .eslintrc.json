@@ -57,7 +57,7 @@
     "no-process-exit": 2,
     "no-proto": 2,
     "no-prototype-builtins": 0,
-    "no-return-assign": 2,
+    "no-return-assign": 0,
     "no-script-url": 2,
     "no-sequences": 2,
     "no-setter-return": 0,
