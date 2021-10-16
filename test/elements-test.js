@@ -341,11 +341,11 @@ describe("elements", () => {
           }
         };
 
-        document.window = window;
+        document._window = window;
 
         document.body.appendChild(elm);
 
-        expect(document.window.appended).to.be.true;
+        expect(document._window.appended).to.be.true;
       });
     });
 
