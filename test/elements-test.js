@@ -1,10 +1,11 @@
 "use strict";
 
 const DOMException = require("domexception");
-const {Element, Form} = require("../lib/Element");
 const DocumentFragment = require("../lib/DocumentFragment");
 const url = require("url");
 const {Document} = require("../lib");
+const Element = require("../lib/Element");
+const Form = require("../lib/Form");
 const {Event} = require("../lib/Events");
 
 const elementProperties = [
@@ -844,9 +845,9 @@ describe("elements", () => {
     });
 
     it("returns text content", () => {
-      const lastChild = document.getElementsByTagName("p")[0].firstChild;
-      expect(lastChild.textContent).to.equal("Some ");
-      expect(lastChild.nodeType).to.equal(3);
+      const firstChild = document.getElementsByTagName("p")[0].firstChild;
+      expect(firstChild.textContent).to.equal("Some ");
+      expect(firstChild.nodeType).to.equal(3);
     });
 
     it("returns null if no element children", () => {
@@ -1517,12 +1518,12 @@ describe("elements", () => {
 
     it("instance has an instanceof Element", () => {
       const element = document.getElementById("get-form");
-      expect(element instanceof Element).to.be.true;
+      expect(element).to.be.instanceof(Element);
     });
 
     it("form instance has an instanceof Form", () => {
       const element = document.getElementById("get-form");
-      expect(element instanceof Form).to.be.true;
+      expect(element).to.be.instanceof(Form);
     });
   });
 

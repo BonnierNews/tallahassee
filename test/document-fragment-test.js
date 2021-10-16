@@ -2,12 +2,11 @@
 
 const Document = require("../lib/Document");
 const DocumentFragment = require("../lib/DocumentFragment");
-const {elementFactory} = require("../lib/Element");
 
 describe("DocumentFragment", () => {
   let documentFragment;
   beforeEach(() => {
-    documentFragment = DocumentFragment(elementFactory);
+    documentFragment = new DocumentFragment();
     documentFragment.$elm.html(`
       <li><a>Item</a></li>
     `);
@@ -26,10 +25,10 @@ describe("DocumentFragment", () => {
     });
   });
 
-  describe(".querySelector()", () => {
+  describe(".querySelectorAll()", () => {
     it("returns all matching elements", () => {
       const children = documentFragment.querySelectorAll("*");
-      expect(children).to.have.length(2);
+      expect(children.length).to.equal(2);
       expect(children[0]).to.have.property("tagName", "LI");
       expect(children[1]).to.have.property("tagName", "A");
     });
