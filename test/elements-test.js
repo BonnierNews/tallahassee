@@ -1558,6 +1558,14 @@ describe("elements", () => {
       expect(elm.dataset["testSetArrayLike"]).to.equal("baz"); // eslint-disable-line dot-notation
     });
 
+    it("should delete a dataset attribute", () => {
+      const [elm] = document.getElementsByTagName("div");
+      expect(delete elm.dataset.testGet).to.be.true;
+      expect(elm.dataset).to.not.have.property("testGet");
+      expect(elm.$elm[0].attribs).to.not.have.property("data-test-get");
+      expect(delete elm.dataset.testGet).to.be.true;
+    });
+
     it("returns new attribute set by setAttribute", () => {
       const [elm] = document.getElementsByTagName("div");
       elm.setAttribute("data-test-set-attribute", 1);

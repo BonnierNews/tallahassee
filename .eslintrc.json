@@ -72,7 +72,7 @@
     "no-with": 2,
     "prefer-arrow-callback": 2,
     "prefer-const": ["error", {"destructuring": "all"}],
-    "prefer-template": 1,
+    "prefer-template": 0,
     "quotes": [1, "double"],
     "semi": [2, "always"],
     "semi-spacing": [1, {"before": false, "after": true}],
