@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+# 11.0.0
+- Refactor to using classes named as the ones used on mdn
+
 # 10.7.0
 - Support for functions `back`, `forward`, `go` and `pushState` on the `window.history` object
 
