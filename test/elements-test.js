@@ -1,11 +1,12 @@
 "use strict";
 
-const DOMException = require("domexception");
 const DocumentFragment = require("../lib/DocumentFragment");
+const DOMException = require("domexception");
+const Element = require("../lib/Element");
+const HTMLAnchorElement = require("../lib/HTMLAnchorElement");
+const HTMLFormElement = require("../lib/HTMLFormElement");
 const url = require("url");
 const {Document} = require("../lib");
-const Element = require("../lib/Element");
-const Form = require("../lib/Form");
 const {Event} = require("../lib/Events");
 
 const elementProperties = [
@@ -166,9 +167,12 @@ describe("elements", () => {
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
     });
 
-    it("exposes .href with the expected behaviour", async () => {
+    it("exposes anchors with the expected behaviour", async () => {
       const anchors = document.getElementsByTagName("a");
+      expect(anchors[0]).to.be.instanceof(HTMLAnchorElement);
       expect(anchors[0]).to.have.property("href", "https://example.com");
+      expect(anchors[0].toString()).to.equal("https://example.com");
+
       expect(anchors[1]).to.have.property("href", "http://example.com");
       expect(anchors[2]).to.have.property("href", "https://www.expressen.se/slug/");
       expect(anchors[3]).to.have.property("href", "https://www.expressen.se/?signed_out=true");
@@ -1521,7 +1525,7 @@ describe("elements", () => {
 
     it("form instance has an instanceof Form", () => {
       const element = document.getElementById("get-form");
-      expect(element).to.be.instanceof(Form);
+      expect(element).to.be.instanceof(HTMLFormElement);
     });
   });
 
