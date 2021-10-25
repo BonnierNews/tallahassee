@@ -266,6 +266,12 @@ describe("Window", () => {
       expect(() => window.matchMedia()).to.throw(TypeError);
     });
 
+    it("should match 'screen' by default when styleMedia is undefined", () => {
+      const media = window.matchMedia("screen");
+      expect(media.media).to.equal("screen");
+      expect(media.matches).to.be.true;
+    });
+
     it("should return object that matches media type 'screen'", () => {
       window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen");
