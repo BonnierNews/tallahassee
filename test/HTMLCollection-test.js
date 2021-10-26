@@ -243,4 +243,31 @@ describe("HTMLCollection", () => {
       expect(elements[0].innerText).to.equal("my new elm");
     });
   });
+
+  describe("getElementsByTagName", () => {
+    it("returns elements by tag name", () => {
+      const elements = document.getElementsByTagName("p");
+      expect(elements.length).to.equal(1);
+
+      const elm = document.createElement("p");
+      elm.textContent = "my new elm";
+      document.body.appendChild(elm);
+
+      expect(elements.length).to.equal(2);
+    });
+  });
+
+  describe("getElementsByClassName", () => {
+    it("returns elements by class name", () => {
+      const elements = document.getElementsByClassName("row");
+      expect(elements.length).to.equal(3);
+
+      const elm = document.createElement("row");
+      elm.className = "row";
+      document.body.appendChild(elm);
+
+      expect(elements.length).to.equal(4);
+      expect(elements[0].classList.contains("row")).to.be.true;
+    });
+  });
 });
