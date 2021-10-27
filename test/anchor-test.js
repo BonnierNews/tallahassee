@@ -17,6 +17,8 @@ describe("Anchor", () => {
             <a href="/?signed_out=true">Relative link with query parameter</a>
             <a href="#tag">Relative link with hash</a>
             <a href="http://localhost:30080/path">Link with port and path</a>
+            <a>Not defined</a>
+            <a href="">Empty</a>
           </body>
         </html>`
     });
@@ -100,6 +102,24 @@ describe("Anchor", () => {
       expect(anchors[3].hash, anchors[2].innerText).to.equal("");
       expect(anchors[4].hash, anchors[4].innerText).to.equal("");
       expect(anchors[5].hash, anchors[5].innerText).to.equal("#tag");
+    });
+
+    it("no href returns undefined", () => {
+      expect(anchors[7].href, "href").to.be.undefined;
+      expect(anchors[7].hostname, "hostname").to.be.undefined;
+      expect(anchors[7].search, "search").to.be.undefined;
+      expect(anchors[7].pathname, "pathname").to.be.undefined;
+      expect(anchors[7].protocol, "protocol").to.be.undefined;
+      expect(anchors[7].hash, "hash").to.be.undefined;
+    });
+
+    it("empty href returns page href", () => {
+      expect(anchors[8]).to.have.property("href", "https://www.expressen.se/");
+      expect(anchors[8]).to.have.property("hostname", "www.expressen.se");
+      expect(anchors[8]).to.have.property("search", "");
+      expect(anchors[8]).to.have.property("pathname", "/");
+      expect(anchors[8]).to.have.property("protocol", "https:");
+      expect(anchors[8]).to.have.property("hash", "");
     });
   });
 });

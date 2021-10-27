@@ -60,7 +60,9 @@ describe("elements", () => {
               <a href="/slug/">Relative link</a>
               <a href="/?signed_out=true">Relative link with query parameter</a>
 
-              <img class="test-src" src="//example.com/img.png">Absolute frame no protocol</iframe>
+              <img class="test-src" src="//example.com/img.png">
+              <img class="test-no-src">
+              <img class="test-empty-src" src="">
               <iframe class="test-src" src="http://example.com">Absolute frame with protocol</iframe>
               <iframe class="test-src" src="/slug/">Relative frame</iframe>
               <iframe class="test-src" src="/qs/?widget=malservice">Relative frame with query parameter</iframe>
@@ -183,6 +185,12 @@ describe("elements", () => {
       expect(sources[3]).to.have.property("src", "https://www.expressen.se/qs/?widget=malservice");
       sources[0].src = "/img/set.gif";
       expect(sources[0]).to.have.property("src", "https://www.expressen.se/img/set.gif");
+
+      const noSource = document.getElementsByClassName("test-no-src")[0];
+      expect(noSource, "no src").to.have.property("src", "");
+
+      const emptySource = document.getElementsByClassName("test-empty-src")[0];
+      expect(emptySource, "empty src").to.have.property("src", "");
     });
 
     it("triggers load event when setting .src", async () => {

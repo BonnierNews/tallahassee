@@ -1,8 +1,14 @@
 Changelog
 ---------
 
+# 11.0.1
+
 # 11.0.0
-- Refactor to using classes named as the ones used on mdn
+
+Refactor using classes named as the ones used in a browser
+
+## Breaking
+- no more `document.window` pointing to window, as a courtesy it is still available under `document._window`
 
 # 10.7.0
 - Support for functions `back`, `forward`, `go` and `pushState` on the `window.history` object
