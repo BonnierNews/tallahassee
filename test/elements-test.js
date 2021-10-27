@@ -1,9 +1,10 @@
 "use strict";
 
+const DocumentFragment = require("../lib/DocumentFragment");
 const DOMException = require("domexception");
 const Element = require("../lib/Element");
-const DocumentFragment = require("../lib/DocumentFragment");
-const url = require("url");
+const HTMLAnchorElement = require("../lib/HTMLAnchorElement");
+const HTMLFormElement = require("../lib/HTMLFormElement");
 const {Document} = require("../lib");
 const {Event} = require("../lib/Events");
 
@@ -22,10 +23,7 @@ const elementProperties = [
   "nodeType",
   "innerHTML",
   "offsetHeight",
-  "options",
   "outerHTML",
-  "selectedIndex",
-  "src",
   "style",
   "tagName",
   "type",
@@ -46,9 +44,8 @@ describe("elements", () => {
   describe("Properties", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         url: "https://www.expressen.se/",
-        location: url.parse("https://www.expressen.se/"),
         text: `
           <html>
             <body>
@@ -167,10 +164,13 @@ describe("elements", () => {
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
     });
 
-    it("exposes .href with the expected behaviour", async () => {
+    it("exposes anchors with the expected behaviour", async () => {
       const anchors = document.getElementsByTagName("a");
-      expect(anchors[0]).to.have.property("href", "https://example.com");
-      expect(anchors[1]).to.have.property("href", "http://example.com");
+      expect(anchors[0]).to.be.instanceof(HTMLAnchorElement);
+      expect(anchors[0]).to.have.property("href", "https://example.com/");
+      expect(anchors[0].toString()).to.equal("https://example.com/");
+
+      expect(anchors[1]).to.have.property("href", "http://example.com/");
       expect(anchors[2]).to.have.property("href", "https://www.expressen.se/slug/");
       expect(anchors[3]).to.have.property("href", "https://www.expressen.se/?signed_out=true");
     });
@@ -178,7 +178,7 @@ describe("elements", () => {
     it("exposes .src with the expected behaviour", async () => {
       const sources = document.getElementsByClassName("test-src");
       expect(sources[0]).to.have.property("src", "https://example.com/img.png");
-      expect(sources[1]).to.have.property("src", "http://example.com");
+      expect(sources[1]).to.have.property("src", "http://example.com/");
       expect(sources[2]).to.have.property("src", "https://www.expressen.se/slug/");
       expect(sources[3]).to.have.property("src", "https://www.expressen.se/qs/?widget=malservice");
       sources[0].src = "/img/set.gif";
@@ -259,7 +259,7 @@ describe("elements", () => {
     describe("getElementsByClassName(className)", () => {
       let document;
       beforeEach(() => {
-        document = Document({
+        document = new Document({
           text: `
             <html>
               <body>
@@ -291,7 +291,7 @@ describe("elements", () => {
     describe("appendChild(aChild)", () => {
       let document;
       beforeEach(() => {
-        document = Document({
+        document = new Document({
           text: `
             <html>
               <body id="grandparent">
@@ -340,18 +340,18 @@ describe("elements", () => {
           }
         };
 
-        document.window = window;
+        document._window = window;
 
         document.body.appendChild(elm);
 
-        expect(document.window.appended).to.be.true;
+        expect(document._window.appended).to.be.true;
       });
     });
 
     describe("removeChild(child)", () => {
       let document;
       beforeEach(() => {
-        document = Document({
+        document = new Document({
           text: `
             <html>
               <body id="grandparent">
@@ -403,7 +403,7 @@ describe("elements", () => {
   describe(".style", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -469,7 +469,7 @@ describe("elements", () => {
   describe("api", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -495,7 +495,7 @@ describe("elements", () => {
   describe("input[type=radio]", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -580,7 +580,7 @@ describe("elements", () => {
     });
 
     it("unsets checked on siblings in same form", () => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -609,7 +609,7 @@ describe("elements", () => {
   describe("input[type=checkbox]", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -691,7 +691,7 @@ describe("elements", () => {
   describe("_setBoundingClientRect", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -759,7 +759,7 @@ describe("elements", () => {
   describe(".textContent", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -799,7 +799,7 @@ describe("elements", () => {
   describe(".firstElementChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -828,7 +828,7 @@ describe("elements", () => {
   describe(".firstChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body><h2>Test</h2>
@@ -844,9 +844,9 @@ describe("elements", () => {
     });
 
     it("returns text content", () => {
-      const lastChild = document.getElementsByTagName("p")[0].firstChild;
-      expect(lastChild.textContent).to.equal("Some ");
-      expect(lastChild.nodeType).to.equal(3);
+      const firstChild = document.getElementsByTagName("p")[0].firstChild;
+      expect(firstChild.textContent).to.equal("Some ");
+      expect(firstChild.nodeType).to.equal(3);
     });
 
     it("returns null if no element children", () => {
@@ -857,7 +857,7 @@ describe("elements", () => {
   describe(".lastElementChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -886,7 +886,7 @@ describe("elements", () => {
   describe(".lastChild", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -918,7 +918,7 @@ describe("elements", () => {
   describe(".contains", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
           <body>
@@ -964,7 +964,7 @@ describe("elements", () => {
   describe(".closest", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -994,7 +994,7 @@ describe("elements", () => {
   describe(".className", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html class="no-js">
             <body>
@@ -1017,7 +1017,7 @@ describe("elements", () => {
   describe(".scrollWidth", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1048,7 +1048,7 @@ describe("elements", () => {
   describe(".scrollHeight", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1079,7 +1079,7 @@ describe("elements", () => {
   describe(".outerHTML", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1098,7 +1098,7 @@ describe("elements", () => {
   describe(".innerText", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1123,7 +1123,7 @@ describe("elements", () => {
   describe(".cloneNode", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1162,7 +1162,7 @@ describe("elements", () => {
   describe("forms", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1317,7 +1317,7 @@ describe("elements", () => {
   describe("select", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1421,7 +1421,7 @@ describe("elements", () => {
   describe("video element", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1477,7 +1477,7 @@ describe("elements", () => {
   describe("template element", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1502,7 +1502,7 @@ describe("elements", () => {
   describe("instanceof", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1517,14 +1517,19 @@ describe("elements", () => {
 
     it("instance has an instanceof Element", () => {
       const element = document.getElementById("get-form");
-      expect(element instanceof Element).to.be.true;
+      expect(element).to.be.instanceof(Element);
+    });
+
+    it("form instance has an instanceof Form", () => {
+      const element = document.getElementById("get-form");
+      expect(element).to.be.instanceof(HTMLFormElement);
     });
   });
 
   describe("dataset", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1554,6 +1559,14 @@ describe("elements", () => {
       expect(elm.dataset["testSetArrayLike"]).to.equal("baz"); // eslint-disable-line dot-notation
     });
 
+    it("should delete a dataset attribute", () => {
+      const [elm] = document.getElementsByTagName("div");
+      expect(delete elm.dataset.testGet).to.be.true;
+      expect(elm.dataset).to.not.have.property("testGet");
+      expect(elm.$elm[0].attribs).to.not.have.property("data-test-get");
+      expect(delete elm.dataset.testGet).to.be.true;
+    });
+
     it("returns new attribute set by setAttribute", () => {
       const [elm] = document.getElementsByTagName("div");
       elm.setAttribute("data-test-set-attribute", 1);
@@ -1573,7 +1586,7 @@ describe("elements", () => {
   describe("previous- and nextElementSibling", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1611,7 +1624,7 @@ describe("elements", () => {
   describe("insertBefore", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1699,7 +1712,7 @@ describe("elements", () => {
   describe("insertAdjacentHTML", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -1762,7 +1775,7 @@ describe("elements", () => {
   describe("matches", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body class="parent-element">
@@ -1802,7 +1815,7 @@ describe("elements", () => {
     let clickCount;
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `<html>
             <body>
               <div>
@@ -2011,7 +2024,7 @@ describe("elements", () => {
   describe("requestFullscreen", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -2035,7 +2048,7 @@ describe("elements", () => {
   describe("scrollLeft", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -2097,7 +2110,7 @@ describe("elements", () => {
   describe("scrollTop", () => {
     let document;
     beforeEach(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>
@@ -2162,7 +2175,7 @@ describe("elements", () => {
     const clickListener = () => {};
 
     before(() => {
-      document = Document({
+      document = new Document({
         text: `
           <html>
             <body>

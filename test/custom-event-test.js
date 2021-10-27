@@ -23,7 +23,7 @@ describe("CustomEvent", () => {
     expect(dispatchedEvent).to.have.property("detail", "Blahonga!");
   });
 
-  it("supports old skool initCustomEvent (so that it's possible to test code that polyfills IE)", async () => {
+  it("supports old school initCustomEvent (so that it's possible to test code that polyfills IE)", async () => {
     const browser = await Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });

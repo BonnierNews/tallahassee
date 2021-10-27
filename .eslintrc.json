@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2020
   },
   "env": {
     "node": true,
@@ -57,9 +57,10 @@
     "no-process-exit": 2,
     "no-proto": 2,
     "no-prototype-builtins": 0,
-    "no-return-assign": 2,
+    "no-return-assign": 0,
     "no-script-url": 2,
     "no-sequences": 2,
+    "no-setter-return": 0,
     "no-shadow": 2,
     "no-shadow-restricted-names": 2,
     "no-spaced-func": 2,
@@ -71,7 +72,7 @@
     "no-with": 2,
     "prefer-arrow-callback": 2,
     "prefer-const": ["error", {"destructuring": "all"}],
-    "prefer-template": 1,
+    "prefer-template": 0,
     "quotes": [1, "double"],
     "semi": [2, "always"],
     "semi-spacing": [1, {"before": false, "after": true}],

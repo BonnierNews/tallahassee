@@ -1,12 +1,11 @@
 "use strict";
 
-const getLocation = require("../lib/getLocation");
 const {Window, Document} = require("../lib");
 
 describe("Window", () => {
   let window, document;
   beforeEach(() => {
-    document = Document({
+    document = new Document({
       url: "https://www.expressen.se/nyheter/article-slug/",
       text: `
         <html>
@@ -18,7 +17,7 @@ describe("Window", () => {
         </html>`
     });
 
-    window = Window({
+    window = new Window({
       url: "https://www.expressen.se/nyheter/article-slug/"
     },
     {
@@ -68,7 +67,7 @@ describe("Window", () => {
 
       window.history.pushState(null, null, "/nyheter/article-slug-2/");
       expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
-      expect(window.location).to.have.property("search").to.be.null;
+      expect(window.location).to.have.property("search").to.equal("");
     });
 
     it("back() sets the history state to the previous one", () => {
@@ -131,7 +130,7 @@ describe("Window", () => {
 
       window.history.replaceState(null, null, "/nyheter/article-slug-2/");
       expect(window.location).to.have.property("pathname", "/nyheter/article-slug-2/");
-      expect(window.location).to.have.property("search").to.be.null;
+      expect(window.location).to.have.property("search").to.be.empty;
     });
 
     it("pushState() should remove all the history states that are in front the current state", () => {
@@ -184,7 +183,7 @@ describe("Window", () => {
 
   describe("navigator", () => {
     it(".userAgent returns Tallahassee by default", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
       }, {document});
 
@@ -192,7 +191,7 @@ describe("Window", () => {
     });
 
     it(".userAgent is returns User-Agent header", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
       }, {document}, "Mozilla/5.0");
 
@@ -200,7 +199,7 @@ describe("Window", () => {
     });
 
     it(".userAgent is read only", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
         url: "https://www.expressen.se/nyheter/article-slug/"
       }, {document});
@@ -210,7 +209,7 @@ describe("Window", () => {
     });
 
     it(".geolocation is returns expected api", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
         url: "https://www.expressen.se/nyheter/article-slug/"
       }, {document});
@@ -222,7 +221,7 @@ describe("Window", () => {
     });
 
     it(".geolocation is read only", () => {
-      const wndw = Window({
+      const wndw = new Window({
         headers: new Map(Object.entries({})),
         url: "https://www.expressen.se/nyheter/article-slug/"
       }, {document});
@@ -266,6 +265,12 @@ describe("Window", () => {
       expect(() => window.matchMedia()).to.throw(TypeError);
     });
 
+    it("should match 'screen' by default when styleMedia is undefined", () => {
+      const media = window.matchMedia("screen");
+      expect(media.media).to.equal("screen");
+      expect(media.matches).to.be.true;
+    });
+
     it("should return object that matches media type 'screen'", () => {
       window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen");
@@ -288,14 +293,14 @@ describe("Window", () => {
     });
 
     it("should return object that matches one media condition", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       const media = window.matchMedia("(min-width: 500px)");
       expect(media.media).to.equal("(min-width: 500px)");
       expect(media.matches).to.be.true;
     });
 
     it("should return object that does not match one media condition", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       const media = window.matchMedia("(max-width: 500px)");
       expect(media.media).to.equal("(max-width: 500px)");
       expect(media.matches).to.be.false;
@@ -303,14 +308,14 @@ describe("Window", () => {
 
     it("should return object that matches one media type and one media condition", () => {
       window.styleMedia = { type: "screen" };
-      window.innerWidth = 500;
+      window._resize(500);
       const media = window.matchMedia("screen and (max-width: 500px)");
       expect(media.media).to.equal("screen and (max-width: 500px)");
       expect(media.matches).to.be.true;
     });
 
     it("should return object that does not match one media type and one media condition", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       window.styleMedia = { type: "screen" };
       const media = window.matchMedia("screen and (max-width: 500px)");
       expect(media.media).to.equal("screen and (max-width: 500px)");
@@ -318,7 +323,7 @@ describe("Window", () => {
     });
 
     it("executes callback when match changes", () => {
-      window.innerWidth = 600;
+      window._resize(600);
       const media = window.matchMedia("(max-width: 500px)");
       expect(media.matches).to.be.false;
 
@@ -393,8 +398,8 @@ describe("Window", () => {
 
   describe("location", () => {
     it("exposes location", () => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
       });
 
       expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/article-slug/?q=1");
@@ -408,24 +413,24 @@ describe("Window", () => {
     });
 
     it("exposes location with port", () => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se:443/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se:8443/nyheter/article-slug/?q=1",
       });
 
-      expect(wdw.location).to.have.property("href", "https://www.expressen.se:443/nyheter/article-slug/?q=1");
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se:8443/nyheter/article-slug/?q=1");
       expect(wdw.location).to.have.property("protocol", "https:");
-      expect(wdw.location).to.have.property("port", "443");
-      expect(wdw.location).to.have.property("host", "www.expressen.se:443");
+      expect(wdw.location).to.have.property("port", "8443");
+      expect(wdw.location).to.have.property("host", "www.expressen.se:8443");
       expect(wdw.location).to.have.property("hostname", "www.expressen.se");
-      expect(wdw.location).to.have.property("origin", "https://www.expressen.se:443");
+      expect(wdw.location).to.have.property("origin", "https://www.expressen.se:8443");
       expect(wdw.location).to.have.property("pathname", "/nyheter/article-slug/");
       expect(wdw.location).to.not.have.property("path");
       expect(wdw.location).to.have.property("search", "?q=1");
     });
 
     it("has setter", () => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
       });
 
       wdw.location = "https://www.expressen.se/nyheter/";
@@ -435,12 +440,12 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("host", "www.expressen.se");
       expect(wdw.location).to.have.property("pathname", "/nyheter/");
       expect(wdw.location).to.not.have.property("path");
-      expect(wdw.location).to.have.property("search", null);
+      expect(wdw.location).to.have.property("search", "");
     });
 
     it.skip("property can be replaced for testing purposes", () => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
       });
 
       delete wdw.location;
@@ -451,8 +456,8 @@ describe("Window", () => {
     });
 
     it("supports relative path", () => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
       });
 
       wdw.location = "/nyheter/";
@@ -462,12 +467,12 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("host", "www.expressen.se");
       expect(wdw.location).to.have.property("pathname", "/nyheter/");
       expect(wdw.location).to.not.have.property("path");
-      expect(wdw.location).to.have.property("search", null);
+      expect(wdw.location).to.have.property("search", "");
     });
 
     it("emits unload on window if set", (done) => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
       });
 
       wdw.addEventListener("unload", () => {
@@ -478,8 +483,8 @@ describe("Window", () => {
     });
 
     it("emits unload even if changed to the same url", (done) => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/?q=1")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
       });
 
       wdw.addEventListener("unload", () => {
@@ -490,8 +495,8 @@ describe("Window", () => {
     });
 
     it("doesn't emit unload if changed to the same url with hash", () => {
-      const wdw = Window({}, {
-        location: getLocation("https://www.expressen.se/nyheter/article-slug/")
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/",
       });
 
       let fired = false;
@@ -505,9 +510,55 @@ describe("Window", () => {
     });
   });
 
+  describe("replace(newUri)", () => {
+    it("replaces location", () => {
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
+      });
+
+      wdw.location.replace("https://www.expressen.se/nyheter/");
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/");
+      expect(wdw.location).to.not.have.property("path");
+      expect(wdw.location).to.have.property("search", "");
+      expect(wdw.location).to.have.property("hash", "");
+    });
+
+    it("hash only adds hash to current location", () => {
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/",
+      });
+
+      wdw.location.replace("#atillo");
+
+      expect(wdw.location).to.have.property("href", "https://www.expressen.se/nyheter/#atillo");
+      expect(wdw.location).to.have.property("protocol", "https:");
+      expect(wdw.location).to.have.property("host", "www.expressen.se");
+      expect(wdw.location).to.have.property("pathname", "/nyheter/");
+      expect(wdw.location).to.not.have.property("path");
+      expect(wdw.location).to.have.property("search", "");
+      expect(wdw.location).to.have.property("hash", "#atillo");
+    });
+
+    it("emits unload if replaced with new uri", (done) => {
+      const wdw = new Window({
+        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
+      });
+
+      wdw.addEventListener("unload", () => {
+        done();
+      });
+
+      wdw.location.replace("https://www.expressen.se/nyheter/");
+    });
+  });
+
   describe("window.atob()", () => {
     it("decodes base64 encoded string", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -517,7 +568,7 @@ describe("Window", () => {
     });
 
     it("throws if trying to decode invalid base64 string", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -526,7 +577,7 @@ describe("Window", () => {
     });
 
     it("called with no arg is NOT ok", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -536,7 +587,7 @@ describe("Window", () => {
 
   describe("window.btoa()", () => {
     it("decodes base64 encoded string as latin1", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -544,7 +595,7 @@ describe("Window", () => {
     });
 
     it("throws if trying to encode chars outside latin1 range (>255)", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -554,7 +605,7 @@ describe("Window", () => {
     });
 
     it("called with undefined is ok", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 
@@ -562,7 +613,7 @@ describe("Window", () => {
     });
 
     it("called with no arg is NOT ok", () => {
-      const wdw = Window({
+      const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/"
       });
 

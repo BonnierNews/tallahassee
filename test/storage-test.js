@@ -6,7 +6,7 @@ describe("Storage", () => {
   let window;
 
   beforeEach(() => {
-    window = Window({});
+    window = new Window({});
     window.localStorage = new Storage();
   });
 

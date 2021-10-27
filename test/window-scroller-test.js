@@ -146,7 +146,7 @@ describe("Window scroller", () => {
 
     it("offset cannot scroll above pageYOffset 0", async () => {
       const browser = await Browser(app).navigateTo("/");
-      browser.window.innerHeight = 600;
+      browser.window._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -170,7 +170,7 @@ describe("Window scroller", () => {
   describe("scrollToBottomOfElement()", () => {
     it("sets bottom of element to window.innerHeight", async () => {
       const browser = await Browser(app).navigateTo("/");
-      browser.window.innerHeight = 600;
+      browser.window._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -197,7 +197,7 @@ describe("Window scroller", () => {
 
     it("with offset includes offset from bottom", async () => {
       const browser = await Browser(app).navigateTo("/");
-      browser.window.innerHeight = 600;
+      browser.window._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -225,7 +225,7 @@ describe("Window scroller", () => {
 
     it("offset cannot scroll above pageYOffset 0", async () => {
       const browser = await Browser(app).navigateTo("/");
-      browser.window.innerHeight = 600;
+      browser.window._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
