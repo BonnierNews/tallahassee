@@ -1,6 +1,5 @@
 "use strict";
 
-const url = require("url");
 const {Document} = require("../lib");
 
 describe("Anchor", () => {
@@ -8,7 +7,6 @@ describe("Anchor", () => {
   beforeEach("a DOM with anchors", () => {
     document = new Document({
       url: "https://www.expressen.se/",
-      location: url.parse("https://www.expressen.se/"),
       text: `
         <html>
           <body>
@@ -29,8 +27,8 @@ describe("Anchor", () => {
   describe("Anchor properties", () => {
     it("get href returns full href with protocol, domain, and path", () => {
       expect(anchors[0].href, anchors[0].innerText).to.equal("https://example.com/test");
-      expect(anchors[1].href, anchors[1].innerText).to.equal("http://example.com");
-      expect(anchors[2].href, anchors[2].innerText).to.equal("http://www.example.com?w=1");
+      expect(anchors[1].href, anchors[1].innerText).to.equal("http://example.com/");
+      expect(anchors[2].href, anchors[2].innerText).to.equal("http://www.example.com/?w=1");
       expect(anchors[3].href, anchors[3].innerText).to.equal("https://www.expressen.se/slug/");
       expect(anchors[4].href, anchors[4].innerText).to.equal("https://www.expressen.se/?signed_out=true");
       expect(anchors[5].href, anchors[5].innerText).to.equal("https://www.expressen.se/#tag");
@@ -79,8 +77,8 @@ describe("Anchor", () => {
 
     it("get pathname returns href pathname", () => {
       expect(anchors[0].pathname, anchors[0].innerText).to.equal("/test");
-      expect(anchors[1].pathname, anchors[1].innerText).to.equal("");
-      expect(anchors[2].pathname, anchors[2].innerText).to.equal("");
+      expect(anchors[1].pathname, anchors[1].innerText).to.equal("/");
+      expect(anchors[2].pathname, anchors[2].innerText).to.equal("/");
       expect(anchors[3].pathname, anchors[3].innerText).to.equal("/slug/");
       expect(anchors[4].pathname, anchors[4].innerText).to.equal("/");
       expect(anchors[5].pathname, anchors[5].innerText).to.equal("/");

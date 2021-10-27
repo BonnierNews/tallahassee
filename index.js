@@ -76,7 +76,7 @@ class WebPage {
   async handleResponse(res, requestOptions) {
     const setCookieHeader = res.headers.get("set-cookie");
     if (setCookieHeader) {
-      const cookieDomain = url.parse(res.url).hostname;
+      const cookieDomain = new URL(res.url).hostname;
       saveToJar(this.jar, setCookieHeader, cookieDomain);
     }
 
