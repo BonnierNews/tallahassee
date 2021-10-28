@@ -443,18 +443,6 @@ describe("Window", () => {
       expect(wdw.location).to.have.property("search", "");
     });
 
-    it.skip("property can be replaced for testing purposes", () => {
-      const wdw = new Window({
-        url: "https://www.expressen.se/nyheter/article-slug/?q=1",
-      });
-
-      delete wdw.location;
-
-      wdw.location = "https://www.expressen.se/nyheter/";
-
-      expect(wdw.location).to.equal("https://www.expressen.se/nyheter/");
-    });
-
     it("supports relative path", () => {
       const wdw = new Window({
         url: "https://www.expressen.se/nyheter/article-slug/?q=1",

@@ -1,7 +1,14 @@
 Changelog
 ---------
 
+# 11.0.2
+
+- document fragment and its children now have document as owner document
+- quickfix src and href attribute behaviour for links
+
 # 11.0.1
+
+- quickfix usual bug after major refactoring, this time it was empty src or href attribute behaviour
 
 # 11.0.0
 

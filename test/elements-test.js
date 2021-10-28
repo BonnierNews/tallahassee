@@ -48,6 +48,11 @@ describe("elements", () => {
         url: "https://www.expressen.se/",
         text: `
           <html>
+            <head>
+              <link href="/style.css">
+              <link href="//bootstrap.local/style.css">
+              <link>
+            </head>
             <body>
               <h1>Elements</h1>
               <h2 id="headline">Test</h2>

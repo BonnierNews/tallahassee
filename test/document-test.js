@@ -12,12 +12,6 @@ describe("Document", () => {
     jar.setCookies("_ga=1");
     document = new Document({
       url: "https://www.expressen.se/nyheter/article-slug/",
-      headers: new Map(Object.entries({})),
-      location: {
-        host: "www.expressen.se",
-        hostname: "www.expressen.se",
-        pathname: "/nyheter/article-slug/",
-      },
       text: `
         <html>
           <body>
@@ -159,6 +153,21 @@ describe("Document", () => {
       const fragment = document.createDocumentFragment();
       expect(fragment).to.be.ok;
       expect(fragment).to.be.instanceof(DocumentFragment);
+    });
+
+    it("fragmend and appended child has document as ownerDocument", () => {
+      const fragment = document.createDocumentFragment();
+      expect(fragment.ownerDocument === document).to.be.true;
+      fragment.appendChild(document.createElement("a"));
+      expect(fragment.firstElementChild.ownerDocument === document).to.be.true;
+    });
+
+    it("returns anchor href", () => {
+      const fragment = document.createDocumentFragment();
+      fragment.appendChild(document.createElement("a"));
+      expect(fragment.firstElementChild.href).to.be.undefined;
+      fragment.firstElementChild.href = "/relative";
+      expect(fragment.firstElementChild.href).to.equal("https://www.expressen.se/relative");
     });
   });
 

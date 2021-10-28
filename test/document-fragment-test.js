@@ -6,7 +6,7 @@ const DocumentFragment = require("../lib/DocumentFragment");
 describe("DocumentFragment", () => {
   let documentFragment;
   beforeEach(() => {
-    documentFragment = new DocumentFragment();
+    documentFragment = new DocumentFragment(new Document({}));
     documentFragment.$elm.html(`
       <li><a>Item</a></li>
     `);
@@ -58,7 +58,7 @@ describe("DocumentFragment", () => {
 
   describe(".firstChild", () => {
     it("returns first child if element", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("<li><a>Item</a></li>");
 
       const firstChild = fragment.firstChild;
@@ -69,7 +69,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns first child if text", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("Memememe<li><a>Item</a></li>");
 
       const firstChild = fragment.firstChild;
@@ -79,7 +79,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns null if no children", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("");
 
       expect(fragment.firstChild).to.be.null;
@@ -88,7 +88,7 @@ describe("DocumentFragment", () => {
 
   describe(".firstElementChild", () => {
     it("returns first child element", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("<li><a>Item</a></li>");
 
       const firstChild = fragment.firstElementChild;
@@ -99,7 +99,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns first element child if first child is text", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("Memememe<li><a>Item</a></li>");
 
       const firstChild = fragment.firstElementChild;
@@ -110,7 +110,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns null if no children", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("Mememem");
 
       expect(fragment.firstElementChild).to.be.null;
@@ -119,7 +119,7 @@ describe("DocumentFragment", () => {
 
   describe(".lastElementChild", () => {
     it("returns first child element", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("<p>data</p><li><a>Item</a></li>Mememe");
 
       const lastElmChild = fragment.lastElementChild;
@@ -130,7 +130,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns first element child if first child is text", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("<li><a>Item</a></li>Memememe");
 
       const lastElmChild = fragment.lastElementChild;
@@ -141,7 +141,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns null if no children", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("Mememem");
 
       expect(fragment.lastElementChild).to.be.null;
@@ -150,7 +150,7 @@ describe("DocumentFragment", () => {
 
   describe(".childNodes", () => {
     it("returns child nodes", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("Mememem<li><a>Item</a></li>");
 
       const childNodes = fragment.childNodes;
@@ -162,7 +162,7 @@ describe("DocumentFragment", () => {
     });
 
     it("child childNodes also returns children", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("<li><a>Item</a></li>");
 
       const childNode = fragment.childNodes[0];
@@ -173,7 +173,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns empty if no children", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("");
 
       expect(fragment.childNodes).to.be.empty;
@@ -182,7 +182,7 @@ describe("DocumentFragment", () => {
 
   describe("getElementById", () => {
     it("returns element", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("Mememem<li><a id=\"anchor\">Item</a></li>");
 
       const elm = fragment.getElementById("anchor");
@@ -191,7 +191,7 @@ describe("DocumentFragment", () => {
     });
 
     it("returns null if not found", () => {
-      const fragment = new DocumentFragment();
+      const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("<li><a id=\"anchor\">Item</a></li>");
 
       const elm = fragment.getElementById("ankare");
