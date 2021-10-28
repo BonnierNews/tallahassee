@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 11.0.3
+
+- stop returning URI encoded mailto- and tel href
+
 # 11.0.2
 
 - document fragment and its children now have document as owner document

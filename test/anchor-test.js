@@ -3,30 +3,30 @@
 const {Document} = require("../lib");
 
 describe("Anchor", () => {
-  let document, anchors;
-  beforeEach("a DOM with anchors", () => {
-    document = new Document({
-      url: "https://www.expressen.se/",
-      text: `
-        <html>
-          <body>
-            <a href="//example.com/test">Absolute link no protocol</a>
-            <a href="http://example.com">Absolute link with protocol</a>
-            <a href="http://www.example.com?w=1">Absolute link with search</a>
-            <a href="/slug/">Relative link</a>
-            <a href="/?signed_out=true">Relative link with query parameter</a>
-            <a href="#tag">Relative link with hash</a>
-            <a href="http://localhost:30080/path">Link with port and path</a>
-            <a>Not defined</a>
-            <a href="">Empty</a>
-          </body>
-        </html>`
+  describe("Anchor properties", () => {
+    let document, anchors;
+    beforeEach("a DOM with anchors", () => {
+      document = new Document({
+        url: "https://www.expressen.se/",
+        text: `
+          <html>
+            <body>
+              <a href="//example.com/test">Absolute link no protocol</a>
+              <a href="http://example.com">Absolute link with protocol</a>
+              <a href="http://www.example.com?w=1">Absolute link with search</a>
+              <a href="/slug/">Relative link</a>
+              <a href="/?signed_out=true">Relative link with query parameter</a>
+              <a href="#tag">Relative link with hash</a>
+              <a href="http://localhost:30080/path">Link with port and path</a>
+              <a>Not defined</a>
+              <a href="">Empty</a>
+            </body>
+          </html>`
+      });
+
+      anchors = document.getElementsByTagName("a");
     });
 
-    anchors = document.getElementsByTagName("a");
-  });
-
-  describe("Anchor properties", () => {
     it("get href returns full href with protocol, domain, and path", () => {
       expect(anchors[0].href, anchors[0].innerText).to.equal("https://example.com/test");
       expect(anchors[1].href, anchors[1].innerText).to.equal("http://example.com/");
@@ -120,6 +120,55 @@ describe("Anchor", () => {
       expect(anchors[8]).to.have.property("pathname", "/");
       expect(anchors[8]).to.have.property("protocol", "https:");
       expect(anchors[8]).to.have.property("hash", "");
+    });
+  });
+
+  describe("mailto and tel", () => {
+    let document, anchors;
+    before("a DOM with anchors", () => {
+      document = new Document({
+        url: "https://www.expressen.se/",
+        text: `
+          <html>
+            <body>
+              <a href="mailto:jon.bananström@expressen.se">Mail</a>
+              <a href="tel:+46700000000">Talk</a>
+              <a href=" mailto:padded@expressen.se"> Mail</a>
+            </body>
+          </html>`
+      });
+
+      anchors = document.getElementsByTagName("a");
+    });
+
+    it("mailto has the expected properties", () => {
+      const a = anchors[0];
+      expect(a).to.have.property("protocol", "mailto:");
+      expect(a).to.have.property("host", "");
+      expect(a).to.have.property("hostname", "");
+      expect(a).to.have.property("pathname", "jon.bananström@expressen.se");
+      expect(a).to.have.property("search", "");
+      expect(a).to.have.property("href", "mailto:jon.bananström@expressen.se");
+    });
+
+    it("tel has the expected properties", () => {
+      const a = anchors[1];
+      expect(a).to.have.property("protocol", "tel:");
+      expect(a).to.have.property("host", "");
+      expect(a).to.have.property("hostname", "");
+      expect(a).to.have.property("pathname", "+46700000000");
+      expect(a).to.have.property("search", "");
+      expect(a).to.have.property("href", "tel:+46700000000");
+    });
+
+    it("padded mailto has the expected properties", () => {
+      const a = anchors[2];
+      expect(a).to.have.property("protocol", "mailto:");
+      expect(a).to.have.property("host", "");
+      expect(a).to.have.property("hostname", "");
+      expect(a).to.have.property("pathname", "padded@expressen.se");
+      expect(a).to.have.property("search", "");
+      expect(a).to.have.property("href", "mailto:padded@expressen.se");
     });
   });
 });
