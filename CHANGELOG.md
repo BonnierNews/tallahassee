@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 11.0.4
+
+- save cookie by string instead of by instance to handle different cookiejar versions
+
 # 11.0.3
 
 - stop returning URI encoded mailto- and tel href
