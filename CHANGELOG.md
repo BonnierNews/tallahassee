@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-# Unreleased
+# 11.0.5
 
 - `Element.children` returns an `HTMLCollection`
 
