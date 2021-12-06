@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# Unreleased
+
+- `Element.children` returns an `HTMLCollection`
+
 # 11.0.4
 
 - save cookie by string instead of by instance to handle different cookiejar versions
