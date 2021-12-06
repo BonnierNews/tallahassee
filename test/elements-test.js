@@ -80,18 +80,18 @@ describe("elements", () => {
     it("element should have property tagName", () => {
       const children = document.body.children;
       expect(children).to.have.length.above(0);
-      children.forEach((elm) => {
+      for (const elm of children) {
         expect(elm).to.have.property("tagName").that.match(/[A-Z]+/);
-      });
+      }
     });
 
     elementProperties.forEach((name) => {
       it(`"${name}" should exist`, () => {
         const children = document.body.children;
         expect(children).to.have.length.above(0);
-        children.forEach((elm) => {
+        for (const elm of children) {
           expect(elm, elm.tagName).to.have.property(name);
-        });
+        }
       });
     });
 
@@ -498,9 +498,9 @@ describe("elements", () => {
       it(`"${name}" should be a function`, () => {
         const children = document.body.children;
         expect(children).to.have.length.above(0);
-        children.forEach((elm) => {
+        for (const elm of children) {
           expect(elm, elm.tagName).to.have.property(name).and.be.a("function");
-        });
+        }
       });
     });
   });
