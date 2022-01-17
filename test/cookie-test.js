@@ -63,7 +63,7 @@ describe("cookies", () => {
         ]
       });
 
-      expect(page.document.body.textContent).to.equal("myCookie=singoalla;myOtherCookie=drommar;myNotSoSafeCookie=transfett");
+      expect(page.document.body.textContent).to.equal("myCookie=singoalla; myOtherCookie=drommar; myNotSoSafeCookie=transfett");
     });
 
     it("navigating with cookie header sets cookies on passed host", async () => {
@@ -181,7 +181,7 @@ describe("cookies", () => {
       });
       browser.jar.setCookie("regular_cookie=1");
       browser.jar.setCookie("secure_cookie=1; secure=true");
-      expect(browser.document.cookie).to.equal("regular_cookie=1;secure_cookie=1");
+      expect(browser.document.cookie).to.equal("regular_cookie=1; secure_cookie=1");
     });
   });
 
@@ -196,7 +196,7 @@ describe("cookies", () => {
       const browser = await Browser(app).navigateTo("/setcookie");
       const response = await browser.window.fetch("/req").then((res) => res.json());
 
-      expect(response.cookie).to.equal("regular_cookie=regular_cookie_value;http_only_cookie=http_only_cookie_value");
+      expect(response.cookie).to.equal("regular_cookie=regular_cookie_value; http_only_cookie=http_only_cookie_value");
     });
 
     it("remote resource on same top domain can set cookie on browser", async () => {

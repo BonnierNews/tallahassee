@@ -46,7 +46,7 @@ describe("Tallahassee", () => {
 
     it("passes along cookies", async () => {
       const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("returns browser with navigateTo capability that returns new browser with preserved cookie", async () => {
@@ -54,7 +54,7 @@ describe("Tallahassee", () => {
 
       const newBrowser = await browser.navigateTo("/reply-with-cookies");
 
-      expect(newBrowser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+      expect(newBrowser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("follows redirects", async () => {
@@ -142,7 +142,7 @@ describe("Tallahassee", () => {
         host: "www.expressen.se",
         cookie: "myCookie=singoalla;mySecondCookie=chocolateChip",
       });
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.host is specified", async () => {
@@ -151,7 +151,7 @@ describe("Tallahassee", () => {
           host: "www.expressen.se",
         }
       }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.x-forwarded-host is specified", async () => {
@@ -160,8 +160,8 @@ describe("Tallahassee", () => {
           host: "some-other-host.com",
           "x-forwarded-host": "www.expressen.se",
         }
-      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla; mySecondCookie=chocolateChip"});
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.x-forwarded-host is specified", async () => {
@@ -170,8 +170,8 @@ describe("Tallahassee", () => {
           host: "some-other-host.com",
           "x-forwarded-host": "www.expressen.se",
         }
-      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla;mySecondCookie=chocolateChip");
+      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla; mySecondCookie=chocolateChip"});
+      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
   });
 
@@ -295,7 +295,7 @@ describe("Tallahassee", () => {
         cookie: "cookie1=abc;cookie2=def"
       });
 
-      expect(browser.document).to.have.property("cookie", "cookie1=abc;cookie2=def");
+      expect(browser.document).to.have.property("cookie", "cookie1=abc; cookie2=def");
     });
 
     it("sets multiple cookies on document disregarding whitespace and empty values", async () => {
@@ -303,7 +303,7 @@ describe("Tallahassee", () => {
         cookie: " cookie1=abc; cookie2=def; ;   ;\tcookie3=ghi;; ;   ;"
       });
 
-      expect(browser.document).to.have.property("cookie", "cookie1=abc;cookie2=def;cookie3=ghi");
+      expect(browser.document).to.have.property("cookie", "cookie1=abc; cookie2=def; cookie3=ghi");
     });
 
     it("sets referer from navigation headers", async () => {

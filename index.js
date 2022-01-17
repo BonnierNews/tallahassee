@@ -6,7 +6,7 @@ const supertest = require("supertest");
 const url = require("url");
 const BrowserTab = require("./lib/BrowserTab");
 const {version} = require("./package.json");
-const {CookieAccessInfo} = require("cookiejar");
+const {CookieAccessInfo, CookieJar} = require("cookiejar");
 const {normalizeHeaders, getLocationHost} = require("./lib/getHeaders");
 const saveToJar = require("./lib/saveToJar");
 
@@ -31,9 +31,9 @@ class OriginResponse {
 }
 
 class WebPage {
-  constructor(agent, originRequestHeaders) {
+  constructor(agent, jar, originRequestHeaders) {
     this.agent = agent;
-    this.jar = agent.jar;
+    this.jar = jar;
     this.originRequestHeaders = originRequestHeaders;
     this.originHost = getLocationHost(originRequestHeaders);
     this.userAgent = `Tallahassee/${version}`;
@@ -50,7 +50,7 @@ class WebPage {
       const cookieDomain = parsedUri.hostname || publicHost || this.originHost || "127.0.0.1";
       const isSecure = (parsedUri.protocol || this.protocol) === "https:";
 
-      this.agent.jar.setCookies(requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean), cookieDomain, "/", isSecure);
+      this.jar.setCookies(requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean), cookieDomain, "/", isSecure);
     }
 
     const resp = await this.fetch(uri, {
@@ -151,8 +151,8 @@ class WebPage {
 
 function Tallahassee(app, options = {}) {
   if (!(this instanceof Tallahassee)) return new Tallahassee(app, options);
-  const agent = this.agent = supertest.agent(app);
-  this.jar = agent.jar;
+  this.agent = supertest(app);
+  this.jar = new CookieJar();
   this.options = options;
 }
 
@@ -168,6 +168,6 @@ Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = 
     requestHeaders["set-cookie"] = undefined;
   }
 
-  const webPage = new WebPage(this.agent, requestHeaders);
+  const webPage = new WebPage(this.agent, this.jar, requestHeaders);
   return webPage.load(linkUrl, requestHeaders, statusCode);
 };
