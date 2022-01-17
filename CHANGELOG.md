@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 11.0.6
+
+- Normalize cookie output
+
 # 11.0.5
 
 - `Element.children` returns an `HTMLCollection`
