@@ -123,20 +123,9 @@ class WebPage {
     return isLocal ? this.originRequest(parsedUri.path, requestOptions) : NodeFetch(uri, {...requestOptions, redirect: "manual"});
   }
   async originRequest(uri, requestOptions) {
-    const req = this.buildRequest(uri, requestOptions);
-    if (requestOptions.headers) {
-      for (const header in requestOptions.headers) {
-        const headerValue = requestOptions.headers[header];
-        if (headerValue) req.set(header, requestOptions.headers[header]);
-      }
-    }
-
-    const res = await req;
-    return new OriginResponse(uri, res, this.originHost, this.protocol);
-  }
-  buildRequest(uri, requestOptions) {
     const {method, ...options} = requestOptions;
-    return this.agent.request(method, uri, options);
+    const res = await this.agent.request(method, uri, options);
+    return new OriginResponse(uri, res, this.originHost, this.protocol);
   }
 }
 
