@@ -1,10 +1,10 @@
 <!-- version -->
-# 11.0.6 API Reference
+# 11.1.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
 
-- [`Tallahassee(app[, options])`](#tallahasseeapp-options)
+- [`[new ]Tallahassee(initiator[, options])`](#new-tallahasseeinitiator-options)
 - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
 - [`browser.runScripts([scopeElement])`](#browserrunscriptsscopeelement)
@@ -18,11 +18,11 @@
 
 <!-- tocstop -->
 
-# `Tallahassee(app[, options])`
+# `[new ]Tallahassee(initiator[, options])`
 
 Create new instance of Tallahasse.
 
-- `app`: required express app
+- `initiator`: http traffic initiator passed to [HttpTest](https://www.npmjs.com/package/@bonniernews/httptest). Can be an express app, a port number, or an origin
 - `options`: optional options
   - `headers`: default headers for local trafic
 

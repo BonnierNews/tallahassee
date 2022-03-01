@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# 11.1.0
+
+- Replace supertest with @bonniernews/httptest
+
 # 11.0.6
 
 - Normalize cookie output

@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const NodeFetch = require("node-fetch");
-const supertest = require("supertest");
+const HttpTest = require("@bonniernews/httptest");
 const url = require("url");
 const BrowserTab = require("./lib/BrowserTab");
 const {version} = require("./package.json");
@@ -20,13 +20,14 @@ class OriginResponse {
     const status = this.status = response.statusCode;
     this.ok = status >= 200 && status < 300;
     this.headers = new Map(Object.entries(response.headers));
-    this.url = originHost ? `${protocol}//${originHost}${uri}` : response.request.url;
+    this.url = originHost ? `${protocol}//${originHost}${uri}` : response.url;
   }
   text() {
     return Promise.resolve(this[responseSymbol].text);
   }
   json() {
-    return Promise.resolve(this[responseSymbol].body);
+    const body = this[responseSymbol].body;
+    return Promise.resolve(body && JSON.parse(this[responseSymbol].body));
   }
 }
 
@@ -134,24 +135,14 @@ class WebPage {
     return new OriginResponse(uri, res, this.originHost, this.protocol);
   }
   buildRequest(uri, requestOptions) {
-    switch (requestOptions.method) {
-      case "POST":
-        return this.agent.post(uri).send(requestOptions.body);
-      case "DELETE":
-        return this.agent.delete(uri).send(requestOptions.body);
-      case "PUT":
-        return this.agent.put(uri).send(requestOptions.body);
-      case "HEAD":
-        return this.agent.head(uri);
-      default:
-        return this.agent.get(uri);
-    }
+    const {method, ...options} = requestOptions;
+    return this.agent.request(method, uri, options);
   }
 }
 
 function Tallahassee(app, options = {}) {
   if (!(this instanceof Tallahassee)) return new Tallahassee(app, options);
-  this.agent = supertest(app);
+  this.agent = new HttpTest(app);
   this.jar = new CookieJar();
   this.options = options;
 }
