@@ -6,9 +6,8 @@ const http = require("http");
 const url = require("url");
 const BrowserTab = require("./lib/BrowserTab");
 const {version} = require("./package.json");
-const {CookieAccessInfo, CookieJar} = require("cookiejar");
+const {CookieAccessInfo, CookieJar, Cookie} = require("cookiejar");
 const {normalizeHeaders, getLocationHost} = require("./lib/getHeaders");
-const saveToJar = require("./lib/saveToJar");
 
 module.exports = Tallahassee;
 
@@ -115,10 +114,14 @@ class WebPage {
     return this.handleResponse(res, requestOptions);
   }
   async handleResponse(res, requestOptions) {
-    const setCookieHeader = res.headers.get("set-cookie");
+    const setCookieHeader = res.headers.raw()["set-cookie"];
     if (setCookieHeader) {
       const cookieDomain = new URL(res.url).hostname;
-      saveToJar(this.jar, setCookieHeader, cookieDomain);
+      for (const cookieStr of setCookieHeader) {
+        const cookie = new Cookie(cookieStr);
+        if (!cookie.domain) cookie.domain = cookieDomain;
+        this.jar.setCookie(cookie.toString());
+      }
     }
 
     const flOrigin = res.headers.get("_fl-origin");
@@ -201,9 +204,12 @@ Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = 
     ...normalizeHeaders(headers),
   };
 
-  if (requestHeaders["set-cookie"]) {
-    const setCookies = requestHeaders["set-cookie"];
-    saveToJar(this.jar, setCookies);
+  const setCookieHeader = requestHeaders["set-cookie"];
+  if (setCookieHeader) {
+    for (const cookieStr of Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader]) {
+      const cookie = new Cookie(cookieStr);
+      this.jar.setCookie(cookie.toString());
+    }
     requestHeaders["set-cookie"] = undefined;
   }
 
