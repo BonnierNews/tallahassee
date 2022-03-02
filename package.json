@@ -28,7 +28,6 @@
     "url": "git://github.com/ExpressenAB/tallahassee.git"
   },
   "dependencies": {
-    "@bonniernews/httptest": "0.0.1",
     "cheerio": "1.0.0-rc.3",
     "cookiejar": "^2.1.3",
     "domexception": "^4.0.0",

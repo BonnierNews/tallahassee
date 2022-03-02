@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const NodeFetch = require("node-fetch");
-const HttpTest = require("@bonniernews/httptest");
+const http = require("http");
 const url = require("url");
 const BrowserTab = require("./lib/BrowserTab");
 const {version} = require("./package.json");
@@ -12,28 +12,68 @@ const saveToJar = require("./lib/saveToJar");
 
 module.exports = Tallahassee;
 
-const responseSymbol = Symbol.for("response");
+const kResponse = Symbol.for("response");
+const kOrigin = Symbol.for("origin");
 
 class OriginResponse {
-  constructor(uri, response, originHost, protocol) {
-    this[responseSymbol] = response;
-    const status = this.status = response.statusCode;
-    this.ok = status >= 200 && status < 300;
-    this.headers = new Map(Object.entries(response.headers));
-    this.url = originHost ? `${protocol}//${originHost}${uri}` : response.url;
+  constructor(response, originHost, protocol) {
+    this[kResponse] = response;
+    const {path} = url.parse(response.url);
+    this.url = originHost ? `${protocol}//${originHost}${path}` : response.url;
+    this.status = response.status;
+    this.ok = response.ok;
+    response.headers.delete("_fl-origin");
+    this.headers = response.headers;
   }
   text() {
-    return Promise.resolve(this[responseSymbol].text);
+    return this[kResponse].text();
   }
   json() {
-    const body = this[responseSymbol].body;
-    return Promise.resolve(body && JSON.parse(this[responseSymbol].body));
+    return this[kResponse].json();
+  }
+}
+
+class Origin {
+  constructor(origin) {
+    this.origin = origin;
+    this.type = typeof origin;
+  }
+  async init() {
+    let origin;
+    switch (this.type) {
+      case "function": {
+        const server = this.server = await this._startHttpServer(this.origin);
+        origin = `http://127.0.0.1:${server.address().port}`;
+        break;
+      }
+      case "number":
+        origin = `http://127.0.0.1:${this.origin}`;
+        break;
+      case "string":
+        origin = this.origin;
+        break;
+      default:
+        origin = `http://127.0.0.1:${process.env.PORT}`;
+    }
+    return origin;
+  }
+  close() {
+    const server = this.server;
+    if (server) this.server = server.close();
+  }
+  _startHttpServer(requestListener) {
+    const server = http.createServer(requestListener);
+    return new Promise((resolve) => {
+      server.listen(0, () => {
+        return resolve(server);
+      });
+    });
   }
 }
 
 class WebPage {
-  constructor(agent, jar, originRequestHeaders) {
-    this.agent = agent;
+  constructor(origin, jar, originRequestHeaders) {
+    this[kOrigin] = origin;
     this.jar = jar;
     this.originRequestHeaders = originRequestHeaders;
     this.originHost = getLocationHost(originRequestHeaders);
@@ -81,12 +121,17 @@ class WebPage {
       saveToJar(this.jar, setCookieHeader, cookieDomain);
     }
 
+    const flOrigin = res.headers.get("_fl-origin");
+
     if (res.status > 300 && res.status < 309 && requestOptions.redirect !== "manual") {
       this.numRedirects++;
       if (this.numRedirects > 20) {
         throw new Error("Too many redirects");
       }
-      const location = res.headers.get("location");
+      let location = res.headers.get("location");
+      if (flOrigin) {
+        location = location.replace(flOrigin, "");
+      }
       const redirectOptions = {...requestOptions};
 
       if (res.status === 307 || res.status === 308) {
@@ -100,14 +145,25 @@ class WebPage {
       return this.handleResponse(redirectedRes, requestOptions);
     }
 
+    if (flOrigin) {
+      return new OriginResponse(res, this.originHost, this.protocol);
+    }
+
     return res;
   }
-  makeRequest(uri, requestOptions = {method: "GET", headers: {}}) {
+  async makeRequest(uri, requestOptions = {method: "GET", headers: {}}) {
+    let origin, flOrigin;
     const parsedUri = url.parse(uri);
     let headers = requestOptions.headers = normalizeHeaders(requestOptions.headers);
     const isLocal = uri.startsWith("/") || parsedUri.hostname === this.originHost;
     if (isLocal) {
-      headers = requestOptions.headers = {...this.originRequestHeaders, ...headers};
+      origin = new Origin(this[kOrigin]);
+      flOrigin = await origin.init();
+      uri = new URL(parsedUri.path, flOrigin).toString();
+      headers = requestOptions.headers = {
+        ...this.originRequestHeaders,
+        ...headers,
+      };
     } else {
       headers.host = parsedUri.host;
     }
@@ -120,18 +176,21 @@ class WebPage {
     const cookieValue = this.jar.getCookies(accessInfo).toValueString();
     if (cookieValue) headers.cookie = cookieValue;
 
-    return isLocal ? this.originRequest(parsedUri.path, requestOptions) : NodeFetch(uri, {...requestOptions, redirect: "manual"});
-  }
-  async originRequest(uri, requestOptions) {
-    const {method, ...options} = requestOptions;
-    const res = await this.agent.request(method, uri, options);
-    return new OriginResponse(uri, res, this.originHost, this.protocol);
+    try {
+      const response = await NodeFetch(uri, {...requestOptions, redirect: "manual"});
+      if (isLocal) {
+        response.headers.set("_fl-origin", flOrigin);
+      }
+      return response;
+    } finally {
+      if (origin) origin.close();
+    }
   }
 }
 
-function Tallahassee(app, options = {}) {
-  if (!(this instanceof Tallahassee)) return new Tallahassee(app, options);
-  this.agent = new HttpTest(app);
+function Tallahassee(origin, options = {}) {
+  if (!(this instanceof Tallahassee)) return new Tallahassee(origin, options);
+  this[kOrigin] = origin;
   this.jar = new CookieJar();
   this.options = options;
 }
@@ -148,6 +207,6 @@ Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = 
     requestHeaders["set-cookie"] = undefined;
   }
 
-  const webPage = new WebPage(this.agent, this.jar, requestHeaders);
+  const webPage = new WebPage(this[kOrigin], this.jar, requestHeaders);
   return webPage.load(linkUrl, requestHeaders, statusCode);
 };

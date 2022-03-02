@@ -535,7 +535,7 @@ describe("window.fetch", () => {
 
       const browser = await Browser(localApp).navigateTo("/");
       const resp = await browser.window.fetch("/redirect", {redirect: "manual"});
-      expect(resp.headers.get("location")).to.equal("https://www.example.com");
+      expect(resp.headers.get("location")).to.equal("https://www.example.com/");
     });
 
     it("redirect from remote resource to local resource is handled", async () => {
