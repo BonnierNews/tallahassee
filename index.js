@@ -52,8 +52,7 @@ class Origin {
     }
   }
   close() {
-    const server = this.server;
-    if (server) this.server = server.close();
+    this.server = this.server?.close();
   }
   _startHttpServer(requestListener) {
     const server = http.createServer(requestListener);
