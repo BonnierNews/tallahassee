@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+# Unreleased
+
+- `Element.className` is always a string
+
 # 11.0.6
 
 - Normalize cookie output

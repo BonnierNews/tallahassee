@@ -95,6 +95,19 @@ describe("elements", () => {
       });
     });
 
+    describe("className", () => {
+      it("exposes className with the expected behaviour", async () => {
+        const [elm] = document.getElementsByTagName("h1");
+        expect(elm.className).to.equal("");
+
+        elm.className = "class-name";
+        expect(elm.className).to.equal("class-name");
+
+        elm.className += " another-class-name";
+        expect(elm.className).to.equal("class-name another-class-name");
+      });
+    });
+
     describe("classList", () => {
       let elm;
 
