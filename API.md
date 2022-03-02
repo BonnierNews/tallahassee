@@ -4,7 +4,7 @@
 
 <!-- toc -->
 
-- [`[new ]Tallahassee(initiator[, options])`](#new-tallahasseeinitiator-options)
+- [`[new ]Tallahassee(origin[, options])`](#new-tallahasseeorigin-options)
 - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
 - [`browser.runScripts([scopeElement])`](#browserrunscriptsscopeelement)
@@ -18,11 +18,11 @@
 
 <!-- tocstop -->
 
-# `[new ]Tallahassee(initiator[, options])`
+# `[new ]Tallahassee(origin[, options])`
 
 Create new instance of Tallahasse.
 
-- `initiator`: http traffic initiator passed to [HttpTest](https://www.npmjs.com/package/@bonniernews/httptest). Can be an express app, a port number, or an origin
+- `origin`: http traffic origin. Can be a port number, a fully fledged origin, an express app, or a function passed as `requestListener` to [`http.createServer`](https://nodejs.org/docs/latest-v14.x/api/http.html#http_http_createserver_options_requestlistener). Defaults to `process.env.PORT`
 - `options`: optional options
   - `headers`: default headers for local trafic
 
