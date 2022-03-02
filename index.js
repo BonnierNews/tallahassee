@@ -58,9 +58,7 @@ class Origin {
   _startHttpServer(requestListener) {
     const server = http.createServer(requestListener);
     return new Promise((resolve) => {
-      server.listen(0, () => {
-        return resolve(server);
-      });
+      server.listen(0, () => resolve(server));
     });
   }
 }
