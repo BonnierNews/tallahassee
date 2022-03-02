@@ -38,23 +38,18 @@ class Origin {
     this.type = typeof origin;
   }
   async init() {
-    let origin;
     switch (this.type) {
       case "function": {
         const server = this.server = await this._startHttpServer(this.origin);
-        origin = `http://127.0.0.1:${server.address().port}`;
-        break;
+        return `http://127.0.0.1:${server.address().port}`;
       }
       case "number":
-        origin = `http://127.0.0.1:${this.origin}`;
-        break;
+        return `http://127.0.0.1:${this.origin}`;
       case "string":
-        origin = this.origin;
-        break;
+        return this.origin;
       default:
-        origin = `http://127.0.0.1:${process.env.PORT}`;
+        return `http://127.0.0.1:${process.env.PORT}`;
     }
-    return origin;
   }
   close() {
     const server = this.server;
