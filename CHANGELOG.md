@@ -3,7 +3,8 @@ Changelog
 
 # 11.1.0
 
-- Replace supertest with @bonniernews/httptest
+- Accept port number, origin string, or express app as first argument when creating new instance of Tallahassee
+- Remove supertest dependency
 
 # 11.0.6
 

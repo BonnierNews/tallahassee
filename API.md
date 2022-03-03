@@ -22,7 +22,7 @@
 
 Create new instance of Tallahasse.
 
-- `origin`: http traffic origin. Can be a port number, a fully fledged origin, an express app, or a function passed as `requestListener` to [`http.createServer`](https://nodejs.org/docs/latest-v14.x/api/http.html#http_http_createserver_options_requestlistener). Defaults to `process.env.PORT`
+- `origin`: http traffic origin. Can be a port number, a fully fledged origin, an express app, or a `requestListener` function that will be passed to [`http.createServer`](https://nodejs.org/docs/latest-v14.x/api/http.html#http_http_createserver_options_requestlistener). Defaults to `process.env.PORT`
 - `options`: optional options
   - `headers`: default headers for local trafic
 

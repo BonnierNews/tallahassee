@@ -11,26 +11,7 @@ const {normalizeHeaders, getLocationHost} = require("./lib/getHeaders");
 
 module.exports = Tallahassee;
 
-const kResponse = Symbol.for("response");
 const kOrigin = Symbol.for("origin");
-
-class OriginResponse {
-  constructor(response, originHost, protocol) {
-    this[kResponse] = response;
-    const {path} = url.parse(response.url);
-    this.url = originHost ? `${protocol}//${originHost}${path}` : response.url;
-    this.status = response.status;
-    this.ok = response.ok;
-    response.headers.delete("_fl-origin");
-    this.headers = response.headers;
-  }
-  text() {
-    return this[kResponse].text();
-  }
-  json() {
-    return this[kResponse].json();
-  }
-}
 
 class Origin {
   constructor(origin) {
@@ -140,11 +121,22 @@ class WebPage {
       return this.handleResponse(redirectedRes, requestOptions);
     }
 
-    if (flOrigin) {
-      return new OriginResponse(res, this.originHost, this.protocol);
-    }
+    if (!flOrigin) return res;
 
-    return res;
+    res.headers.delete("_fl-origin");
+
+    const originHost = this.originHost;
+
+    if (!originHost) return res;
+
+    const {path} = url.parse(res.url);
+    const originUrl = `${this.protocol}//${originHost}${path}`;
+    return new Proxy(res, {
+      get(target, prop) {
+        if (prop === "url") return originUrl;
+        return target[prop];
+      }
+    });
   }
   async makeRequest(uri, requestOptions = {method: "GET", headers: {}}) {
     let origin, flOrigin;
