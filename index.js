@@ -97,7 +97,7 @@ class WebPage {
       }
     }
 
-    const flOrigin = res.headers.get("_fl-origin");
+    const flOrigin = res.headers.get("fl-origin");
 
     if (res.status > 300 && res.status < 309 && requestOptions.redirect !== "manual") {
       this.numRedirects++;
@@ -123,7 +123,7 @@ class WebPage {
 
     if (!flOrigin) return res;
 
-    res.headers.delete("_fl-origin");
+    res.headers.delete("fl-origin");
 
     const originHost = this.originHost;
 
@@ -166,7 +166,7 @@ class WebPage {
     try {
       const response = await NodeFetch(uri, {...requestOptions, redirect: "manual"});
       if (isLocal) {
-        response.headers.set("_fl-origin", flOrigin);
+        response.headers.set("fl-origin", flOrigin);
       }
       return response;
     } finally {
