@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+# 11.1.0
+
+- Accept port number, origin string, or express app as first argument when creating new instance of Tallahassee
+- Remove supertest dependency
+
 # 11.0.6
 
 - Normalize cookie output
