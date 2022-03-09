@@ -1,10 +1,10 @@
 <!-- version -->
-# 11.0.6 API Reference
+# 11.1.1 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
 
-- [`Tallahassee(app[, options])`](#tallahasseeapp-options)
+- [`[new ]Tallahassee(origin[, options])`](#new-tallahasseeorigin-options)
 - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
 - [`browser.runScripts([scopeElement])`](#browserrunscriptsscopeelement)
@@ -18,11 +18,15 @@
 
 <!-- tocstop -->
 
-# `Tallahassee(app[, options])`
+# `[new ]Tallahassee(origin[, options])`
 
 Create new instance of Tallahasse.
 
-- `app`: required express app
+- `origin`: Optional http request origin, defaults to `process.env.PORT` as port
+    - origin: fully fledged origin with protocol, host, and port
+    - port: port number to local http server
+    - Express App
+    - `requestListener` function passed to [`http.createServer`](https://nodejs.org/docs/latest-v14.x/api/http.html#http_http_createserver_options_requestlistener)
 - `options`: optional options
   - `headers`: default headers for local trafic
 

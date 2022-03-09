@@ -11,6 +11,7 @@ Test your client scripts in a headless browser.
 
 Supports just about everything except `querySelectorAll()` which we don´t want developers to use.
 
+- [API](/API.md)
 - IntersectionObserver? Yes, check [here](/API.md#intersectionobserver)
 
 # Example:

@@ -2,37 +2,50 @@
 
 const assert = require("assert");
 const NodeFetch = require("node-fetch");
-const supertest = require("supertest");
+const http = require("http");
 const url = require("url");
 const BrowserTab = require("./lib/BrowserTab");
 const {version} = require("./package.json");
-const {CookieAccessInfo, CookieJar} = require("cookiejar");
+const {CookieAccessInfo, CookieJar, Cookie} = require("cookiejar");
 const {normalizeHeaders, getLocationHost} = require("./lib/getHeaders");
-const saveToJar = require("./lib/saveToJar");
 
 module.exports = Tallahassee;
 
-const responseSymbol = Symbol.for("response");
+const kOrigin = Symbol.for("origin");
 
-class OriginResponse {
-  constructor(uri, response, originHost, protocol) {
-    this[responseSymbol] = response;
-    const status = this.status = response.statusCode;
-    this.ok = status >= 200 && status < 300;
-    this.headers = new Map(Object.entries(response.headers));
-    this.url = originHost ? `${protocol}//${originHost}${uri}` : response.request.url;
+class Origin {
+  constructor(origin) {
+    this.origin = origin;
+    this.type = typeof origin;
   }
-  text() {
-    return Promise.resolve(this[responseSymbol].text);
+  async init() {
+    switch (this.type) {
+      case "function": {
+        const server = this.server = await this._startHttpServer(this.origin);
+        return `http://127.0.0.1:${server.address().port}`;
+      }
+      case "number":
+        return `http://127.0.0.1:${this.origin}`;
+      case "string":
+        return this.origin;
+      default:
+        return `http://127.0.0.1:${process.env.PORT}`;
+    }
   }
-  json() {
-    return Promise.resolve(this[responseSymbol].body);
+  close() {
+    this.server = this.server?.close();
+  }
+  _startHttpServer(requestListener) {
+    const server = http.createServer(requestListener);
+    return new Promise((resolve) => {
+      server.listen(0, () => resolve(server));
+    });
   }
 }
 
 class WebPage {
-  constructor(agent, jar, originRequestHeaders) {
-    this.agent = agent;
+  constructor(origin, jar, originRequestHeaders) {
+    this[kOrigin] = origin;
     this.jar = jar;
     this.originRequestHeaders = originRequestHeaders;
     this.originHost = getLocationHost(originRequestHeaders);
@@ -74,18 +87,27 @@ class WebPage {
     return this.handleResponse(res, requestOptions);
   }
   async handleResponse(res, requestOptions) {
-    const setCookieHeader = res.headers.get("set-cookie");
+    const setCookieHeader = res.headers.raw()["set-cookie"];
     if (setCookieHeader) {
       const cookieDomain = new URL(res.url).hostname;
-      saveToJar(this.jar, setCookieHeader, cookieDomain);
+      for (const cookieStr of setCookieHeader) {
+        const cookie = new Cookie(cookieStr);
+        if (!cookie.domain) cookie.domain = cookieDomain;
+        this.jar.setCookie(cookie.toString());
+      }
     }
+
+    const flOrigin = res.headers.get("fl-origin");
 
     if (res.status > 300 && res.status < 309 && requestOptions.redirect !== "manual") {
       this.numRedirects++;
       if (this.numRedirects > 20) {
         throw new Error("Too many redirects");
       }
-      const location = res.headers.get("location");
+      let location = res.headers.get("location");
+      if (flOrigin) {
+        location = location.replace(flOrigin, "");
+      }
       const redirectOptions = {...requestOptions};
 
       if (res.status === 307 || res.status === 308) {
@@ -99,14 +121,36 @@ class WebPage {
       return this.handleResponse(redirectedRes, requestOptions);
     }
 
-    return res;
+    if (!flOrigin) return res;
+
+    res.headers.delete("fl-origin");
+
+    const originHost = this.originHost;
+
+    if (!originHost) return res;
+
+    const {path} = url.parse(res.url);
+    const originUrl = `${this.protocol}//${originHost}${path}`;
+    return new Proxy(res, {
+      get(target, prop) {
+        if (prop === "url") return originUrl;
+        return target[prop];
+      }
+    });
   }
-  makeRequest(uri, requestOptions = {method: "GET", headers: {}}) {
+  async makeRequest(uri, requestOptions = {method: "GET", headers: {}}) {
+    let origin, flOrigin;
     const parsedUri = url.parse(uri);
     let headers = requestOptions.headers = normalizeHeaders(requestOptions.headers);
     const isLocal = uri.startsWith("/") || parsedUri.hostname === this.originHost;
     if (isLocal) {
-      headers = requestOptions.headers = {...this.originRequestHeaders, ...headers};
+      origin = new Origin(this[kOrigin]);
+      flOrigin = await origin.init();
+      uri = new URL(parsedUri.path, flOrigin).toString();
+      headers = requestOptions.headers = {
+        ...this.originRequestHeaders,
+        ...headers,
+      };
     } else {
       headers.host = parsedUri.host;
     }
@@ -119,39 +163,21 @@ class WebPage {
     const cookieValue = this.jar.getCookies(accessInfo).toValueString();
     if (cookieValue) headers.cookie = cookieValue;
 
-    return isLocal ? this.originRequest(parsedUri.path, requestOptions) : NodeFetch(uri, {...requestOptions, redirect: "manual"});
-  }
-  async originRequest(uri, requestOptions) {
-    const req = this.buildRequest(uri, requestOptions);
-    if (requestOptions.headers) {
-      for (const header in requestOptions.headers) {
-        const headerValue = requestOptions.headers[header];
-        if (headerValue) req.set(header, requestOptions.headers[header]);
+    try {
+      const response = await NodeFetch(uri, {...requestOptions, redirect: "manual"});
+      if (isLocal) {
+        response.headers.set("fl-origin", flOrigin);
       }
-    }
-
-    const res = await req;
-    return new OriginResponse(uri, res, this.originHost, this.protocol);
-  }
-  buildRequest(uri, requestOptions) {
-    switch (requestOptions.method) {
-      case "POST":
-        return this.agent.post(uri).send(requestOptions.body);
-      case "DELETE":
-        return this.agent.delete(uri).send(requestOptions.body);
-      case "PUT":
-        return this.agent.put(uri).send(requestOptions.body);
-      case "HEAD":
-        return this.agent.head(uri);
-      default:
-        return this.agent.get(uri);
+      return response;
+    } finally {
+      if (origin) origin.close();
     }
   }
 }
 
-function Tallahassee(app, options = {}) {
-  if (!(this instanceof Tallahassee)) return new Tallahassee(app, options);
-  this.agent = supertest(app);
+function Tallahassee(origin, options = {}) {
+  if (!(this instanceof Tallahassee)) return new Tallahassee(origin, options);
+  this[kOrigin] = origin;
   this.jar = new CookieJar();
   this.options = options;
 }
@@ -162,12 +188,15 @@ Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = 
     ...normalizeHeaders(headers),
   };
 
-  if (requestHeaders["set-cookie"]) {
-    const setCookies = requestHeaders["set-cookie"];
-    saveToJar(this.jar, setCookies);
+  const setCookieHeader = requestHeaders["set-cookie"];
+  if (setCookieHeader) {
+    for (const cookieStr of Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader]) {
+      const cookie = new Cookie(cookieStr);
+      this.jar.setCookie(cookie.toString());
+    }
     requestHeaders["set-cookie"] = undefined;
   }
 
-  const webPage = new WebPage(this.agent, this.jar, requestHeaders);
+  const webPage = new WebPage(this[kOrigin], this.jar, requestHeaders);
   return webPage.load(linkUrl, requestHeaders, statusCode);
 };
