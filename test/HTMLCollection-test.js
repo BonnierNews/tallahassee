@@ -1,7 +1,7 @@
 "use strict";
 
-const {HTMLCollection} = require("../lib/HTMLCollection");
-const {Document} = require("../lib");
+const { Document } = require("../lib");
+const HTMLCollection = require("../lib/HTMLCollection");
 
 describe("HTMLCollection", () => {
   let document;
@@ -74,7 +74,7 @@ describe("HTMLCollection", () => {
   it("result has own keys representing index as strings", () => {
     const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
-    expect(Object.getOwnPropertyNames(elements)).to.eql(["0", "1"]);
+    expect(Object.getOwnPropertyNames(elements)).to.eql(["0", "1", "length", "item", "namedItem"]);
   });
 
   it("result can be for looped", () => {

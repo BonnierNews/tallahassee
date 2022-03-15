@@ -1,9 +1,9 @@
 "use strict";
 
+const { CookieJar } = require("cookiejar");
+const { Document } = require("../lib");
 const DocumentFragment = require("../lib/DocumentFragment");
-const {Document} = require("../lib");
-const {CookieJar} = require("cookiejar");
-const {HTMLCollection} = require("../lib/HTMLCollection");
+const HTMLCollection = require("../lib/HTMLCollection");
 
 describe("Document", () => {
   let document;

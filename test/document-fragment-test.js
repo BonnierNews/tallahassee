@@ -176,7 +176,7 @@ describe("DocumentFragment", () => {
       const fragment = new DocumentFragment(new Document({}));
       fragment.$elm.html("");
 
-      expect(fragment.childNodes).to.be.empty;
+      expect(fragment.childNodes.length).to.equal(0);
     });
   });
 
