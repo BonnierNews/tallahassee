@@ -7,6 +7,8 @@ Changelog
 
 - `Element.className` is always a string
 - Better support for HTMLSelectElement
+- Expose options and selectedOptions on select element as live lists
+- Refactor NodeList and its descendents, e.g. HTMLCollection and RadioNodeList
 
 # 11.1.0
 
