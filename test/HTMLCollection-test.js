@@ -1,7 +1,7 @@
 "use strict";
 
-const {HTMLCollection} = require("../lib/HTMLCollection");
-const {Document} = require("../lib");
+const { Document } = require("../lib");
+const HTMLCollection = require("../lib/HTMLCollection");
 
 describe("HTMLCollection", () => {
   let document;

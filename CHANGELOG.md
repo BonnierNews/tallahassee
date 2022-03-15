@@ -3,7 +3,10 @@ Changelog
 
 # Unreleased
 
+# 11.2.0
+
 - `Element.className` is always a string
+- Better support for HTMLSelectElement
 
 # 11.1.0
 
