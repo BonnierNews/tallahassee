@@ -40,4 +40,16 @@ describe("Tallahassee", () => {
     const browser = await Browser().navigateTo("/");
     expect(browser.window).to.be.ok;
   });
+
+  it("exposes response after navigation", async () => {
+    const browser = await Browser(server.address().port, {
+      headers: {
+        host: "www.expressen.se",
+      }
+    }).navigateTo("/setcookie");
+    expect(browser.response).to.be.ok;
+    expect(browser.response.status).to.equal(200);
+    expect(browser.response.url).to.equal("http://www.expressen.se/setcookie");
+    expect(browser.response.headers.raw()["set-cookie"]).to.have.length(2);
+  });
 });

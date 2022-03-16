@@ -55,7 +55,7 @@ Returns promise with browser context.
 - `stickElementToTop`: stick element to top
 - `unstickElementFromTop`: unstick elements from top
 - `window`
-- `response`: response object
+- `response`: response object from node-fetch
 
 # `browser.navigateTo(route[, headers, expectedStatusCode])`
 
