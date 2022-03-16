@@ -1,7 +1,12 @@
 Changelog
----------
+=========
 
 # Unreleased
+
+# 11.2.1
+
+- Response with set cookies without explicit domain are now accessible on declared host
+- Response with set cookies without explicit path are now accessible on request path directory
 
 # 11.2.0
 

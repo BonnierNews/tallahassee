@@ -159,6 +159,56 @@ describe("cookies", () => {
       });
       expect(page.document.body.textContent).to.not.be.ok;
     });
+
+    it("response with set cookies assigns cookies to passed host header", async () => {
+      const browser = Browser(app);
+      await browser.navigateTo("/setcookie", {
+        host: "www.expressen.se"
+      });
+
+      expect(browser.jar.getCookie("regular_cookie", {domain: "www.expressen.se", path: "/"})).to.be.ok;
+      expect(browser.jar.getCookie("http_only_cookie", {domain: "www.expressen.se", path: "/"})).to.be.ok;
+    });
+
+    it("host with port set cookies assigns cookies to hostname", async () => {
+      const browser = Browser(app);
+      await browser.navigateTo("/setcookie", {
+        host: "www.expressen.se:443"
+      });
+
+      expect(browser.jar.getCookie("regular_cookie", {domain: "www.expressen.se", path: "/"})).to.be.ok;
+      expect(browser.jar.getCookie("http_only_cookie", {domain: "www.expressen.se", path: "/"})).to.be.ok;
+    });
+
+    it("response with set cookies assigns cookies to passed x-forwarded-host header", async () => {
+      const browser = Browser(app);
+      await browser.navigateTo("/setcookie", {
+        "x-forwarded-host": "www.expressen.se"
+      });
+
+      expect(browser.jar.getCookie("regular_cookie", {domain: "www.expressen.se", path: "/"})).to.be.ok;
+      expect(browser.jar.getCookie("http_only_cookie", {domain: "www.expressen.se", path: "/"})).to.be.ok;
+    });
+
+    it("response with set cookie without explicit path sets cookie path to pathname", async () => {
+      nock("https://www.example.com")
+        .get("/slug")
+        .reply(200, "<html/>", {
+          "content-type": "text/html",
+          "set-cookie": [
+            "explicit=1",
+            "domain=2; Path=/",
+          ],
+        });
+
+      const browser = Browser("https://www.example.com");
+      await browser.navigateTo("/slug");
+
+      expect(browser.jar.getCookie("explicit", {domain: "www.example.com", path: "/slug"})).to.be.ok;
+      expect(browser.jar.getCookie("explicit", {domain: "www.example.com", path: "/"})).to.not.be.ok;
+      expect(browser.jar.getCookie("domain", {domain: "www.example.com", path: "/slug"})).to.be.ok;
+      expect(browser.jar.getCookie("domain", {domain: "www.example.com", path: "/"})).to.be.ok;
+    });
   });
 
   describe("document", () => {

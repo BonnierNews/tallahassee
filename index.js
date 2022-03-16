@@ -87,17 +87,18 @@ class WebPage {
     return this.handleResponse(res, requestOptions);
   }
   async handleResponse(res, requestOptions) {
+    const resUrl = this._getResponseURL(res);
     const setCookieHeader = res.headers.raw()["set-cookie"];
+    const flOrigin = res.headers.get("fl-origin");
+
     if (setCookieHeader) {
-      const cookieDomain = new URL(res.url).hostname;
       for (const cookieStr of setCookieHeader) {
         const cookie = new Cookie(cookieStr);
-        if (!cookie.domain) cookie.domain = cookieDomain;
+        if (!cookie.explicit_path) cookie.path = resUrl.pathname;
+        if (!cookie.domain) cookie.domain = resUrl.hostname;
         this.jar.setCookie(cookie.toString());
       }
     }
-
-    const flOrigin = res.headers.get("fl-origin");
 
     if (res.status > 300 && res.status < 309 && requestOptions.redirect !== "manual") {
       this.numRedirects++;
@@ -129,8 +130,7 @@ class WebPage {
 
     if (!originHost) return res;
 
-    const {path} = url.parse(res.url);
-    const originUrl = `${this.protocol}//${originHost}${path}`;
+    const originUrl = resUrl.toString();
     return new Proxy(res, {
       get(target, prop) {
         if (prop === "url") return originUrl;
@@ -172,6 +172,17 @@ class WebPage {
     } finally {
       if (origin) origin.close();
     }
+  }
+  _getResponseURL(res) {
+    const resUrl = new URL(res.url);
+    const flOrigin = res.headers.get("fl-origin");
+    if (!this.originHost || !flOrigin) return resUrl;
+
+    resUrl.port = "";
+    resUrl.host = this.originHost;
+    resUrl.protocol = this.protocol;
+
+    return resUrl;
   }
 }
 

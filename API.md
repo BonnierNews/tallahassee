@@ -1,5 +1,5 @@
 <!-- version -->
-# 11.2.0 API Reference
+# 11.2.1 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -26,9 +26,12 @@ Create new instance of Tallahasse.
     - origin: fully fledged origin with protocol, host, and port
     - port: port number to local http server
     - Express App
-    - `requestListener` function passed to [`http.createServer`](https://nodejs.org/docs/latest-v14.x/api/http.html#http_http_createserver_options_requestlistener)
+    - `requestListener`: function passed to [`http.createServer`](https://nodejs.org/docs/latest-v14.x/api/http.html#http_http_createserver_options_requestlistener)
 - `options`: optional options
-  - `headers`: default headers for local trafic
+  - `headers`: default headers for local traffic, e.g.:
+    - `host`: host when navigating to origin. Set cookies will use host to set explicit domain if missing
+    - `x-forwarded-host`: overrides, or acts as, `host`
+    - `x-forwarded-proto`: origin protocol
 
 # `navigateTo(route[, headers, expectedStatusCode])`
 
