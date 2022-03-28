@@ -3,6 +3,10 @@ Changelog
 
 # Unreleased
 
+- Fix heritage confusion between EventTarget and Node. It is Node that inherits from EventTarget and not the other way around
+- Add basic support for XMLHttpRequest that also inherits from EventTarget, and not the other way around
+- EventTarget will now execute on-event-name functions if set #2
+
 # 11.2.1
 
 - Response with set cookies without explicit domain are now accessible on declared host
