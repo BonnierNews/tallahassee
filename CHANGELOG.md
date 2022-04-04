@@ -3,6 +3,10 @@ Changelog
 
 # Unreleased
 
+# 11.3.1
+
+- Fix form cannot convert a Symbol value to a string bug
+
 # 11.3.0
 
 - Fix heritage confusion between EventTarget and Node. It is Node that inherits from EventTarget and not the other way around
