@@ -3,6 +3,11 @@ Changelog
 
 # Unreleased
 
+# 11.4.0
+
+- Document inherits from Node
+- Make sure form.submit() doesn't emit submit event
+
 # 11.3.1
 
 - Fix form cannot convert a Symbol value to a string bug
