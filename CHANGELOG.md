@@ -3,6 +3,10 @@ Changelog
 
 # Unreleased
 
+# 11.5.0
+
+- Make form elements a live list and pick proper form elements
+
 # 11.4.0
 
 - Document inherits from Node
