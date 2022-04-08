@@ -10,7 +10,16 @@ describe("HTMLFormElement", () => {
         <html>
           <body>
             <form>
+              <p></p>
+              <button></button>
+              <fieldset></fieldset>
               <input name="foo">
+              <input name="img" type="image">
+              <object></object>
+              <output></output>
+              <select></select>
+              <textarea></textarea>
+              <div></div>
             </form>
           </body>
         </html>`
@@ -30,5 +39,19 @@ describe("HTMLFormElement", () => {
   it("non-existing symbol property in form is false", () => {
     const form = document.getElementsByTagName("form")[0];
     expect(Symbol.for("chai/inspect") in form).to.be.false;
+  });
+
+  it("elements list button, fieldset, input (not image), object, output, select, and textarea", () => {
+    const form = document.forms[0];
+    expect(form.elements.length).to.equal(7);
+  });
+
+  it("elements list is live", () => {
+    const form = document.forms[0];
+    expect(form.elements.length).to.equal(7);
+
+    form.img.type = "text";
+
+    expect(form.elements.length).to.equal(8);
   });
 });
