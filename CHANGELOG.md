@@ -3,6 +3,8 @@ Changelog
 
 # Unreleased
 
+- Add support for details element and open attribute
+
 # 11.5.0
 
 - Make form elements a live list and pick proper form elements

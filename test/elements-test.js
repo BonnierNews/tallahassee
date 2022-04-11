@@ -714,6 +714,64 @@ describe("elements", () => {
     });
   });
 
+  describe("details", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <details>
+                <summary>Foo</summary>
+                <p>Bar</p>
+              </details>
+              <details open>
+                <summary>Foo</summary>
+                <p>Bar</p>
+              </details>
+            </body>
+          </html>`
+      });
+    });
+
+    it("has open false if not open", () => {
+      const elm = document.getElementsByTagName("details")[0];
+      expect(elm.open).to.be.false;
+    });
+
+    it("has open true if open", () => {
+      const elm = document.getElementsByTagName("details")[1];
+      expect(elm.open).to.be.true;
+    });
+
+    it("can set open", () => {
+      const elm = document.getElementsByTagName("details")[0];
+      elm.open = true;
+      expect(elm.open).to.be.true;
+    });
+
+    it("can set not open", () => {
+      const elm = document.getElementsByTagName("details")[1];
+      elm.open = false;
+      expect(elm.open).to.be.false;
+    });
+
+    it("toggles open if clicked on summary", () => {
+      const elm = document.getElementsByTagName("summary")[0];
+      elm.click();
+      expect(elm.parentElement.open).to.be.true;
+      elm.click();
+      expect(elm.parentElement.open).to.be.false;
+    });
+
+    it("does not set open if clicked on details", () => {
+      const elm = document.getElementsByTagName("details")[0];
+      elm.click();
+
+      expect(elm.open).to.be.false;
+    });
+  });
+
   describe("_setBoundingClientRect", () => {
     let document;
     beforeEach(() => {
