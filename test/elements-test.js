@@ -85,6 +85,21 @@ describe("elements", () => {
       }
     });
 
+    it("element should have property attributes", () => {
+      const elm = document.getElementsByClassName("test-src")[0];
+
+      expect(elm.attributes.length).to.equal(2);
+      expect(elm.attributes.class.name).to.equal("class");
+      expect(elm.attributes.class.value).to.equal("test-src");
+      expect(elm.attributes.src.name).to.equal("src");
+      expect(elm.attributes.src.value).to.equal("//example.com/img.png");
+
+      expect(elm.attributes[0].name).to.equal("class");
+      expect(elm.attributes[0].value).to.equal("test-src");
+      expect(elm.attributes[1].name).to.equal("src");
+      expect(elm.attributes[1].value).to.equal("//example.com/img.png");
+    });
+
     elementProperties.forEach((name) => {
       it(`"${name}" should exist`, () => {
         const children = document.body.children;
