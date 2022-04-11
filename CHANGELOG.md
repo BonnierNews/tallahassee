@@ -3,6 +3,8 @@ Changelog
 
 # Unreleased
 
+# 11.6.0
+
 - Add support for details element and open attribute
 
 # 11.5.0
