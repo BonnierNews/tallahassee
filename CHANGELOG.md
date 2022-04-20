@@ -3,6 +3,10 @@ Changelog
 
 # Unreleased
 
+# 11.6.1
+
+- Fix form fields with same name posts as array
+
 # 11.6.0
 
 - Add support for details element and open attribute
