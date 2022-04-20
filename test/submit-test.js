@@ -430,4 +430,20 @@ describe("submit", () => {
 
     expect(submitEvent).to.be.false;
   });
+
+  it("submits input as array if more than 1 input with same name", async () => {
+    const browser = await Browser(port).navigateTo("/");
+
+    const form = browser.document.getElementById("post-form-same-name");
+    const button = form.getElementsByTagName("button")[0];
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+
+    const newNavigation = await browser._pending;
+
+    const body = JSON.stringify({ test: ["1", "2", "3"], c: "d" });
+    expect(newNavigation.document.body.innerHTML).to.contain(body);
+  });
 });
