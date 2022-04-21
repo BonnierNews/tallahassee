@@ -106,12 +106,14 @@ describe("elements", () => {
       expect(elm.attributes[1].value).to.equal("//example.com/img.png");
     });
 
-    it("element should have modifiable property attributes", () => {
+    it("element should have modifiable value property in attributes", () => {
       const elm = document.getElementsByTagName("h2")[0];
 
       expect(elm.attributes.length).to.equal(1);
       expect(elm.attributes.id.name).to.equal("id");
       expect(elm.attributes.id.value).to.equal("headline");
+
+      expect(() => elm.attributes.id.name = "test").to.throw();
 
       elm.attributes.id.value = "test";
       expect(elm.attributes.id.value).to.equal("test");

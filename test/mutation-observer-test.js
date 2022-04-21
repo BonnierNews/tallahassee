@@ -428,19 +428,20 @@ describe("MutationObserver", () => {
     });
 
     it("observer with attributes option calls callback when element attributes changes", () => {
+      browser.document.body.id = "existing";
       const records = [];
       const observer = new MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
       observer.observe(browser.document.body, {attributes: true});
 
-      browser.document.body.attributes.id.name = "mutate";
+      browser.document.body.attributes.id.value = "mutate";
 
       expect(records).to.have.length(1);
 
       const record = records[0];
       expect(record).to.have.property("type", "attributes");
-      expect(record).to.have.property("attributeName", "class");
+      expect(record).to.have.property("attributeName", "id");
       expect(record.target === browser.document.body).to.be.true;
     });
 
