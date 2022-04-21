@@ -13,28 +13,29 @@ describe("Document", () => {
     document = new Document({
       url: "https://www.expressen.se/nyheter/article-slug/",
       text: `
-        <html>
-          <body>
-            <h2 id="headline">Test</h2>
-            <input type="button"
-            <script id="with.dot">var a = 1;</script>
-            <template id="schablon" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in top document child&quot;}">
-              <div id="insert" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in sub document child&quot;}">
-                <p>In a template</p>
-              </div>
-            </template>
-            <div id="lazy"></div>
-            <form class="test-form">
-              <input name="input1">
-              <input name="input2">
-              <button id="input2">CTA</button>
-            </form>
-            <div class="row"></div>
-            <div class="row row--boat">
-              <p class="row--boat">Wide</p>
+      <!DOCTYPE html>
+      <html>
+        <body>
+          <h2 id="headline">Test</h2>
+          <input type="button"
+          <script id="with.dot">var a = 1;</script>
+          <template id="schablon" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in top document child&quot;}">
+            <div id="insert" data-json="{&quot;json&quot;:&quot;&#xE5;&#xE4;&#xF6; in sub document child&quot;}">
+              <p>In a template</p>
             </div>
-          </body>
-        </html>`
+          </template>
+          <div id="lazy"></div>
+          <form class="test-form">
+            <input name="input1">
+            <input name="input2">
+            <button id="input2">CTA</button>
+          </form>
+          <div class="row"></div>
+          <div class="row row--boat">
+            <p class="row--boat">Wide</p>
+          </div>
+        </body>
+      </html>`
     }, jar);
   });
 
@@ -82,6 +83,30 @@ describe("Document", () => {
 
       expect(forms[1].id).to.equal("new_form");
     });
+
+    it("ownerDocument is null", () => {
+      expect(document.ownerDocument).to.be.null;
+    });
+
+    it("parentElement is null", () => {
+      expect(document.parentElement).to.be.null;
+    });
+
+    it("nodeType should return the correct node type", () => {
+      expect(document.nodeType).to.equal(9);
+    });
+
+    it("nodeName should return the correct node type", () => {
+      expect(document.nodeName).to.equal("#document");
+    });
+
+    it("firstChild is directive", () => {
+      expect(document.firstChild.nodeType).to.equal(10);
+    });
+
+    it("textContent is null", () => {
+      expect(document.textContent).to.be.null;
+    });
   });
 
   describe("Methods", () => {
@@ -128,6 +153,31 @@ describe("Document", () => {
       it("returns empty if tag name doesn´t match", () => {
         const elements = document.getElementsByTagName("test-form");
         expect(elements.length).to.equal(0);
+      });
+    });
+
+    describe("cloneNode()", () => {
+      it("throws not implemented", () => {
+        expect(() => {
+          document.cloneNode();
+        }).to.throw("Not implemented");
+      });
+    });
+
+    describe("getRootNode()", () => {
+      it("returns self", () => {
+        expect(document.getRootNode() === document).to.be.true;
+      });
+    });
+
+    describe("contains()", () => {
+      it("returns true if child element is contained", () => {
+        expect(document.contains(document.body)).to.be.true;
+      });
+
+      it("returns false otherwise", () => {
+        const fragment = document.createDocumentFragment();
+        expect(document.contains(fragment)).to.be.false;
       });
     });
   });
@@ -304,12 +354,6 @@ describe("Document", () => {
     it("can set cookie with expires", () => {
       document.cookie = "termsAware=1; path=/;domain=.expressen.se;expires=Wed, 20 Sep 2028 08:38:44 GMT";
       expect(document.cookie).to.equal("_ga=1; termsAware=1");
-    });
-  });
-
-  describe("nodeType", () => {
-    it("should return the correct node type", () => {
-      expect(document.nodeType).to.equal(9);
     });
   });
 

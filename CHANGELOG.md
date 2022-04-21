@@ -3,6 +3,33 @@ Changelog
 
 # Unreleased
 
+# 11.6.1
+
+- Fix form fields with same name posts as array
+
+# 11.6.0
+
+- Add support for details element and open attribute
+
+# 11.5.0
+
+- Make form elements a live list and pick proper form elements
+
+# 11.4.0
+
+- Document inherits from Node
+- Make sure form.submit() doesn't emit submit event
+
+# 11.3.1
+
+- Fix form cannot convert a Symbol value to a string bug
+
+# 11.3.0
+
+- Fix heritage confusion between EventTarget and Node. It is Node that inherits from EventTarget and not the other way around
+- Add basic support for XMLHttpRequest that also inherits from EventTarget, and not the other way around
+- EventTarget will now execute on-event-name functions if set #2
+
 # 11.2.1
 
 - Response with set cookies without explicit domain are now accessible on declared host
