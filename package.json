@@ -1,7 +1,7 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "11.6.1",
-  "description": "Expressen client testing framework",
+  "version": "11.6.2",
+  "description": "Lightweight client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
@@ -22,10 +22,10 @@
     "MutationObserver",
     "iframe"
   ],
-  "author": "AB Kvällstidningen Expressen",
+  "author": "Bonnier News",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ExpressenAB/tallahassee.git"
+    "url": "git://github.com/BonnierNews/tallahassee.git"
   },
   "dependencies": {
     "cheerio": "1.0.0-rc.3",
@@ -47,9 +47,9 @@
     "index.js"
   ],
   "bugs": {
-    "url": "https://github.com/ExpressenAB/tallahassee/issues"
+    "url": "https://github.com/BonnierNews/tallahassee/issues"
   },
-  "homepage": "https://github.com/ExpressenAB/tallahassee#readme",
+  "homepage": "https://github.com/BonnierNews/tallahassee#readme",
   "directories": {
     "lib": "lib",
     "test": "test"
