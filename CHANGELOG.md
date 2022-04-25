@@ -3,6 +3,8 @@ Changelog
 
 # Unreleased
 
+# 11.7.1
+
 - `input[type=checkbox]` now correctly fires `change` event when clicked, even outside of a form
 
 # 11.7.0
