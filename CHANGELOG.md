@@ -3,6 +3,15 @@ Changelog
 
 # Unreleased
 
+# 11.7.0
+
+- Basic support for `Element.attributes`
+- Basic support for `FormData`
+
+# 11.6.2
+
+- Updated internal urls in package description
+
 # 11.6.1
 
 - Fix form fields with same name posts as array
