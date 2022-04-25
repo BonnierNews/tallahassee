@@ -677,6 +677,7 @@ describe("elements", () => {
                 <input type="checkbox" name="test1" value="1" checked="checked">
                 <input type="checkbox" name="test2" value="2">
               </form>
+              <input type="checkbox" name="test3" value="3">
             </body>
           </html>`
       });
@@ -744,6 +745,12 @@ describe("elements", () => {
       const form = document.getElementsByTagName("form")[0];
       const elm = document.getElementsByTagName("input")[1];
       form.addEventListener("change", () => done());
+      elm.click();
+    });
+
+    it("emits change on input if clicked, even outside of form", (done) => {
+      const elm = document.getElementsByTagName("input")[2];
+      elm.addEventListener("change", () => done());
       elm.click();
     });
   });
