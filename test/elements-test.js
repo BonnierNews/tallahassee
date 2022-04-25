@@ -85,6 +85,40 @@ describe("elements", () => {
       }
     });
 
+    it("element should have property attributes", () => {
+      const elm = document.getElementsByTagName("h1")[0];
+
+      expect(elm.attributes.length).to.equal(0);
+    });
+
+    it("element should have property attributes with existing", () => {
+      const elm = document.getElementsByClassName("test-src")[0];
+
+      expect(elm.attributes.length).to.equal(2);
+      expect(elm.attributes.class.name).to.equal("class");
+      expect(elm.attributes.class.value).to.equal("test-src");
+      expect(elm.attributes.src.name).to.equal("src");
+      expect(elm.attributes.src.value).to.equal("//example.com/img.png");
+
+      expect(elm.attributes[0].name).to.equal("class");
+      expect(elm.attributes[0].value).to.equal("test-src");
+      expect(elm.attributes[1].name).to.equal("src");
+      expect(elm.attributes[1].value).to.equal("//example.com/img.png");
+    });
+
+    it("element should have modifiable value property in attributes", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+
+      expect(elm.attributes.length).to.equal(1);
+      expect(elm.attributes.id.name).to.equal("id");
+      expect(elm.attributes.id.value).to.equal("headline");
+
+      expect(() => elm.attributes.id.name = "test").to.throw();
+
+      elm.attributes.id.value = "test";
+      expect(elm.attributes.id.value).to.equal("test");
+    });
+
     elementProperties.forEach((name) => {
       it(`"${name}" should exist`, () => {
         const children = document.body.children;
