@@ -30,6 +30,10 @@ describe("Window", () => {
     it("has Element", () => {
       expect(window).to.have.property("Element");
     });
+
+    it("has FormData", () => {
+      expect(window).to.have.property("FormData");
+    });
   });
 
   describe("history", () => {
