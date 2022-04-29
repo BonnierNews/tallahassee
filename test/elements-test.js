@@ -13,7 +13,6 @@ const elementProperties = [
   "classList",
   "className",
   "dataset",
-  "disabled",
   "firstChild",
   "firstElementChild",
   "id",
@@ -27,7 +26,6 @@ const elementProperties = [
   "style",
   "tagName",
   "type",
-  "value",
   "nextElementSibling"
 ];
 
@@ -207,15 +205,6 @@ describe("elements", () => {
       expect(elm.outerHTML).to.equal("<input type=\"button\" disabled=\"disabled\">");
       elm.disabled = false;
       expect(elm.outerHTML).to.equal("<input type=\"button\">");
-    });
-
-    it("exposes disabled with the expected behaviour on non-input element", async () => {
-      const [elm] = document.getElementsByTagName("h2");
-      expect(elm).to.have.property("disabled").that.is.undefined;
-      elm.disabled = true;
-      expect(elm.outerHTML).to.equal("<h2 id=\"headline\" disabled=\"disabled\">Test</h2>");
-      elm.disabled = false;
-      expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
     });
 
     it("exposes anchors with the expected behaviour", async () => {

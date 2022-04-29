@@ -180,4 +180,29 @@ describe("forms", () => {
     const obj = form.abrakadabra = {};
     expect(form.abrakadabra === obj).to.be.true;
   });
+
+  describe("disabled", () => {
+    [ "input", "button", "select", "textarea" ].forEach((tagName) => {
+      it(`${tagName} have disabled property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect(elm, tagName).to.have.property("disabled");
+        elm.disabled = true;
+      });
+
+      it(`${tagName} have value property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect(elm, tagName).to.have.property("value");
+
+        expect(elm.value = "val", "set value").to.equal("val");
+      });
+    });
+
+    it("h2 lacks disabled and value property", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+      expect(elm).to.not.have.property("disabled");
+      expect(elm).to.not.have.property("value");
+    });
+  });
 });
