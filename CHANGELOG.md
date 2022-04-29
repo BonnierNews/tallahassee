@@ -3,6 +3,11 @@ Changelog
 
 # Unreleased
 
+# 11.8.0
+
+- Add HTMLButtonElement and HTMLInputElement
+- Remove properties disabled and value from Element class
+
 # 11.7.1
 
 - `input[type=checkbox]` now correctly fires `change` event when clicked, even outside of a form
