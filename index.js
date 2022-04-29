@@ -24,7 +24,7 @@ class WebPage {
     this.protocol = `${originRequestHeaders["x-forwarded-proto"] || "http"}:`;
     this.referrer = originRequestHeaders.referer;
   }
-  async load(uri, headers, statusCode = 200) {
+  async navigateTo(uri, headers, statusCode = 200) {
     const requestHeaders = normalizeHeaders(headers);
     if (requestHeaders["user-agent"]) this.userAgent = requestHeaders["user-agent"];
 
@@ -43,6 +43,21 @@ class WebPage {
     });
     assert.equal(resp.status, statusCode, `Unexepected status code. Expected: ${statusCode}. Actual: ${resp.statusCode}`);
     assert(resp.headers.get("content-type").match(/text\/html/i), `Unexepected content type. Expected: text/html. Actual: ${resp.headers["content-type"]}`);
+    const browser = new BrowserTab(this, resp);
+    return browser.load();
+  }
+  load(resp) {
+    const requestHeaders = this.originRequestHeaders;
+    if (requestHeaders["user-agent"]) this.userAgent = requestHeaders["user-agent"];
+
+    const publicHost = getLocationHost(requestHeaders);
+    const cookieDomain = publicHost || this.originHost || "127.0.0.1";
+
+    if (requestHeaders.cookie) {
+      const isSecure = this.protocol === "https:";
+      this.jar.setCookies(requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean), cookieDomain, "/", isSecure);
+    }
+
     const browser = new BrowserTab(this, resp);
     return browser.load();
   }
@@ -167,6 +182,20 @@ function Tallahassee(origin, options = {}) {
 }
 
 Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = {}, statusCode = 200) {
+  const webPage = this._getWebPage(headers);
+  return webPage.navigateTo(linkUrl, webPage.originRequestHeaders, statusCode);
+};
+
+Tallahassee.prototype.load = function load(markup) {
+  const webPage = this._getWebPage();
+  const resp = {
+    text: () => markup,
+    url: `${webPage.protocol}//${webPage.originHost || "127.0.0.1"}`
+  };
+  return webPage.load(resp);
+};
+
+Tallahassee.prototype._getWebPage = function getWebPage(headers) {
   const requestHeaders = {
     ...normalizeHeaders(this.options.headers),
     ...normalizeHeaders(headers),
@@ -181,6 +210,5 @@ Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = 
     requestHeaders["set-cookie"] = undefined;
   }
 
-  const webPage = new WebPage(this[kOrigin], this.jar, requestHeaders);
-  return webPage.load(linkUrl, requestHeaders, statusCode);
+  return new WebPage(this[kOrigin], this.jar, requestHeaders);
 };
