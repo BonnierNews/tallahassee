@@ -1,11 +1,12 @@
 <!-- version -->
-# 11.8.0 API Reference
+# 11.9.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
 
 - [`[new ]Tallahassee(origin[, options])`](#new-tallahasseeorigin-options)
 - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
+- [`load([markup])`](#loadmarkup)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
 - [`browser.runScripts([scopeElement])`](#browserrunscriptsscopeelement)
 - [Scroll](#scroll)
@@ -43,7 +44,7 @@ Navigate to route.
 
 Returns promise with browser context.
 
-- `$:`: Cheerio context
+- `$`: Cheerio context
 - `document`
 - `focus`: Focus this browser
 - `focusIframe`: set focus to Ifram
@@ -56,6 +57,14 @@ Returns promise with browser context.
 - `unstickElementFromTop`: unstick elements from top
 - `window`
 - `response`: response object from node-fetch
+
+# `load([markup])`
+
+Load markup and return browser context.
+
+- `markup`: optional string with html
+
+Returns promise with browser context.
 
 # `browser.navigateTo(route[, headers, expectedStatusCode])`
 

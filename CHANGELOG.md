@@ -3,6 +3,10 @@ Changelog
 
 # Unreleased
 
+# 11.9.0
+
+- Expose [load](./API.md#loadmarkup) function
+
 # 11.8.0
 
 - Add HTMLButtonElement and HTMLInputElement
