@@ -12,7 +12,7 @@ const {version} = require("../package.json");
 const filenames = getFileNames();
 
 function getFileNames() {
-  const arg = process.argv[2] || "./API.md";
+  const arg = process.argv[2] || "./docs/API.md";
   return arg.split(",");
 }
 

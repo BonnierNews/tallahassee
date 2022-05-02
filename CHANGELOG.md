@@ -5,7 +5,7 @@ Changelog
 
 # 11.9.0
 
-- Expose [load](./API.md#loadmarkup) function
+- Expose [load](/docs/API.md#loadmarkup) function that returns browser context without navigation
 
 # 11.8.0
 

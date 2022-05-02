@@ -7,8 +7,8 @@
   "scripts": {
     "test": "mocha",
     "posttest": "eslint . --cache && npm run toc",
-    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md && NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./API.md",
-    "toc": "node ./scripts/generate-api-toc"
+    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md,./docs/API.md,./docs/Examples.md",
+    "toc": "node ./scripts/generate-api-toc ./docs/API.md,./docs/Examples.md"
   },
   "engines": {
     "node": ">=14"

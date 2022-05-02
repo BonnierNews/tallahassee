@@ -5,8 +5,8 @@
 <!-- toc -->
 
 - [`[new ]Tallahassee(origin[, options])`](#new-tallahasseeorigin-options)
-- [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
-- [`load([markup])`](#loadmarkup)
+  - [`navigateTo(route[, headers, expectedStatusCode])`](#navigatetoroute-headers-expectedstatuscode)
+  - [`load([markup])`](#loadmarkup)
 - [`browser.navigateTo(route[, headers, expectedStatusCode])`](#browsernavigatetoroute-headers-expectedstatuscode)
 - [`browser.runScripts([scopeElement])`](#browserrunscriptsscopeelement)
 - [Scroll](#scroll)
@@ -34,7 +34,7 @@ Create new instance of Tallahasse.
     - `x-forwarded-host`: overrides, or acts as, `host`
     - `x-forwarded-proto`: origin protocol
 
-# `navigateTo(route[, headers, expectedStatusCode])`
+## `navigateTo(route[, headers, expectedStatusCode])`
 
 Navigate to route.
 
@@ -47,7 +47,7 @@ Returns promise with browser context.
 - `$`: Cheerio context
 - `document`
 - `focus`: Focus this browser
-- `focusIframe`: set focus to Ifram
+- `focusIframe`: set focus to Iframe
 - `navigateTo`: navigate to route with preserved cookie
 - `runScripts`: run scripts found in script tags
 - `setElementsToScroll`: set elements to scroll
@@ -58,7 +58,7 @@ Returns promise with browser context.
 - `window`
 - `response`: response object from node-fetch
 
-# `load([markup])`
+## `load([markup])`
 
 Load markup and return browser context.
 
