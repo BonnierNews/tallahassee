@@ -9,9 +9,10 @@ Test your client scripts in a headless browser.
 
 # Introduction
 
-Supports just about everything except `querySelectorAll()` which we don´t want developers to use.
+Supports just about everything.
 
 - [API](/docs/API.md)
+- [Examples](/docs/Examples.md)
 - IntersectionObserver? Yes, check [here](/docs/API.md#intersectionobserver)
 
 # Example:

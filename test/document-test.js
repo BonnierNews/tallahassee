@@ -180,6 +180,40 @@ describe("Document", () => {
         expect(document.contains(fragment)).to.be.false;
       });
     });
+
+    describe("querySelector(selector)", () => {
+      it("returns element", () => {
+        expect(document.querySelector(".test-form").tagName).to.equal("FORM");
+      });
+
+      it("returns null if selector is not found", () => {
+        expect(document.querySelector(".form-test")).to.be.null;
+      });
+    });
+
+    describe("querySelectorAll(selectors)", () => {
+      it("returns array of elements", () => {
+        const list = document.querySelectorAll(".row");
+        expect(list.length).to.equal(2);
+        expect(list[0].tagName).to.equal("DIV");
+      });
+
+      it("list is not live", () => {
+        const list = document.querySelectorAll(".row");
+        expect(list.length).to.equal(2);
+        list[1].insertAdjacentHTML("afterend", "<div class='row'>new</div>");
+        expect(list.length).to.equal(2);
+      });
+
+      it("returns new list each time", () => {
+        const list = document.querySelectorAll(".row");
+        expect(document.querySelectorAll(".row") === list).to.be.false;
+      });
+
+      it("returns empty if selector is not found", () => {
+        expect(document.querySelectorAll(".form-test").length).to.equal(0);
+      });
+    });
   });
 
   describe("api", () => {

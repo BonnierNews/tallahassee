@@ -3,51 +3,11 @@ Examples
 
 <!-- toc -->
 
-- [Add query selector to Document](#add-query-selector-to-document)
 - [Capture DOM manipulation with mutation observer](#capture-dom-manipulation-with-mutation-observer)
 - [Capture navigation when changing location](#capture-navigation-when-changing-location)
+- [Capture navigation when submitting form](#capture-navigation-when-submitting-form)
 
 <!-- tocstop -->
-
-## Add query selector to Document
-
-```javascript
-"use strict";
-
-const Browser = require("@expressen/tallahassee");
-const Document = require("@expressen/tallahassee/lib/Document");
-
-Document.prototype.querySelector = function querySelector(selector) {
-  const elements = this.$(selector);
-  if (!elements.length) return null;
-  return this._getElement(elements.eq(0));
-};
-
-Document.prototype.querySelectorAll = function querySelectorAll(selector) {
-  const elements = this.$(selector);
-  const result = [];
-  for (const elm of elements.toArray()) {
-    result.push(this._getElement(elm));
-  }
-  return result;
-};
-
-it("get buttons", async () => {
-  const markup = `
-    <button id="button-0" data-test-button>Attr</button>
-    <button id="button-1" data-test-button>Attr</button>
-  `;
-
-  const browser = await new Browser().load(markup);
-  browser.runScripts();
-
-  const btn = browser.document.querySelector("[data-test-button]");
-  expect(btn.id).to.equal("button-0");
-
-  const btns = browser.document.querySelectorAll("[data-test-button]");
-  expect(btns.length).to.equal(2);
-});
-```
 
 ## Capture DOM manipulation with mutation observer
 
@@ -55,7 +15,6 @@ it("get buttons", async () => {
 "use strict";
 
 const Browser = require("@expressen/tallahassee");
-const MutationObserver = require("@expressen/tallahassee/lib/MutationObserver");
 
 it("script mutates DOM", async () => {
   const markup = `
@@ -75,7 +34,7 @@ it("script mutates DOM", async () => {
   const btn = browser.document.getElementById("mybtn");
 
   const mutated = new Promise((resolve) => {
-    const observer = new MutationObserver(function mutaded(e) {
+    const observer = new browser.window.MutationObserver(function mutaded(e) {
       resolve(e);
       this.disconnect();
     });
