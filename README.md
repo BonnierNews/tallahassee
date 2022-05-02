@@ -51,7 +51,7 @@ describe("Tallahassee", () => {
         Cookie: "_ga=1"
       });
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+      await Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
@@ -60,7 +60,7 @@ describe("Tallahassee", () => {
     it("again", async () => {
       const browser = await Browser(app).navigateTo("/");
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+      await Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);

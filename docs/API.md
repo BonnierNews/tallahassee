@@ -103,7 +103,7 @@ describe("Window scroller", () => {
       const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
       lazyLoaded._setBoundingClientRect({top: 300});
 
-      await Script("./app/assets/scripts/main").run(browser.window);
+      await Script("../app/assets/scripts/main.js").run(browser.window);
 
       browser.scrollToTopOfElement(lazyLoaded);
 
@@ -142,7 +142,7 @@ describe("IntersectionObserver", () => {
     });
     const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    await Script("./app/assets/scripts/main").run(browser.window);
+    await Script("../app/assets/scripts/main.js").run(browser.window);
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
   });
@@ -153,7 +153,7 @@ describe("IntersectionObserver", () => {
     });
     browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    await Script("./app/assets/scripts/main").run(browser.window);
+    await Script("../app/assets/scripts/main.js").run(browser.window);
 
     browser.setElementsToScroll((document) => {
       return document.getElementsByClassName("lazy-load");
