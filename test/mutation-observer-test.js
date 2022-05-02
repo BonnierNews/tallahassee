@@ -3,7 +3,6 @@
 const app = require("../app/app");
 const Browser = require("../");
 const Script = require("@bonniernews/wichita");
-const {MutationObserver} = require("../lib");
 
 describe("MutationObserver", () => {
   it("triggers when element has been inserted into the observed node using appendChild", async () => {
@@ -21,7 +20,7 @@ describe("MutationObserver", () => {
         }
       }
     }
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     await Script("../app/assets/scripts/main").run(browser.window);
@@ -42,7 +41,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     const p = browser.document.createElement("p");
@@ -71,7 +70,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     const span = browser.document.createElement("span");
@@ -94,7 +93,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.insertAdjacentHTML("beforeend", "<p>My paragraph</p>");
@@ -114,7 +113,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.insertAdjacentHTML("afterbegin", "<p>My paragraph</p>");
@@ -134,7 +133,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.insertAdjacentHTML("beforebegin", "<p>My paragraph</p>");
@@ -154,7 +153,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.insertAdjacentHTML("afterend", "<p>My paragraph</p>");
@@ -174,7 +173,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     const p = browser.document.createElement("p");
@@ -198,7 +197,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.innerHTML = "<p>Foo</p>";
@@ -218,7 +217,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.outerHTML = "<body><p>Foo</p></body>";
@@ -238,7 +237,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.textContent = "Foo";
@@ -258,7 +257,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.innerText = "Foo";
@@ -281,7 +280,7 @@ describe("MutationObserver", () => {
         }
       }
     };
-    const observer = new MutationObserver(callback);
+    const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
     targetNode.removeChild(elementToRemove);
@@ -296,7 +295,7 @@ describe("MutationObserver", () => {
 
     let childMutationCount = 0;
 
-    const observer = new MutationObserver(() => {
+    const observer = new browser.window.MutationObserver(() => {
       ++childMutationCount;
     });
     observer.observe(targetNode, config);
@@ -320,7 +319,7 @@ describe("MutationObserver", () => {
 
     let scope;
 
-    const observer = new MutationObserver(function mutationCallback() {
+    const observer = new browser.window.MutationObserver(function mutationCallback() {
       scope = this;
     });
     observer.observe(targetNode, config);
@@ -339,7 +338,7 @@ describe("MutationObserver", () => {
 
     let childMutationCount = 0;
 
-    const observer = new MutationObserver(function mutated() {
+    const observer = new browser.window.MutationObserver(function mutated() {
       ++childMutationCount;
       this.disconnect();
     });
@@ -358,7 +357,7 @@ describe("MutationObserver", () => {
     const browser = await Browser(app).navigateTo("/");
 
     const sequence = [];
-    const observer = new MutationObserver(() => {
+    const observer = new browser.window.MutationObserver(() => {
       sequence.push("mutated");
     });
     observer.observe(browser.document.body, {childList: true });
@@ -374,7 +373,7 @@ describe("MutationObserver", () => {
     const browser = await Browser(app).navigateTo("/");
 
     const sequence = [];
-    const observer = new MutationObserver(() => {
+    const observer = new browser.window.MutationObserver(() => {
       sequence.push("mutated");
     });
     observer.observe(browser.document.body, {childList: true });
@@ -391,7 +390,7 @@ describe("MutationObserver", () => {
 
     const sequence = browser.window.sequence = [];
     const config = { attributes: true, childList: true };
-    const observer = new MutationObserver(() => {
+    const observer = new browser.window.MutationObserver(() => {
       sequence.push("mutated");
     });
     observer.observe(browser.document.body, config);
@@ -412,7 +411,7 @@ describe("MutationObserver", () => {
 
     it("observer with attributes option calls callback when element class changes", () => {
       const records = [];
-      const observer = new MutationObserver((mutatedRecords) => {
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
       observer.observe(browser.document.body, {attributes: true});
@@ -430,7 +429,7 @@ describe("MutationObserver", () => {
     it("observer with attributes option calls callback when element attributes changes", () => {
       browser.document.body.id = "existing";
       const records = [];
-      const observer = new MutationObserver((mutatedRecords) => {
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
       observer.observe(browser.document.body, {attributes: true});
@@ -447,7 +446,7 @@ describe("MutationObserver", () => {
 
     it("observer with attributes and subtree option calls callback when element child src changes", () => {
       const records = [];
-      const observer = new MutationObserver((mutatedRecords) => {
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
       observer.observe(browser.document.body, {attributes: true, subtree: true});
@@ -465,7 +464,7 @@ describe("MutationObserver", () => {
 
     it("observer with attributes and subtree option calls callback when element child src changes", () => {
       const records = [];
-      const observer = new MutationObserver((mutatedRecords) => {
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
       observer.observe(browser.document.body, {attributes: true, subtree: true});
@@ -483,7 +482,7 @@ describe("MutationObserver", () => {
 
     it("observer with attributes doesn't call callback when element children changes", () => {
       const records = [];
-      const observer = new MutationObserver((mutatedRecords) => {
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
       observer.observe(browser.document.body, {attributes: true});
