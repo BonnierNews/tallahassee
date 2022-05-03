@@ -6,9 +6,9 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "mocha",
-    "posttest": "eslint . --cache && npm run toc",
-    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md && NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./API.md",
-    "toc": "node ./scripts/generate-api-toc"
+    "posttest": "eslint . --cache && npm run test-md && npm run toc",
+    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md,./docs/API.md,./docs/Examples.md",
+    "toc": "node ./scripts/generate-api-toc ./docs/API.md,./docs/Examples.md"
   },
   "engines": {
     "node": ">=14"
@@ -39,7 +39,7 @@
     "eslint": "^8.14.0",
     "express": "^4.18.1",
     "markdown-toc": "^1.2.0",
-    "mocha": "^9.2.2",
+    "mocha": "^10.0.0",
     "nock": "^13.2.4"
   },
   "files": [

@@ -9,10 +9,11 @@ Test your client scripts in a headless browser.
 
 # Introduction
 
-Supports just about everything except `querySelectorAll()` which we don´t want developers to use.
+Supports just about everything.
 
-- [API](/API.md)
-- IntersectionObserver? Yes, check [here](/API.md#intersectionobserver)
+- [API](/docs/API.md)
+- [Examples](/docs/Examples.md)
+- IntersectionObserver? Yes, check [here](/docs/API.md#intersectionobserver)
 
 # Example:
 
@@ -50,7 +51,7 @@ describe("Tallahassee", () => {
         Cookie: "_ga=1"
       });
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+      await Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
@@ -59,7 +60,7 @@ describe("Tallahassee", () => {
     it("again", async () => {
       const browser = await Browser(app).navigateTo("/");
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+      await Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);

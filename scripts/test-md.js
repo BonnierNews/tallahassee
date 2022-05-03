@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 "use strict";
 
-const fs = require("fs");
+const {promises: fs} = require("fs");
 const vm = require("vm");
 
 const lintConf = require("../.eslintrc.json");
@@ -13,12 +13,12 @@ const {name} = require("../package.json");
 
 const requirePattern = new RegExp(`(require\\()(["'"])(${name.replace("/", "\\/")})(\\/|\\2)`, "g");
 
+let blockCounter = 0;
 const linter = new Linter();
 const exPattern = /```javascript\n([\s\S]*?)```/ig;
-let lines = 0;
-let prevCharIdx = 0;
 
-const file = process.argv[2] || "./API.md";
+const filenames = getFileNames();
+
 const blockIdx = Number(process.argv[3]);
 
 const testScript = new vm.Script(`
@@ -39,18 +39,26 @@ const testScript = new vm.Script(`
   displayErrors: true
 });
 
-parseDoc(file);
+(async () => {
+  for await (const file of filenames) {
+    await parseDoc(file);
+  }
+})();
 
-function parseDoc(filePath) {
-  fs.readFile(filePath, (err, fileContent) => {
-    if (err) throw err;
+async function parseDoc(filePath) {
+  let lines = 0;
+  let prevCharIdx = 0;
+
+  try {
+    const fileContent = await fs.readFile(filePath);
 
     const blocks = [];
-    const content = fileContent.toString();
+    // eslint-disable-next-line no-var
+    var content = fileContent.toString();
 
     content.replace(exPattern, (match, block, idx) => {
       block = block.replace(requirePattern, "$1$2..$4");
-      const blockLine = calculateLine(content, idx);
+      const blockLine = calculateLine(idx);
 
       blocks.push({
         block,
@@ -61,14 +69,17 @@ function parseDoc(filePath) {
       });
     });
 
-    blocks.forEach(({line, script, lint}, idx) => {
-      if (isNaN(blockIdx) || idx === blockIdx) {
-        console.log(`${idx}: ${filePath}:${line}`);
-        execute(script);
+    for await (const {line, script, lint} of blocks) {
+      if (isNaN(blockIdx) || blockCounter === blockIdx) {
+        console.log(`${blockCounter}: ${filePath}:${line}`);
+        await execute(script);
         lint();
       }
-    });
-  });
+      blockCounter++;
+    }
+  } catch (err) {
+    console.log(err);
+  }
 
   function parse(filename, scriptBody, lineOffset) {
     return new vm.Script(scriptBody, {
@@ -87,6 +98,13 @@ function parseDoc(filePath) {
       displayLinting(result, filename, lineOffset);
     };
   }
+
+  function calculateLine(charIdx) {
+    const blockLine = content.substring(prevCharIdx, charIdx).split(/\n/).length;
+    prevCharIdx = charIdx;
+    lines = blockLine + (lines > 0 ? lines - 1 : 0);
+    return lines;
+  }
 }
 
 function execute(script) {
@@ -102,13 +120,6 @@ function execute(script) {
   return script.runInContext(vmContext);
 }
 
-function calculateLine(content, charIdx) {
-  const blockLine = content.substring(prevCharIdx, charIdx).split(/\n/).length;
-  prevCharIdx = charIdx;
-  lines = blockLine + (lines > 0 ? lines - 1 : 0);
-  return lines;
-}
-
 function displayLinting(result, filename, offset) {
   if (!result.length) return;
 
@@ -121,4 +132,9 @@ function displayLinting(result, filename, offset) {
     const log = severity === 2 ? err : warn;
     log(`  \x1b[90m${offset + line}:${column}`, severity === 2 ? "\x1b[31merror" : "  \x1b[33mwarning", `\x1b[0m${message}`, `\x1b[90m${ruleId}\x1b[0m`);
   });
+}
+
+function getFileNames() {
+  const arg = process.argv[2] || "./docs/API.md";
+  return arg.split(",");
 }
