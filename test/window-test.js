@@ -1,6 +1,6 @@
 "use strict";
 
-const {Window, Document, MutationObserver} = require("../lib");
+const {Window, Document} = require("../lib");
 
 describe("Window", () => {
   let window, document;
@@ -33,10 +33,6 @@ describe("Window", () => {
 
     it("has FormData", () => {
       expect(window).to.have.property("FormData");
-    });
-
-    it("has MutationObserver", () => {
-      expect(window).to.have.property("MutationObserver").that.equal(MutationObserver);
     });
   });
 
