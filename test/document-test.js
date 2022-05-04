@@ -191,7 +191,7 @@ describe("Document", () => {
       });
     });
 
-    describe("querySelectorAll(selectors)", () => {
+    describe("querySelectorAll(selector)", () => {
       it("returns array of elements", () => {
         const list = document.querySelectorAll(".row");
         expect(list.length).to.equal(2);

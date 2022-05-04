@@ -3,6 +3,8 @@ Changelog
 
 # Unreleased
 
+- Add querySelector and querySelectorAll functions to Element
+
 # 11.9.0
 
 - Expose [load](/docs/API.md#loadmarkup) function that returns browser context without navigation

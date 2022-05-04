@@ -250,7 +250,6 @@ describe("elements", () => {
       expect(img2).to.have.property("imageLoaded", "true");
     });
 
-
     describe("nodeType", () => {
       it("should return the correct node type", () => {
         expect(document.getElementsByTagName("span")[0].nodeType).to.equal(1);
@@ -334,6 +333,70 @@ describe("elements", () => {
       it("returns elements that match class names separated any number of whitespaces", () => {
         const elms = document.body.getElementsByClassName("row \n\t     row--boat   \n\t ");
         expect(elms.length).to.equal(1);
+      });
+    });
+
+    describe("querySelector(selector)", () => {
+      let element;
+      beforeEach(() => {
+        const document = new Document({
+          text: `
+            <section>
+              <div class="row"></div>
+              <div class="row row--boat">
+                <span class="row--boat">Wide</span>
+              </div>
+            </section>
+          `
+        });
+        element = document.getElementsByTagName("section")[0];
+      });
+
+      it("returns element", () => {
+        expect(element.querySelector(".row span").tagName).to.equal("SPAN");
+      });
+
+      it("returns null if selector is not found", () => {
+        expect(element.querySelector(".no-exist")).to.be.null;
+      });
+    });
+
+    describe("querySelectorAll(selector)", () => {
+      let element;
+      beforeEach(() => {
+        const document = new Document({
+          text: `
+            <section>
+              <div class="row"></div>
+              <div class="row row--boat">
+                <span class="row--boat">Wide</span>
+              </div>
+            </section>
+          `
+        });
+        element = document.getElementsByTagName("section")[0];
+      });
+
+      it("returns array of elements", () => {
+        const list = element.querySelectorAll(".row");
+        expect(list.length).to.equal(2);
+        expect(list[0].tagName).to.equal("DIV");
+      });
+
+      it("list is not live", () => {
+        const list = element.querySelectorAll(".row");
+        expect(list.length).to.equal(2);
+        list[1].insertAdjacentHTML("afterend", "<div class='row'>new</div>");
+        expect(list.length).to.equal(2);
+      });
+
+      it("returns new list each time", () => {
+        const list = element.querySelectorAll(".row");
+        expect(element.querySelectorAll(".row") === list).to.be.false;
+      });
+
+      it("returns empty if selector is not found", () => {
+        expect(element.querySelectorAll(".no-exist").length).to.equal(0);
       });
     });
 
