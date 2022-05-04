@@ -6,6 +6,9 @@ Changelog
 # 11.9.0
 
 - Expose [load](/docs/API.md#loadmarkup) function that returns browser context without navigation
+- Add MutationObserver as property to window
+- Add querySelector and querySelectorAll functions to document
+- Add examples
 
 # 11.8.0
 
