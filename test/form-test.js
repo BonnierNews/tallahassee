@@ -205,4 +205,71 @@ describe("forms", () => {
       expect(elm).to.not.have.property("value");
     });
   });
+
+  describe("validation", () => {
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <form id="get-form" type="get" action="/">
+                <input type="text" name="optional">
+                <input type="text" name="size" min="4" max="5">
+                <input type="text" name="pattern" pattern="[a-z]{4,8}">
+                <input type="text" name="req" required>
+                <input type="text" name="reqsize" required min="4" max="5">
+                <button type="submit">Submit</submit>
+              </form>
+            </body>
+          </html>`
+      });
+    });
+
+    it("should get validity on form", () => {
+      const form = document.forms[0];
+      expect(form.reportValidity()).to.equal(false);
+
+      form.req.value = "test";
+      expect(form.reportValidity()).to.equal(false);
+
+      form.reqsize.value = "test";
+      expect(form.reportValidity()).to.equal(true);
+    });
+
+    it("should get validity on element", () => {
+      const el = document.forms[0].req;
+      expect(el.reportValidity()).to.equal(false);
+
+      el.value = "test";
+      expect(el.reportValidity()).to.equal(true);
+    });
+
+    it("should get validity on optional element with min and max", () => {
+      const el = document.forms[0].size;
+      expect(el.reportValidity()).to.equal(true);
+
+      el.value = "foobar";
+      expect(el.reportValidity()).to.equal(false);
+
+      el.value = "foo";
+      expect(el.reportValidity()).to.equal(false);
+
+      el.value = "test";
+      expect(el.reportValidity()).to.equal(true);
+    });
+
+    it("should get validity on optional element with pattern", () => {
+      const el = document.forms[0].pattern;
+      expect(el.reportValidity()).to.equal(true);
+
+      el.value = "foo";
+      expect(el.reportValidity()).to.equal(false);
+
+      el.value = "foobarbaz";
+      expect(el.reportValidity()).to.equal(false);
+
+      el.value = "foobar";
+      expect(el.reportValidity()).to.equal(true);
+    });
+  });
 });
