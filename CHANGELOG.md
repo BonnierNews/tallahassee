@@ -1,7 +1,7 @@
 Changelog
 =========
 
-# Unreleased
+# 11.10.0
 
 - Add querySelector and querySelectorAll functions to Element
 
