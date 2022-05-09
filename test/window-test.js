@@ -34,6 +34,14 @@ describe("Window", () => {
     it("has FormData", () => {
       expect(window).to.have.property("FormData");
     });
+
+    it("has URL", () => {
+      expect(window).to.have.property("URL");
+    });
+
+    it("has URLSearchParams", () => {
+      expect(window).to.have.property("URLSearchParams");
+    });
   });
 
   describe("history", () => {
