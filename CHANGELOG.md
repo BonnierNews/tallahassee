@@ -1,9 +1,14 @@
 Changelog
 =========
 
+## 11.11.0
+
+- Add `URL` and `URLSearchParams` to `Window`
+
 ## 11.10.0
 
 - Add querySelector and querySelectorAll functions to Element
+- Add basic `.reportValidity()` on form and inputs
 
 ## 11.9.0
 
