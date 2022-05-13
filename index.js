@@ -174,7 +174,14 @@ class WebPage {
   }
 }
 
-function Tallahassee(origin, options = {}) {
+function Tallahassee(...args) {
+  let origin, options;
+  if (typeof args[0] === "object") {
+    options = args[0];
+  } else {
+    origin = args[0];
+    options = args[1] || {};
+  }
   if (!(this instanceof Tallahassee)) return new Tallahassee(origin, options);
   this[kOrigin] = origin;
   this.jar = new CookieJar();

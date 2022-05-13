@@ -85,4 +85,13 @@ describe("load", () => {
     }).load();
     expect(browser.document.cookie).to.equal("myCookie=singoalla");
   });
+
+  it("should be possible to pass options as first argument", async () => {
+    const browser = await new Browser({
+      headers: {
+        cookie: "myCookie=ballerina",
+      }
+    }).load();
+    expect(browser.document.cookie).to.equal("myCookie=ballerina");
+  });
 });
