@@ -206,6 +206,36 @@ describe("forms", () => {
     });
   });
 
+  describe("readOnly", () => {
+    [ "input", "textarea" ].forEach((tagName) => {
+      it(`${tagName} have readOnly property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect(elm, tagName).to.have.property("readOnly");
+        elm.readOnly = true;
+      });
+
+      it(`${tagName} have value property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect(elm, tagName).to.have.property("value");
+
+        expect(elm.value = "val", "set value").to.equal("val");
+      });
+    });
+
+    it("h2 lacks readOnly and value property", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+      expect(elm).to.not.have.property("readOnly");
+      expect(elm).to.not.have.property("value");
+    });
+
+    it("button lacks readOnly property", () => {
+      const elm = document.getElementsByTagName("button")[0];
+      expect(elm).to.not.have.property("readOnly");
+    });
+  });
+
   describe("validation", () => {
     beforeEach(() => {
       document = new Document({
