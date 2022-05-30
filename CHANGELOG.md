@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 11.13.0
 
 - Add `readOnly` property support
 
