@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- Add `readOnly` property support
+
 ## 11.12.0
 
 - Accept options object as first argument when Tallahassee instance is created
