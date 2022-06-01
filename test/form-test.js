@@ -64,13 +64,19 @@ describe("forms", () => {
   it("can set method property (to valid value)", () => {
     const form = document.getElementById("get-form");
 
-    form.method = "invalid";
+    expect(form.method = "invalid").to.equal("invalid");
     expect(form.method).to.equal("get");
 
-    form.method = "post";
+    expect(form.method = 1).to.equal(1);
+    expect(form.method).to.equal("get");
+
+    expect(form.method = null).to.equal(null);
+    expect(form.method).to.equal("get");
+
+    expect(form.method = "post").to.equal("post");
     expect(form.method).to.equal("post");
 
-    form.method = "get";
+    expect(form.method = "get").to.equal("get");
     expect(form.method).to.equal("get");
   });
 
