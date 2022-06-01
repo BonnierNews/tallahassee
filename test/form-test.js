@@ -61,10 +61,17 @@ describe("forms", () => {
     expect(document.getElementById("get-form").method).to.equal("get");
   });
 
-  it("can set method property", () => {
+  it("can set method property (to valid value)", () => {
     const form = document.getElementById("get-form");
+
+    form.method = "invalid";
+    expect(form.method).to.equal("get");
+
     form.method = "post";
     expect(form.method).to.equal("post");
+
+    form.method = "get";
+    expect(form.method).to.equal("get");
   });
 
   it("has default method property value", () => {
