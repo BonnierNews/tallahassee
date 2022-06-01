@@ -23,6 +23,8 @@ describe("forms", () => {
               <button>Submit</submit>
               <button type="reset">Reset</submit>
             </form>
+            <form id="default-form">
+            </form>
           </body>
         </html>`
     });
@@ -39,6 +41,34 @@ describe("forms", () => {
 
   it("returns the same form twice", () => {
     expect(document.getElementById("get-form") === document.getElementById("get-form")).to.be.true;
+  });
+
+  it("has action property", () => {
+    expect(document.getElementById("get-form").action).to.equal("/");
+  });
+
+  it("can set action property", () => {
+    const form = document.getElementById("get-form");
+    form.action = "/test";
+    expect(form.action).to.equal("/test");
+  });
+
+  it("has default action property value", () => {
+    expect(document.getElementById("default-form").action).to.equal("https://localhost:3000/");
+  });
+
+  it("has method property", () => {
+    expect(document.getElementById("get-form").method).to.equal("get");
+  });
+
+  it("can set method property", () => {
+    const form = document.getElementById("get-form");
+    form.method = "post";
+    expect(form.method).to.equal("post");
+  });
+
+  it("has default method property value", () => {
+    expect(document.getElementById("default-form").method).to.equal("get");
   });
 
   it("submit button has associated form property", () => {

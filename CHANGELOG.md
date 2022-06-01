@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- add `method` and `action` properties to form element
+
 ## 11.13.0
 
 - Add `readOnly` property support
