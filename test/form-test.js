@@ -300,7 +300,7 @@ describe("forms", () => {
 
     it("should not submit if form is not valid", () => {
       const form = document.forms[0];
-      const [button] = document.getElementsByTagName("button");
+      const button = document.getElementsByTagName("button")[0];
 
       let submitted = false;
       form.addEventListener("submit", () => {
