@@ -298,6 +298,24 @@ describe("forms", () => {
       });
     });
 
+    it("should not submit if form is not valid", () => {
+      const form = document.forms[0];
+      const [button] = document.getElementsByTagName("button");
+
+      let submitted = false;
+      form.addEventListener("submit", () => {
+        submitted = true;
+      });
+
+      button.click();
+      expect(submitted).to.equal(false);
+
+      form.req.value = "test";
+      form.reqsize.value = "test";
+      button.click();
+      expect(submitted).to.equal(true);
+    });
+
     it("should get validity on form", () => {
       const form = document.forms[0];
       expect(form.reportValidity()).to.equal(false);
