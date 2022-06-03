@@ -362,5 +362,19 @@ describe("forms", () => {
       el.value = "foobar";
       expect(el.reportValidity()).to.equal(true);
     });
+
+    it("element should fire 'invalid' event if validation fails", (done) => {
+      const el = document.forms[0].req;
+      const button = document.getElementsByTagName("button")[0];
+
+      el.addEventListener("invalid", () => done());
+      el.value = "test";
+
+      button.click();
+
+      el.value = "";
+
+      button.click();
+    });
   });
 });
