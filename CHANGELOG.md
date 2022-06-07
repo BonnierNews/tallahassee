@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## Unreleased
+
+- add `invalid` event being dispatched on required element when submitting
+- stop sending `submit` on form element if form is not valid
+
 ## 11.14.0
 
 - add `method` and `action` properties to form element
