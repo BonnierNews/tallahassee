@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 11.15.0
 
 - add `invalid` event being dispatched on required element when submitting
 - stop sending `submit` on form element if form is not valid
