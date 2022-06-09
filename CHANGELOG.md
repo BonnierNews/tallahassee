@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- fire `input` event when value is changed on input, select or textarea elements
+
 ## 11.15.0
 
 - add `invalid` event being dispatched on required element when submitting

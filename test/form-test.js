@@ -18,7 +18,10 @@ describe("forms", () => {
                 <option value="2" selected="selected">2</option>
               </select>
               <label>Description<textarea name="multiline"></textarea></label>
-              <input name="myinput" type="text"></text>
+              <input name="myinput" type="text">
+              <input name="myemail" type="email">
+              <input name="mynumber" type="number">
+              <input name="mytel" type="tel">
               <button type="submit">Submit</submit>
               <button>Submit</submit>
               <button type="reset">Reset</submit>
@@ -194,7 +197,7 @@ describe("forms", () => {
     const form = document.getElementsByTagName("form")[0];
     expect(form).to.have.property("elements");
     const elements = form.elements;
-    expect(elements.length).to.equal(8);
+    expect(elements.length).to.equal(11);
     for (let i = 0; i < elements.length; ++i) {
       expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
     }
@@ -276,6 +279,24 @@ describe("forms", () => {
     it("button lacks readOnly property", () => {
       const elm = document.getElementsByTagName("button")[0];
       expect(elm).to.not.have.property("readOnly");
+    });
+  });
+
+  describe("events", () => {
+    [
+      "input[type=text]",
+      "input[type=email]",
+      "input[type=tel]",
+      "input[type=number]",
+      "textarea",
+      "select"
+    ].forEach((tagName) => {
+      it(`should fire 'input' event on ${tagName} when value is changed`, (done) => {
+        const el = document.querySelector(tagName);
+        el.addEventListener("input", () => done());
+
+        el.value = "1";
+      });
     });
   });
 
