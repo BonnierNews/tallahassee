@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 11.16.0
 
 - fire `input` event when value is changed on input, select or textarea elements
 - `invalid` events are now correctly being fired per input element when validating form rather than only the first one
