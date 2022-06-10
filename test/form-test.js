@@ -384,18 +384,28 @@ describe("forms", () => {
       expect(el.reportValidity()).to.equal(true);
     });
 
-    it("element should fire 'invalid' event if validation fails", (done) => {
-      const el = document.forms[0].req;
+    it("element should fire 'invalid' event for all elements if validation fails", () => {
+      const {req, reqsize} = document.forms[0];
       const button = document.getElementsByTagName("button")[0];
 
-      el.addEventListener("invalid", () => done());
-      el.value = "test";
+      let reqFired = 0;
+      let reqsizeFired = 0;
+      req.addEventListener("invalid", () => reqFired++);
+      reqsize.addEventListener("invalid", () => reqsizeFired++);
 
+      req.value = "test";
+      reqsize.value = "test";
       button.click();
 
-      el.value = "";
+      expect(reqFired).to.equal(0);
+      expect(reqsizeFired).to.equal(0);
 
+      req.value = "";
+      reqsize.value = "";
       button.click();
+
+      expect(reqFired).to.equal(1);
+      expect(reqsizeFired).to.equal(1);
     });
   });
 });
