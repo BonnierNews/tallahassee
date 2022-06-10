@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- `invalid` events are now correctly being fired per input element when validating form rather than only the first one
+
 ## 11.15.0
 
 - add `invalid` event being dispatched on required element when submitting
