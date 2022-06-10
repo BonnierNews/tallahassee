@@ -1,6 +1,5 @@
 "use strict";
 
-const { expect } = require("chai");
 const Document = require("../lib/Document");
 
 describe("forms", () => {
