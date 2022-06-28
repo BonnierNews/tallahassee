@@ -56,8 +56,9 @@ describe("HTMLDialogElement", () => {
       dialog.close();
     });
 
-    it("pressing escape fires cancel event", () => {
+    it("pressing escape fires cancel event and closes", () => {
       const [dialog] = document.getElementsByTagName("dialog");
+      dialog.open = true;
 
       let i = 0;
       dialog.addEventListener("cancel", () => i++);
@@ -70,6 +71,7 @@ describe("HTMLDialogElement", () => {
       evt.keyCode = 27;
       document.dispatchEvent(evt);
       expect(i).to.equal(1);
+      expect(dialog.open).to.be.false;
     });
   });
 });
