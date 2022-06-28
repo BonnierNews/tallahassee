@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 11.17.0
+
+- add support for `dialog` element
+
 ## 11.16.0
 
 - fire `input` event when value is changed on input, select or textarea elements
