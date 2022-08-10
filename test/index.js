@@ -5,7 +5,6 @@ const Browser = require("../");
 const nock = require("nock");
 const Path = require("path");
 const Script = require("@bonniernews/wichita");
-const { expect } = require("chai");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
