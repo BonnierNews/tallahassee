@@ -427,7 +427,7 @@ describe("Tallahassee", () => {
   });
 
   describe("options", () => {
-    describe("htmlparser2 options", () => {
+    describe("htmlparser2", () => {
       it("passes on options to htmlparser2", async () => {
         const markup = "<svg><text>åäö</text></svg>";
         const htmlparser2 = {
