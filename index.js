@@ -15,9 +15,10 @@ const kOrigin = Symbol.for("origin");
 const kRequestHeaders = Symbol.for("request headers");
 
 class WebPage {
-  constructor(origin, jar, originRequestHeaders) {
-    this[kOrigin] = origin;
-    this.jar = jar;
+  constructor(browser, originRequestHeaders) {
+    this.browser = browser;
+    this[kOrigin] = browser[kOrigin];
+    this.jar = browser.jar;
     this.originRequestHeaders = originRequestHeaders;
     this.originHost = getLocationHost(originRequestHeaders);
     this.userAgent = `Tallahassee/${version}`;
@@ -217,5 +218,5 @@ Tallahassee.prototype._getWebPage = function getWebPage(headers) {
     requestHeaders["set-cookie"] = undefined;
   }
 
-  return new WebPage(this[kOrigin], this.jar, requestHeaders);
+  return new WebPage(this, requestHeaders);
 };

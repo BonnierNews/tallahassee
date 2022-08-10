@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- add support for htmlparser2 options
+
 ## 11.17.0
 
 - add support for `dialog` element

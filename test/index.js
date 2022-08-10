@@ -5,6 +5,7 @@ const Browser = require("../");
 const nock = require("nock");
 const Path = require("path");
 const Script = require("@bonniernews/wichita");
+const { expect } = require("chai");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
@@ -424,5 +425,20 @@ describe("Tallahassee", () => {
       expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
     });
 
+  });
+
+  describe("options", () => {
+    describe("htmlparser2 options", () => {
+      it("passes on options to htmlparser2", async () => {
+        const markup = "<svg><text>åäö</text></svg>";
+        const htmlparser2 = {
+          xmlMode: true,
+          decodeEntities: true
+        };
+        const browser = await new Browser({ htmlparser2 }).load(markup);
+        expect(browser.$.html()).to.not.include("<html>");
+        expect(browser.$.html()).to.include("&#xE5;&#xE4;&#xF6;");
+      });
+    });
   });
 });
