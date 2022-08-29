@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 11.18.0
 
 - Expose `lib/WebPage` to facilitate request override
 
