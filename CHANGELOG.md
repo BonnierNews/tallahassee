@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- Expose `lib/WebPage` to facilitate request override
+
 ## 11.17.0
 
 - add support for `dialog` element
