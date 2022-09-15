@@ -9,4 +9,5 @@ module.exports = {
   recursive: true,
   require: ["./test/setup.js"],
   "node-option": ["experimental-vm-modules", "no-warnings"],
+  exit: true,
 };
