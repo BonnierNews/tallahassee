@@ -1903,7 +1903,7 @@ describe("elements", () => {
     it("should return the inserted element", () => {
       const targetElement = document.getElementsByClassName("div-1")[0];
       const returnedElement = targetElement.insertAdjacentElement("beforebegin", elementToInsert);
-      expect(returnedElement).to.equal(elementToInsert);
+      expect(returnedElement).to.deep.equal(elementToInsert);
     });
   });
 
