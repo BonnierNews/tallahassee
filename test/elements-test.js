@@ -1899,6 +1899,12 @@ describe("elements", () => {
         targetElement.insertAdjacentElement("wrong", elementToInsert);
       }).to.throw(DOMException);
     });
+
+    it("should return the inserted element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      const returnedElement = targetElement.insertAdjacentElement("beforebegin", elementToInsert);
+      expect(returnedElement).to.equal(elementToInsert);
+    });
   });
 
   describe("matches", () => {
