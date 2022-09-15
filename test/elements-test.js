@@ -1845,6 +1845,62 @@ describe("elements", () => {
     });
   });
 
+  describe("insertAdjacentElement", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <div class="div-1"></div>
+            </body>
+          </html>`
+      });
+    });
+
+    let elementToInsert;
+    it("should insert adjacent element before the target element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      elementToInsert = document.createElement("p");
+      elementToInsert.className = "p-1";
+      targetElement.insertAdjacentElement("beforebegin", elementToInsert);
+
+      expect(targetElement.previousElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
+    it("should insert adjacent element inside target element before first child", () => {
+      document.body.insertAdjacentElement("afterbegin", elementToInsert);
+      const el = document.body.getElementsByClassName("p-1")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+      expect(el.previousElementSibling).to.be.undefined;
+      expect(el.nextElementSibling === document.getElementsByClassName("div-1")[0]).to.equal(true);
+    });
+
+    it("should insert adjacent element inside target element after last child", () => {
+      document.body.insertAdjacentElement("beforeend", elementToInsert);
+      const el = document.body.getElementsByClassName("p-1")[0];
+
+      expect(el.parentElement === document.body).to.equal(true);
+      expect(el.previousElementSibling === document.getElementsByClassName("div-1")[0]).to.equal(true);
+      expect(el.nextElementSibling).to.be.undefined;
+    });
+
+    it("should insert adjacent element after the target element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      targetElement.insertAdjacentElement("afterend", elementToInsert);
+
+      expect(targetElement.nextElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
+    it("should throw if the position is wrong", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      expect(() => {
+        targetElement.insertAdjacentElement("wrong", elementToInsert);
+      }).to.throw(DOMException);
+    });
+  });
+
   describe("matches", () => {
     let document;
     beforeEach(() => {
