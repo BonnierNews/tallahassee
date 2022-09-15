@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- Add `insertAdjacentElement` method on `Element`
+
 ## 11.18.0
 
 - Expose `lib/WebPage` to facilitate request override
