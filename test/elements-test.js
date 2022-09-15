@@ -1903,6 +1903,7 @@ describe("elements", () => {
     it("should return the inserted element", () => {
       const targetElement = document.getElementsByClassName("div-1")[0];
       const returnedElement = targetElement.insertAdjacentElement("beforebegin", elementToInsert);
+      expect(returnedElement === elementToInsert, "same instance").to.be.true;
       returnedElement.insertAdjacentElement("beforebegin", document.createElement("dialog"));
       expect(document.getElementsByTagName("dialog").length).to.equal(1);
     });
