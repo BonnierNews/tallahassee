@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 11.19.0
 
 - `removeAttribute` triggers attribute change
 
