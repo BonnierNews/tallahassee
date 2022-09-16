@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- Add `insertAdjacentElement` method on `Element`
+
 ## 11.19.0
 
 - `removeAttribute` triggers attribute change
