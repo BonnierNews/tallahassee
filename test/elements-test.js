@@ -1846,7 +1846,7 @@ describe("elements", () => {
   });
 
   describe("insertAdjacentElement", () => {
-    let document;
+    let document, elementToInsert;
     beforeEach(() => {
       document = new Document({
         text: `
@@ -1856,13 +1856,12 @@ describe("elements", () => {
             </body>
           </html>`
       });
-    });
-
-    let elementToInsert;
-    it("should insert adjacent element before the target element", () => {
-      const targetElement = document.getElementsByClassName("div-1")[0];
       elementToInsert = document.createElement("p");
       elementToInsert.className = "p-1";
+    });
+
+    it("should insert adjacent element before the target element", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
       targetElement.insertAdjacentElement("beforebegin", elementToInsert);
 
       expect(targetElement.previousElementSibling.classList.contains("p-1")).to.be.true;
