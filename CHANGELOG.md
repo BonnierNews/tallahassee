@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- `removeAttribute` triggers attribute change
+
 ## 11.18.0
 
 - Expose `lib/WebPage` to facilitate request override
