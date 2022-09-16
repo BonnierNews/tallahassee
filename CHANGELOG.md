@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 11.20.0
 
 - Add `insertAdjacentElement` method on `Element`
 
