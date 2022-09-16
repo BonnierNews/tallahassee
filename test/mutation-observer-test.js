@@ -492,5 +492,47 @@ describe("MutationObserver", () => {
 
       expect(records).to.have.length(0);
     });
+
+    it("observer with attributes calls callback when element attribute is removed", () => {
+      const records = [];
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true});
+
+      browser.document.body.setAttribute("setattr", "1");
+
+      expect(records.length).to.equal(1);
+
+      expect(records[0]).to.have.property("attributeName", "setattr");
+
+      browser.document.body.removeAttribute("setattr");
+
+      expect(records.length).to.equal(2);
+      expect(records[1]).to.have.property("attributeName", "setattr");
+    });
+
+    it("observer with attributes doesn't call callback when non-existing element attribute is removed", () => {
+      const records = [];
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true});
+
+      browser.document.body.setAttribute("setattr", "1");
+
+      expect(records.length).to.equal(1);
+
+      expect(records[0]).to.have.property("attributeName", "setattr");
+
+      browser.document.body.removeAttribute("setattr");
+
+      expect(records.length).to.equal(2);
+      expect(records[1]).to.have.property("attributeName", "setattr");
+
+      browser.document.body.removeAttribute("setattr");
+
+      expect(records.length).to.equal(2);
+    });
   });
 });
