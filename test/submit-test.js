@@ -153,7 +153,7 @@ describe("submit", () => {
     expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"1\",\"multiple-select\":[\"1\",\"3\"]}");
   });
 
-  it("submits empty select input if option value is empty", async () => {
+  it("submits inner text if select input value is empty", async () => {
     const browser = await Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("select-form");
@@ -168,7 +168,7 @@ describe("submit", () => {
     expect(browser._pending).to.be.ok;
 
     const newNavigation = await browser._pending;
-    expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"\"}");
+    expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"value of 3\"}");
   });
 
   it("follows redirect on get", async () => {

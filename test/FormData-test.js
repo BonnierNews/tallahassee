@@ -29,18 +29,63 @@ describe("FormData", () => {
     expect(entries).to.not.have.property("length");
   });
 
-  it("can get entries", () => {
-    const data = new FormData(form);
-    const entries = data.entries();
-    expect([...entries]).to.deep.equal([["mycheck", "1"], ["myinput", "Foo"], ["mysubmit", ""]]);
+  it("can get input entries", () => {
+    const entries = new FormData(form).entries();
+    expect([...entries]).to.deep.equal([["myinput", "Foo"]]);
   });
 
-  it("can get entries directly from instance", () => {
+  it("includes checked checkbox entry", () => {
+    form.mycheck.checked = true;
+    const entries = new FormData(form).entries();
+    expect([...entries]).to.deep.equal([["mycheck", "1"], ["myinput", "Foo"]]);
+  });
+
+  it("can be converted into object directly from instance", () => {
+    form.mycheck.checked = true;
     const data = new FormData(form);
     expect(Object.fromEntries(data)).to.deep.equal({
       mycheck: "1",
       myinput: "Foo",
-      mysubmit: ""
     });
+  });
+
+  it("returns empty strings if values are nulled", () => {
+    const data = new FormData(form);
+    form.mycheck.checked = true;
+    form.mycheck.value = null;
+    form.myinput.value = null;
+    expect(Object.fromEntries(data)).to.deep.equal({
+      mycheck: "on",
+      myinput: "",
+    });
+  });
+
+  it("ignores fields without name", () => {
+    const data = new FormData(form);
+    form.mycheck.checked = true;
+    form.elements[1].name = "";
+    expect(Object.fromEntries(data)).to.deep.equal({
+      mycheck: "1",
+    });
+  });
+
+  it("ignores fields that are disabled", () => {
+    const data = new FormData(form);
+    form.mycheck.checked = true;
+    form.mycheck.disabled = true;
+    expect(Object.fromEntries(data)).to.deep.equal({
+      myinput: "Foo",
+    });
+  });
+
+  it("throws type error if constructing with element that is not a form", () => {
+    expect(() => {
+      new FormData(form.elements[0]);
+    }).to.throw(TypeError, "Failed to construct 'FormData': parameter 1 is not of type 'HTMLFormElement'");
+  });
+
+  it("accepts no argument", () => {
+    const data = new FormData();
+    expect(Object.fromEntries(data)).to.deep.equal({});
   });
 });
