@@ -3,8 +3,11 @@ Changelog
 
 ## Unreleased
 
+## 11.21.0
+
 - Utilize FormData as payload source when submitting form
 - Fix empty input value submits empty string
+- Fix FormData behaviour
 - Start test-app if addressed as main, for testing behaviours - `node app/app.js`
 
 ## 11.20.0
