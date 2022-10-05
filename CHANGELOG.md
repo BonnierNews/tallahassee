@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## Unreleased
+
+- Utilize FormData as payload source when submitting form
+- Fix empty input value submits empty string
+- Start test-app if addressed as main, for testing behaviours - `node app/app.js`
+
 ## 11.20.0
 
 - Add `insertAdjacentElement` method on `Element`
