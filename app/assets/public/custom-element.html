@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <script>
+      class WaitingButton extends HTMLElement {
+        connectedCallback() {
+          if (this.hasAttribute("delay")) {
+            const delay = this.getAttribute("delay");
+            this.style.setProperty("--spinner-delay", delay);
+          }
+          document.addEventListener("submit", this.handleSubmit.bind(this));
+        }
+
+        handleSubmit(event) {
+          if (event.target !== this.closest("form")) {
+            return;
+          }
+
+          const button = event.submitter || document.activeElement;
+          if (button.matches("waiting-button button")) {
+            button.classList.add("btn--waiting");
+            button.setAttribute("aria-busy", "true");
+            button.setAttribute("aria-label", button.textContent.trim());
+          }
+        }
+      }
+
+      if (window.matchMedia("only all and (prefers-reduced-motion: no-preference), only all and (prefers-reduced-motion: reduce)").matches) {
+        window.customElements.define("waiting-button", WaitingButton);
+      }
+    </script>
+  </head>
+  <body>
+    <h2 id="headline">Test custom element</h2>
+    <form>
+      <waiting-button delay="100">
+        <input type="text">
+        <input id="clickmeinput" type="text">
+        <button id="clickme" type="submit">OK</button>
+        <button id="resetme" type="reset">Abort</button>
+      </waiting-button>
+    </form>
+  </body>
+</html>
