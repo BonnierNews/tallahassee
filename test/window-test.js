@@ -341,7 +341,7 @@ describe("Window", () => {
 
       const matchUpdates = [];
       const listener = (event) => matchUpdates.push(event.matches);
-      media.addListener(listener);
+      media.addEventListener("change", listener);
 
       window._resize(400);
       expect(matchUpdates).to.deep.equal([true]);
@@ -352,7 +352,7 @@ describe("Window", () => {
       window._resize(700);
       expect(matchUpdates).to.deep.equal([true, false]);
 
-      media.removeListener(listener);
+      media.removeEventListener("change", listener);
 
       window._resize(400);
       expect(matchUpdates).to.deep.equal([true, false]);

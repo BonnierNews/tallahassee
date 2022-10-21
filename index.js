@@ -51,5 +51,5 @@ Tallahassee.prototype._getWebPage = function getWebPage(headers) {
     requestHeaders["set-cookie"] = undefined;
   }
 
-  return new WebPage(this[kOrigin], this.jar, requestHeaders);
+  return new WebPage(this[kOrigin], this.jar, requestHeaders, this.options);
 };

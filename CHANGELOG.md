@@ -3,6 +3,15 @@ Changelog
 
 ## Unreleased
 
+- implement custom element, i.e. `window.customElements.define(name, `
+- fix submit from click emitting `PointerEvent` picked up by form element and submitted
+- new option for regexp override of `window.matchMedia` mediaQuery
+- add `setProperty` to `CSSStyleDeclaration`
+- add `submitter` property to SubmitEvent
+- fix `target` property of Event
+- fix `currentTarget` property of Event
+- `MediaQueryList` as class extending EventTarget
+
 ## 11.21.0
 
 - Utilize FormData as payload source when submitting form

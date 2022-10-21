@@ -432,14 +432,14 @@ describe("Document", () => {
       expect(document.fullscreenElement).to.eql(headline);
 
       document.exitFullscreen();
-      expect(document.fullscreenElement).to.equal(null);
+      expect(document.fullscreenElement?.tagName).to.not.be.ok;
+      expect(document.fullscreenElement).to.be.null;
     });
 
     it("should emit a fullscreenchange event", () => {
       const headline = document.getElementById("headline");
       headline.requestFullscreen();
       expect(document.fullscreenElement).to.eql(headline);
-
 
       let calledCB = false;
       document.addEventListener("fullscreenchange", () => {
