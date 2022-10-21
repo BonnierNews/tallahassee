@@ -3,6 +3,8 @@ Changelog
 
 ## Unreleased
 
+## 12.0.0
+
 - implement custom element, i.e. `window.customElements.define(name, `
 - fix submit from click emitting `PointerEvent` picked up by form element and submitted
 - new option for regexp override of `window.matchMedia` mediaQuery
