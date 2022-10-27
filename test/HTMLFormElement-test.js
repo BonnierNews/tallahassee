@@ -54,4 +54,8 @@ describe("HTMLFormElement", () => {
 
     expect(form.elements.length).to.equal(8);
   });
+
+  it("toString includes class name", () => {
+    expect(document.forms[0].toString()).to.equal("[object HTMLFormElement]");
+  });
 });
