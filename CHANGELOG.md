@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+- add `required` property to input, select, and textarea
+- fix textarea set value confusion, innerText and innerHTML has nothing to do with textarea value
+- override Element.toString to include class name
+
 ## 12.0.0
 
 - implement custom element, i.e. `window.customElements.define(name, `

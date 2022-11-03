@@ -174,16 +174,18 @@ describe("forms", () => {
     expect(input).to.have.property("value", "line 1\nline 2");
   });
 
-  it("set innerHTML on textarea updates value", () => {
+  it("set innerHTML on textarea keeps value", () => {
     const input = document.getElementsByTagName("textarea")[0];
+    input.value = "foo\nbar";
     input.innerHTML = "&lt;p&gt;A test&lt;/p&gt;";
-    expect(input.value).to.equal("<p>A test</p>");
+    expect(input.value).to.equal("foo\nbar");
   });
 
-  it("set innerText on textarea updates value", () => {
+  it("set innerText on textarea keeps value", () => {
     const input = document.getElementsByTagName("textarea")[0];
+    input.value = "foo\nbar";
     input.innerText = "&lt;p&gt;A test&lt;/p&gt;";
-    expect(input.value).to.equal("&lt;p&gt;A test&lt;/p&gt;");
+    expect(input.value).to.equal("foo\nbar");
   });
 
   it("button can get and set value", () => {
@@ -279,6 +281,32 @@ describe("forms", () => {
     it("button lacks readOnly property", () => {
       const elm = document.getElementsByTagName("button")[0];
       expect(elm).to.not.have.property("readOnly");
+    });
+
+    it("select lacks readOnly property", () => {
+      const elm = document.getElementsByTagName("select")[0];
+      expect("readOnly" in elm).to.be.false;
+    });
+  });
+
+  describe("required", () => {
+    [ "input", "textarea", "select" ].forEach((tagName) => {
+      it(`${tagName} have required property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect("required" in elm, tagName).to.be.true;
+        elm.required = true;
+      });
+    });
+
+    it("h2 lacks required property", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+      expect(elm).to.not.have.property("required");
+    });
+
+    it("button lacks required property", () => {
+      const elm = document.getElementsByTagName("button")[0];
+      expect(elm).to.not.have.property("required");
     });
   });
 
