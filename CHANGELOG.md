@@ -3,6 +3,8 @@ Changelog
 
 ## Unreleased
 
+## 12.1.0
+
 - add `required` property to input, select, and textarea
 - fix textarea set value confusion, innerText and innerHTML has nothing to do with textarea value
 - override Element.toString to include class name
