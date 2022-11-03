@@ -276,7 +276,7 @@ describe("Document", () => {
       const templateElement = document.getElementById("schablon");
       const templateContentClone = document.importNode(templateElement.content, true);
 
-      expect(document.getElementById("insert")).not.to.be.ok;
+      expect(document.getElementById("insert")?.toString(), "inside template should not be visible").to.not.be.ok;
 
       document.getElementById("lazy").appendChild(templateContentClone);
 

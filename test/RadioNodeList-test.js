@@ -39,4 +39,9 @@ describe("RadioNodeList", () => {
     const list = document.forms[0].choosewisely;
     expect(list.value).to.equal("2");
   });
+
+  it("toString() includes class name", () => {
+    const list = document.forms[0].choosewisely;
+    expect(list.toString()).to.equal("[object RadioNodeList]");
+  });
 });
