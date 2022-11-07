@@ -2,7 +2,6 @@
 
 const chai = require("chai");
 
-chai.config.truncateThreshold = 0;
 chai.config.includeStack = true;
 
 const nock = require("nock");

@@ -94,6 +94,15 @@
       <button name="named-button" formaction="https://www.example.com/1">Send name</button>
       <button name="named-button-with-value" value="1" formaction="https://www.example.com/2">Send name and value</button>
     </form>
+    <form id="validate-form" type="get" action="/">
+      <input type="text" name="optional">
+      <input type="number" name="size" min="4" max="5">
+      <input type="text" name="pattern" pattern="[a-z]{4,8}">
+      <input type="text" name="req" required>
+      <input type="text" name="reqsize" required minLength="4" maxlength="5">
+      <input type="email" name="mailme">
+      <button type="submit">Submit</button>
+    </form>
     <img class="lazy-load" data-img-source="/images/tallahassee-1.png">
     <script type="text/javascript" id="explicit-javascript-script">
       (function IIFE() {
