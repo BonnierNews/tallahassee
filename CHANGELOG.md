@@ -3,6 +3,12 @@ Changelog
 
 ## Unreleased
 
+## 13.1.0
+
+- implement form novalidate
+- add submit submitter with name to payload
+- button has default type submit
+
 ## 13.0.0
 
 - `input.validity` is of type `ValidityState`
