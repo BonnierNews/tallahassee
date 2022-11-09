@@ -5,7 +5,7 @@ Changelog
 
 ## 13.0.0
 
-- `input.validate` is of type ValidationState
+- `input.validity` is of type ValidationState
 - `<input name="foo" required oninput="setCustomValidity('')" oninvalid="setCustomValidity('Required')">` now executes attribute event handlers
 
 ## 12.1.0
