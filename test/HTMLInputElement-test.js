@@ -296,4 +296,42 @@ describe("HTMLInputElement", () => {
       expect(submitted).to.be.true;
     });
   });
+
+  describe("element attribute event handler", () => {
+    it("syntax error in attribute event handler throws", () => {
+      const doc = new Document({
+        text: `
+          <html>
+            <body>
+              <form id="custom">
+                <input name="foo" required oninvalid="setCustomValidity('Required'">
+                <input id="submit-form" type="submit">
+              </form>
+            </body>
+          </html>`
+      });
+
+      expect(() => {
+        doc.getElementById("submit-form").click();
+      }).to.throw(SyntaxError);
+    });
+
+    it("undefined function in attribute event handler throws", () => {
+      const doc = new Document({
+        text: `
+          <html>
+            <body>
+              <form id="custom">
+                <input name="foo" required oninvalid="setcustomvalidity('Required')">
+                <input id="submit-form" type="submit">
+              </form>
+            </body>
+          </html>`
+      });
+
+      expect(() => {
+        doc.getElementById("submit-form").click();
+      }).to.throw(ReferenceError);
+    });
+  });
 });
