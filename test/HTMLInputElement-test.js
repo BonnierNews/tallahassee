@@ -200,6 +200,50 @@ describe("HTMLInputElement", () => {
       expect(validity).to.have.property("tooShort", false);
       expect(validity).to.have.property("tooLong", true);
     });
+
+    it("type mail requires x@y", () => {
+      const form = document.forms[0];
+      const input = form.mailme;
+      const validity = input.validity;
+
+      input.required = true;
+      expect(validity, "required").to.have.property("valueMissing", true);
+      expect(validity, "required typeMismatch").to.have.property("typeMismatch", false);
+
+      input.required = false;
+      expect(validity, "optional").to.have.property("valueMissing", false);
+      expect(validity, "optional typeMismatch").to.have.property("typeMismatch", false);
+
+      input.value = "x@y";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", false);
+
+      input.value = "x@y@z";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", true);
+
+      input.value = "xy";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", true);
+
+      input.value = "jan.bananberg@expressen.se";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", false);
+
+      input.value = "jan.bananberg@expressen.se\n";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", true);
+
+      input.value = "\r\njan.bananberg@expressen.se";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", true);
+    });
   });
 
   describe("custom validation", () => {

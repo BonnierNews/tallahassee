@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 13.1.1
+
+- fix "valid" email pattern, allow proper email to pass, and some strange ones like `.@.` which is apparently accepted by Chrome
+
 ## 13.1.0
 
 - implement form novalidate
