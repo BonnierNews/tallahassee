@@ -3,6 +3,12 @@ Changelog
 
 ## Unreleased
 
+## 13.1.2
+
+- implement HTMLInputElement willValidate property
+- implement checkbox validation
+- as well as radio input, where only one input may be required
+
 ## 13.1.1
 
 - fix "valid" email pattern, allow proper email to pass, and some strange ones like `.@.` which is apparently accepted by Chrome

@@ -17,7 +17,13 @@ describe("HTMLInputElement", () => {
                 <input type="text" name="req" required>
                 <input type="text" name="reqsize" required minlength="4" maxlength="5">
                 <input type="email" name="mailme">
+                <input type="url" name="uri">
                 <input type="number" name="step" step="2">
+                <input type="checkbox" name="agree" value="true">
+                <label for="interests">Intressant</label>
+                <input type="radio" name="interests" value="sports">
+                <input type="radio" name="interests" value="food">
+                <input type="hidden" name="hide" required>
                 <button type="submit">Submit</button>
               </form>
             </body>
@@ -174,6 +180,62 @@ describe("HTMLInputElement", () => {
       expect(validity).to.have.property("valid", true);
     });
 
+    it("required type checkbox reports value missing if not checked", () => {
+      const form = document.forms[0];
+      form.agree.required = true;
+      const validity = form.agree.validity;
+
+      expect(validity).to.have.property("valueMissing", true);
+      expect(validity).to.have.property("valid", false);
+
+      form.agree.click();
+
+      expect(validity).to.have.property("valueMissing", false);
+      expect(validity).to.have.property("valid", true);
+
+      form.agree.click();
+
+      expect(validity).to.have.property("valueMissing", true);
+      expect(validity).to.have.property("valid", false);
+    });
+
+    it("required type radio reports value missing if not checked", () => {
+      const form = document.forms[0];
+      const list = form.interests;
+      const validityOption0 = list[0].validity;
+      const validityOption1 = list[1].validity;
+
+      expect(validityOption0, "option 1 valueMissing").to.have.property("valueMissing", false);
+      expect(validityOption0, "option 1 valid").to.have.property("valid", true);
+
+      expect(validityOption1, "option 2 valueMissing").to.have.property("valueMissing", false);
+      expect(validityOption1, "option 2 valid").to.have.property("valid", true);
+
+      list[0].required = true;
+
+      expect(validityOption0, "option 1 valueMissing").to.have.property("valueMissing", true);
+      expect(validityOption1, "option 2 valueMissing").to.have.property("valueMissing", true);
+
+      list[0].checked = true;
+
+      expect(validityOption0, "option 1 valueMissing").to.have.property("valueMissing", false);
+      expect(validityOption0, "option 1 valid").to.have.property("valid", true);
+      expect(validityOption1, "option 2 valueMissing").to.have.property("valueMissing", false);
+      expect(validityOption1, "option 2 valid").to.have.property("valid", true);
+
+      list[0].checked = false;
+      list[0].required = false;
+      list[1].required = true;
+
+      expect(validityOption0, "option 1 valueMissing").to.have.property("valueMissing", true);
+      expect(validityOption1, "option 2 valueMissing").to.have.property("valueMissing", true);
+
+      list[1].checked = true;
+
+      expect(validityOption0, "option 1 valid").to.have.property("valid", true);
+      expect(validityOption1, "option 2 valid").to.have.property("valid", true);
+    });
+
     it("minlength and maxlength triggers validation", () => {
       const form = document.forms[0];
       const input = form.reqsize;
@@ -243,6 +305,61 @@ describe("HTMLInputElement", () => {
 
       expect(validity, input.value).to.have.property("valueMissing", false);
       expect(validity, input.value).to.have.property("typeMismatch", true);
+    });
+
+    it("type url requires URL", () => {
+      const form = document.forms[0];
+      const input = form.uri;
+      const validity = input.validity;
+
+      input.required = true;
+      expect(validity, "required").to.have.property("valueMissing", true);
+      expect(validity, "required typeMismatch").to.have.property("typeMismatch", false);
+
+      input.required = false;
+      expect(validity, "optional").to.have.property("valueMissing", false);
+      expect(validity, "optional typeMismatch").to.have.property("typeMismatch", false);
+
+      input.value = "http://me";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", false);
+
+      input.value = "x@y@z";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", true);
+
+      input.value = "xy";
+
+      expect(validity, input.value).to.have.property("valueMissing", false);
+      expect(validity, input.value).to.have.property("typeMismatch", true);
+
+      input.value = "https://expressen.se";
+
+      expect(validity, input.value).to.have.property("typeMismatch", false);
+    });
+
+    describe("willValidate", () => {
+      it("returns false if hidden, readOnly, or disabled", () => {
+        const form = document.forms[0];
+        form.size.readOnly = true;
+        expect(form.size).to.have.property("willValidate", false);
+        expect(form.hide).to.have.property("willValidate", false);
+
+        form.pattern.disabled = true;
+        expect(form.pattern).to.have.property("willValidate", false);
+      });
+
+      it("returns true otherwise", () => {
+        const form = document.forms[0];
+        expect(form.size).to.have.property("willValidate", true);
+        expect(form.req).to.have.property("willValidate", true);
+        expect(form.reqsize).to.have.property("willValidate", true);
+        expect(form.step).to.have.property("willValidate", true);
+        expect(form.pattern).to.have.property("willValidate", true);
+        expect(form.uri).to.have.property("willValidate", true);
+      });
     });
   });
 

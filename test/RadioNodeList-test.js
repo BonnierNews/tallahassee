@@ -10,6 +10,7 @@ describe("RadioNodeList", () => {
         <html>
           <body>
             <form>
+              <input type="checkbox" name="agree" checked>
               <input type="radio" name="choosewisely" value="1">
               <input type="radio" name="choosewisely" value="2" checked="checked">
               <input type="radio" name="choosewisely" value="3">
@@ -38,6 +39,21 @@ describe("RadioNodeList", () => {
   it("holds value of the selected radio button", () => {
     const list = document.forms[0].choosewisely;
     expect(list.value).to.equal("2");
+
+    list[0].checked = true;
+    expect(list.value).to.equal("1");
+
+    list[2].checked = true;
+    expect(list.value).to.equal("3");
+  });
+
+  it("holds no value if no checked radio button", () => {
+    const form = document.forms[0];
+    const list = form.choosewisely;
+    list[0].checked = false;
+    list[1].checked = false;
+    list[2].checked = false;
+    expect(list.value).to.equal("");
   });
 
   it("toString() includes class name", () => {
