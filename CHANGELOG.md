@@ -3,7 +3,7 @@ Changelog
 
 ## Unreleased
 
-## 13.1.2
+## 13.2.0
 
 - implement HTMLInputElement willValidate property
 - implement checkbox validation
