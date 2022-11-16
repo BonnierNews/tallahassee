@@ -495,4 +495,56 @@ describe("HTMLInputElement", () => {
       }).to.throw(ReferenceError);
     });
   });
+
+  describe("radio", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html><body>
+            <form class="poll" data-uid="uid-1">
+              <h3 class="poll__title">Is this a poll?</h3>
+              <div class="poll__questionnaire">
+                <label class="poll__label" for="67d01d_0">
+                  <input id="67d01d_0" type="radio" name="answerUid" value="answer-id-1">
+                  <span>First alternative</span>
+                </label>
+                <label class="poll__label" for="67d01d_1">
+                  <input id="67d01d_1" type="radio" name="answerUid" value="answer-id-2">
+                  <span>Second alternative</span>
+                </label>
+                <label class="poll__label" for="67d01d_2">
+                  <input id="67d01d_2" type="radio" name="answerUid" value="answer-id-3">
+                  <span>Third alternative</span>
+                </label>
+              </div>
+              <div class="poll__buttons">
+                <button class="button button--inverted poll__show-result">Visa resultat</button>
+                <button type="submit" class="button poll__vote">Rösta</button>
+              </div>
+              <div class="poll__result-container hidden">
+                <ul class="poll__results"></ul>
+                <button class="button poll__back-to-poll" type="button">Gå tillbaka till frågan</button>
+                <span class="poll__submit-message">Omröstningen är tänkt att ge en bild av vad läsarna på
+                  Expressen.se tycker. Resultatet behöver inte vara representativt för alla och bör tolkas med försiktighet. Tack
+                  för ditt svar.</span>
+              </div>
+            </form>
+        </body></html>`
+      });
+    });
+
+    it("submits form without any selection", () => {
+      const form = document.forms[0];
+      const submit = form.getElementsByTagName("button")[1];
+      submit.click();
+    });
+
+    it("submits form with a selection", () => {
+      const form = document.forms[0];
+      form.getElementsByTagName("input")[1].click();
+      const submit = form.getElementsByTagName("button")[1];
+      submit.click();
+    });
+  });
 });

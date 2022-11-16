@@ -3,6 +3,11 @@ Changelog
 
 ## Unreleased
 
+## 13.2.1
+
+- add `window`, and consequently `document`, to attribute eventhandlers execution scope
+- fix NodeList is not iterable by for-loops in some node versions, maybe...
+
 ## 13.2.0
 
 - implement HTMLInputElement willValidate property
