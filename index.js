@@ -22,9 +22,9 @@ function Tallahassee(...args) {
   this.options = options;
 }
 
-Tallahassee.prototype.navigateTo = async function navigateTo(linkUrl, headers = {}, statusCode = 200) {
+Tallahassee.prototype.navigateTo = async function navigateTo(uri, headers = {}, statusCode = 200) {
   const webPage = this._getWebPage(headers);
-  return webPage.navigateTo(linkUrl, webPage.originRequestHeaders, statusCode);
+  return webPage.navigateTo(uri, webPage.isOriginUrl(uri) && webPage.originRequestHeaders, statusCode);
 };
 
 Tallahassee.prototype.load = function load(markup) {
@@ -48,7 +48,7 @@ Tallahassee.prototype._getWebPage = function getWebPage(headers) {
       const cookie = new Cookie(cookieStr);
       this.jar.setCookie(cookie.toString());
     }
-    requestHeaders["set-cookie"] = undefined;
+    delete requestHeaders["set-cookie"];
   }
 
   return new WebPage(this[kOrigin], this.jar, requestHeaders, this.options);

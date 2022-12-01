@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "13.2.1",
+  "version": "13.2.2",
   "description": "Lightweight client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@bonniernews/wichita": "^1.1.0",
     "chai": "^4.3.7",
-    "eslint": "^8.27.0",
+    "eslint": "^8.28.0",
     "express": "^4.18.2",
     "markdown-toc": "^1.2.0",
     "mocha": "^10.1.0",
