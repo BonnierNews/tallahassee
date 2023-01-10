@@ -1682,6 +1682,13 @@ describe("elements", () => {
       expect(el.dataset.json).to.equal("{\"var\":1}");
     });
 
+    it("should be case insensitive", () => {
+      const targetElement = document.getElementsByClassName("div-1")[0];
+      targetElement.insertAdjacentHTML("bEfOreBeGiN", "<p class='p-1'>Blahonga</p>");
+
+      expect(targetElement.previousElementSibling.classList.contains("p-1")).to.be.true;
+    });
+
     it("should throw if the position is wrong", () => {
       const targetElement = document.getElementsByClassName("div-1")[0];
       expect(() => {
