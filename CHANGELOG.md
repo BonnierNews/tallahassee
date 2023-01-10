@@ -3,6 +3,11 @@ Changelog
 
 ## Unreleased
 
+## 13.3.0
+
+- added `popstate` event to be fired
+- `insertAdjacentHTML` position is now case-insensitive
+
 ## 13.2.1
 
 - add `window`, and consequently `document`, to attribute eventhandlers execution scope
