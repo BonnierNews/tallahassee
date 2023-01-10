@@ -28,7 +28,6 @@
     "url": "git://github.com/BonnierNews/tallahassee.git"
   },
   "dependencies": {
-    "cheerio": "1.0.0-rc.3",
     "domexception": "^4.0.0",
     "jsdom": "^20.0.0",
     "node-fetch": "^2.6.7"
