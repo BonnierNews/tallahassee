@@ -69,6 +69,13 @@ describe("Window", () => {
       expect(window.history).to.have.property("pushState").that.is.a("function");
     });
 
+    it("history has state property", () => {
+      expect(window.history.state).to.eql({
+        as: "/nyheter/article-slug/",
+        idx: 0,
+      });
+    });
+
     it("pushState() sets new location and adds the location to history state", () => {
       window.history.pushState(null, null, "/?a=1");
 
@@ -163,6 +170,62 @@ describe("Window", () => {
       expect(window.location).to.have.property("pathname", "/nyheter/article-slug-3/");
     });
 
+    describe("events", () => {
+      const url1 = "/nyheter/test-1/";
+      const url2 = "/nyheter/test-2/";
+      const url3 = "/nyheter/test-3/";
+
+      let events, state;
+
+      function popStateListener(e) {
+        events++;
+        state = e.state;
+      }
+      beforeEach(() => {
+        events = 0;
+        state = null;
+        window.history.replaceState({ page: 1 }, "", url1);
+      });
+
+      it("should fire 'popstate' event when stepping backwards (when state has changed)", () => {
+        window.addEventListener("popstate", popStateListener);
+
+        window.history.go(-1);
+        expect(window.location.pathname).to.equal(url1);
+        expect(events).to.equal(0);
+
+        window.history.pushState({ page: 2 }, "", url2);
+        window.history.pushState({ page: 2 }, "", url3);
+        window.history.go(-1);
+        expect(events).to.equal(0);
+
+        window.history.go(-1);
+        expect(events).to.equal(1);
+        expect(state).to.eql({ page: 1 });
+      });
+
+      it("should fire 'popstate' event when stepping forward (when state has changed)", () => {
+        window.addEventListener("popstate", popStateListener);
+
+        window.history.go(1);
+        expect(window.location.pathname).to.equal(url1);
+        expect(events).to.equal(0);
+
+        // setup for navigating forward...
+        window.removeEventListener("popstate", popStateListener);
+        window.history.pushState({ page: 1 }, "", url2);
+        window.history.pushState({ page: 2 }, "", url3);
+        window.history.go(-2);
+
+        window.addEventListener("popstate", popStateListener);
+        window.history.go(1);
+        expect(events).to.equal(0);
+
+        window.history.go(1);
+        expect(events).to.equal(1);
+        expect(state).to.eql({ page: 2 });
+      });
+    });
   });
 
   describe("requestAnimationFrame", () => {
