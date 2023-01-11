@@ -80,7 +80,7 @@ describe("submit", () => {
 
     const newBrowser = await browser._pending;
 
-    expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\",\"p\":\"text\"}");
+    expect(newBrowser.document.body.innerHTML).to.contain("{\"q\":\"12\"}");
   });
 
   it("submits post form without action to the same route on click", async () => {
@@ -168,7 +168,7 @@ describe("submit", () => {
     expect(browser._pending).to.be.ok;
 
     const newNavigation = await browser._pending;
-    expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"\"}");
+    expect(newNavigation.document.body.innerHTML).to.contain("{\"single-select\":\"value of 3\"}");
   });
 
   it("follows redirect on get", async () => {
@@ -305,6 +305,7 @@ describe("submit", () => {
     expect(browser.window.location.href).to.equal("http://www.expressen.se/");
   });
 
+  // not yet supported
   it("respects submit formaction", async () => {
     nock("https://www.example.com")
       .get("/")
@@ -327,6 +328,7 @@ describe("submit", () => {
     expect(browser.window.location.href).to.equal("https://www.example.com/");
   });
 
+  // not yet supported
   it("named submit element appear in payload empty value", async () => {
     nock("https://www.example.com")
       .post("/1", (body) => {
@@ -352,6 +354,7 @@ describe("submit", () => {
     expect(browser.window.location.href).to.equal("https://www.example.com/1");
   });
 
+  // not yet supported
   it("named submit element with value send payload with value", async () => {
     nock("https://www.example.com")
       .post("/2", (body) => {

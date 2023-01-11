@@ -6,8 +6,10 @@ const url = require("url");
 const BrowserTab = require("./lib/BrowserTab");
 const Origin = require("./lib/Origin");
 const {version} = require("./package.json");
-const {CookieAccessInfo, CookieJar, Cookie} = require("cookiejar");
+const {toughCookie} = require("jsdom");
 const {normalizeHeaders, getLocationHost} = require("./lib/getHeaders");
+
+const {CookieJar, Cookie} = toughCookie;
 
 module.exports = Tallahassee;
 
@@ -29,12 +31,10 @@ class WebPage {
     if (requestHeaders["user-agent"]) this.userAgent = requestHeaders["user-agent"];
 
     if (requestHeaders.cookie) {
-      const publicHost = getLocationHost(requestHeaders);
-      const parsedUri = url.parse(uri);
-      const cookieDomain = parsedUri.hostname || publicHost || this.originHost || "127.0.0.1";
-      const isSecure = (parsedUri.protocol || this.protocol) === "https:";
-
-      this.jar.setCookies(requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean), cookieDomain, "/", isSecure);
+      const cookies = requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean).map(Cookie.parse);
+      cookies.forEach((cookie) => {
+        this.jar.setCookieSync(cookie, getCookieDomain(cookie, this, requestHeaders, uri));
+      });
     }
 
     const resp = await this.fetch(uri, {
@@ -44,18 +44,18 @@ class WebPage {
     assert.equal(resp.status, statusCode, `Unexepected status code. Expected: ${statusCode}. Actual: ${resp.statusCode}`);
     assert(resp.headers.get("content-type").match(/text\/html/i), `Unexepected content type. Expected: text/html. Actual: ${resp.headers["content-type"]}`);
     const browser = new BrowserTab(this, resp);
+
     return browser.load();
   }
   load(resp) {
     const requestHeaders = this.originRequestHeaders;
     if (requestHeaders["user-agent"]) this.userAgent = requestHeaders["user-agent"];
 
-    const publicHost = getLocationHost(requestHeaders);
-    const cookieDomain = publicHost || this.originHost || "127.0.0.1";
-
     if (requestHeaders.cookie) {
-      const isSecure = this.protocol === "https:";
-      this.jar.setCookies(requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean), cookieDomain, "/", isSecure);
+      const cookies = requestHeaders.cookie.split(";").map((c) => c.trim()).filter(Boolean).map(Cookie.parse);
+      cookies.forEach((cookie) => {
+        this.jar.setCookieSync(cookie, getCookieDomain(cookie, this, requestHeaders));
+      });
     }
 
     const browser = new BrowserTab(this, resp);
@@ -79,10 +79,10 @@ class WebPage {
 
     if (setCookieHeader) {
       for (const cookieStr of setCookieHeader) {
-        const cookie = new Cookie(cookieStr);
+        const cookie = Cookie.parse(cookieStr);
         if (!cookie.explicit_path) cookie.path = resUrl.pathname;
         if (!cookie.domain) cookie.domain = resUrl.hostname;
-        this.jar.setCookie(cookie.toString());
+        this.jar.setCookieSync(cookie, getCookieDomain(cookie, this));
       }
     }
 
@@ -142,11 +142,21 @@ class WebPage {
     }
 
     const publicHost = getLocationHost(headers);
-    const cookieDomain = parsedUri.hostname || publicHost || this.originHost || "127.0.0.1";
-    const isSecure = (parsedUri.protocol || this.protocol) === "https:";
-    const accessInfo = CookieAccessInfo(cookieDomain, parsedUri.pathname, isSecure);
+    let cookieDomain = parsedUri.hostname
+      ? `${parsedUri.protocol}//${parsedUri.hostname}`
+      : publicHost || this.originHost || "127.0.0.1";
 
-    const cookieValue = this.jar.getCookies(accessInfo).toValueString();
+    if (!cookieDomain.startsWith("http")) {
+      const key = Object.keys(requestOptions.headers).find((header) => {
+        return header.toLowerCase() === "x-forwarded-proto";
+      });
+      const protocol = requestOptions.headers[key]
+        ? requestOptions.headers[key]
+        : "http";
+      cookieDomain = `${protocol}://${cookieDomain}`;
+    }
+
+    const cookieValue = this.jar.getCookieStringSync(cookieDomain, {allPaths: true});
     if (cookieValue) headers.cookie = cookieValue;
 
     try {
@@ -184,7 +194,7 @@ function Tallahassee(...args) {
   }
   if (!(this instanceof Tallahassee)) return new Tallahassee(origin, options);
   this[kOrigin] = origin;
-  this.jar = new CookieJar();
+  this.jar = new CookieJar(null, {looseMode: true, allowSpecialUseDomain: true});
   this.options = options;
 }
 
@@ -211,11 +221,20 @@ Tallahassee.prototype._getWebPage = function getWebPage(headers) {
   const setCookieHeader = requestHeaders["set-cookie"];
   if (setCookieHeader) {
     for (const cookieStr of Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader]) {
-      const cookie = new Cookie(cookieStr);
-      this.jar.setCookie(cookie.toString());
+      const cookie = Cookie.parse(cookieStr);
+      this.jar.setCookieSync(cookie, getCookieDomain(cookie, this));
     }
     requestHeaders["set-cookie"] = undefined;
   }
 
   return new WebPage(this[kOrigin], this.jar, requestHeaders);
 };
+
+function getCookieDomain(cookie, browserTab, requestHeaders, uri = "") {
+  const publicHost = getLocationHost(requestHeaders);
+  const parsedUri = url.parse(uri);
+  const cookieDomain = parsedUri.hostname || publicHost || browserTab.originHost || "127.0.0.1";
+
+  const protocol = cookie.isSecure ? "https" : "http";
+  return `${protocol}://${cookie.domain || cookieDomain}`;
+}

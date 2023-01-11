@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "domexception": "^4.0.0",
-    "jsdom": "^20.0.0",
+    "jsdom": "^21.0.0",
     "node-fetch": "^2.6.7"
   },
   "devDependencies": {

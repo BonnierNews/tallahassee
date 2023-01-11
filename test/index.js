@@ -45,8 +45,8 @@ describe("Tallahassee", () => {
     });
 
     it("passes along cookies", async () => {
-      const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
+      const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla; mySecondCookie=chocolateChip" });
+      expect(browser.window.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("returns browser with navigateTo capability that returns new browser with preserved cookie", async () => {
@@ -54,7 +54,7 @@ describe("Tallahassee", () => {
 
       const newBrowser = await browser.navigateTo("/reply-with-cookies");
 
-      expect(newBrowser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
+      expect(newBrowser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("follows redirects", async () => {
@@ -70,7 +70,7 @@ describe("Tallahassee", () => {
         "x-forwarded-proto": "https"
       });
       expect(browser.response).to.be.ok;
-      const reqInfo = JSON.parse(browser.$("body").text());
+      const reqInfo = JSON.parse(browser.document.body.textContent);
       expect(reqInfo.reqHeaders).to.have.property("host", "www.expressen.se");
       expect(reqInfo.reqHeaders).to.have.property("x-forwarded-proto", "https");
     });
@@ -86,7 +86,7 @@ describe("Tallahassee", () => {
         "x-forwarded-proto": "https"
       });
       expect(browser.response).to.be.ok;
-      const reqInfo = JSON.parse(browser.$("body").text());
+      const reqInfo = JSON.parse(browser.document.body.textContent);
       expect(reqInfo.reqHeaders).to.have.property("host", "www.expressen.se");
       expect(reqInfo.reqHeaders).to.have.property("x-forwarded-proto", "https");
     });
@@ -142,7 +142,7 @@ describe("Tallahassee", () => {
         host: "www.expressen.se",
         cookie: "myCookie=singoalla;mySecondCookie=chocolateChip",
       });
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
+      expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.host is specified", async () => {
@@ -151,7 +151,7 @@ describe("Tallahassee", () => {
           host: "www.expressen.se",
         }
       }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
+      expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.x-forwarded-host is specified", async () => {
@@ -161,7 +161,7 @@ describe("Tallahassee", () => {
           "x-forwarded-host": "www.expressen.se",
         }
       }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla; mySecondCookie=chocolateChip"});
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
+      expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.x-forwarded-host is specified", async () => {
@@ -171,7 +171,7 @@ describe("Tallahassee", () => {
           "x-forwarded-host": "www.expressen.se",
         }
       }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla; mySecondCookie=chocolateChip"});
-      expect(browser.$("body").text()).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
+      expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
   });
 
@@ -264,11 +264,6 @@ describe("Tallahassee", () => {
   });
 
   describe("document", () => {
-    it("expose current window on document", async () => {
-      const browser = await Browser(app).navigateTo("/");
-      expect(browser.document).to.have.property("_window").that.equal(browser.window);
-    });
-
     it("doesn't expose classList on document", async () => {
       const browser = await Browser(app).navigateTo("/");
       expect(browser.document.classList, "classList on document").to.be.undefined;
@@ -311,7 +306,7 @@ describe("Tallahassee", () => {
         referer: "https://www.example.com"
       });
 
-      expect(browser.document).to.have.property("referrer", "https://www.example.com");
+      expect(browser.document.referrer).to.equal("https://www.example.com/");
     });
   });
 
@@ -373,12 +368,12 @@ describe("Tallahassee", () => {
     it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
       const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
 
-      const element = browser.document.createElement("iframe");
+      const element = browser.window.document.createElement("iframe");
       element.id = "friendly-frame";
       element.src = "/friendly/";
-      browser.document.body.appendChild(element);
+      browser.window.document.body.appendChild(element);
 
-      const iframe = browser.document.getElementById("friendly-frame");
+      const iframe = browser.window.document.getElementById("friendly-frame");
       const iframeScope = await browser.focusIframe(iframe);
 
       expect(iframeScope.window === browser.window, "scoped window").to.be.false;
@@ -401,7 +396,7 @@ describe("Tallahassee", () => {
 
       const element = browser.document.createElement("iframe");
       element.id = "iframe";
-      element.src = "//example.com/framed-content";
+      element.src = "http://example.com/framed-content";
       browser.document.body.appendChild(element);
 
       const iframe = browser.document.getElementById("iframe");
@@ -421,7 +416,7 @@ describe("Tallahassee", () => {
   describe("non 200 response", () => {
     it("can override expected status code", async () => {
       const browser = await Browser(app).navigateTo("/404", null, 404);
-      expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
+      expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
     });
 
   });

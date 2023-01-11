@@ -26,7 +26,7 @@ describe("IntersectionObserver", () => {
     });
     browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    const lazyLoadElements = browser.document.getElementsByClassName("lazy-load");
+    const lazyLoadElements = browser.window.document.getElementsByClassName("lazy-load");
 
     expect(lazyLoadElements.length).to.equal(1);
 
@@ -37,7 +37,7 @@ describe("IntersectionObserver", () => {
     });
 
     const lazyLoadElement = lazyLoadElements[0];
-    browser.scrollToTopOfElement(lazyLoadElement);
+    await browser.scrollToTopOfElement(lazyLoadElement);
     expect(lazyLoadElement.classList.contains("lazy-load")).to.be.false;
 
     expect(browser.document.getElementsByTagName("img")[1].src).to.be.ok;
@@ -102,7 +102,7 @@ describe("IntersectionObserver", () => {
 
   it("calls viewPortUpdate with correct element when scrolling", async () => {
     const browser = await Browser(app).navigateTo("/");
-    browser.window._resize(1024, 768);
+    browser._resize(1024, 768);
     const [element1] = browser.document.getElementsByClassName("observer-test-1");
     const [element2] = browser.document.getElementsByClassName("observer-test-2");
 
@@ -160,7 +160,7 @@ describe("IntersectionObserver", () => {
 
   it("clears targets on disconnect", async () => {
     const browser = await Browser(app).navigateTo("/");
-    browser.window._resize(1024, 100);
+    browser._resize(1024, 100);
     const [element1] = browser.document.getElementsByClassName("observer-test-1");
     const [element2] = browser.document.getElementsByClassName("observer-test-2");
 

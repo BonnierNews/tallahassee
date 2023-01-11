@@ -36,6 +36,10 @@ app.get("/reply-with-cookies", (req, res) => {
   res.send(`<html><body>${req.headers.cookie || ""}</body></html>`);
 });
 
+app.get("/friendly/", (req, res) => {
+  res.send("<html><body></body></html>");
+});
+
 app.get("/redirect", (req, res) => {
   res.redirect("/req-info-html");
 });
