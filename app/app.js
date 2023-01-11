@@ -69,6 +69,14 @@ app.use(errorHandler);
 
 module.exports = app;
 
+if (require.main === module) {
+  const port = Number(process.env.PORT) || 3000;
+  const server = app.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log("listening on port %d", server.address().port);
+  });
+}
+
 function errorHandler(err, req, res, next) {
   if (!err) return next();
   console.error("errorHandler:", err); // eslint-disable-line no-console

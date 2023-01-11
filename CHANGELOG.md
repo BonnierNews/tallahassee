@@ -1,6 +1,75 @@
 Changelog
 =========
 
+## Unreleased
+
+## 13.3.0
+
+- added `popstate` event to be fired
+- `insertAdjacentHTML` position is now case-insensitive
+
+## 13.2.1
+
+- add `window`, and consequently `document`, to attribute eventhandlers execution scope
+- fix NodeList is not iterable by for-loops in some node versions, maybe...
+
+## 13.2.0
+
+- implement HTMLInputElement willValidate property
+- implement checkbox validation
+- as well as radio input, where only one input may be required
+
+## 13.1.1
+
+- fix "valid" email pattern, allow proper email to pass, and some strange ones like `.@.` which is apparently accepted by Chrome
+
+## 13.1.0
+
+- implement form novalidate
+- add submit submitter with name to payload
+- button has default type submit
+
+## 13.0.0
+
+- `input.validity` is of type `ValidityState`
+- `<input name="foo" required oninput="setCustomValidity('')" oninvalid="setCustomValidity('Required')">` now executes attribute event handlers
+
+## 12.1.0
+
+- add `required` property to input, select, and textarea
+- fix textarea set value confusion, innerText and innerHTML has nothing to do with textarea value
+- override Element.toString to include class name
+
+## 12.0.0
+
+- implement custom element, i.e. `window.customElements.define(name, `
+- fix submit from click emitting `PointerEvent` picked up by form element and submitted
+- new option for regexp override of `window.matchMedia` mediaQuery
+- add `setProperty` to `CSSStyleDeclaration`
+- add `submitter` property to SubmitEvent
+- fix `target` property of Event
+- fix `currentTarget` property of Event
+- `MediaQueryList` as class extending EventTarget
+
+## 11.21.0
+
+- Utilize FormData as payload source when submitting form
+- Fix empty input value submits empty string
+- Fix FormData behaviour
+- Start test-app if addressed as main, for testing behaviours - `node app/app.js`
+
+## 11.20.0
+
+- Add `insertAdjacentElement` method on `Element`
+
+## 11.19.0
+
+- `removeAttribute` triggers attribute change
+
+## 11.18.0
+
+- Expose `lib/WebPage` to facilitate request override
+
 ## 11.17.0
 
 - add support for `dialog` element

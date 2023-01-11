@@ -1,5 +1,5 @@
 <!-- version -->
-# 11.17.0 API Reference
+# 13.3.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -33,6 +33,8 @@ Create new instance of Tallahasse.
     - `host`: host when navigating to origin. Set cookies will use host to set explicit domain if missing
     - `x-forwarded-host`: overrides, or acts as, `host`
     - `x-forwarded-proto`: origin protocol
+  - `matchMedia`: Window matchMedia RegExp pattern, if no match then default behaviour is executed
+  - `console`: pass console instance directly to Window context
 
 ## `navigateTo(route[, headers, expectedStatusCode])`
 
