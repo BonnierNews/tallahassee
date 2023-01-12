@@ -227,7 +227,7 @@ describe("HTMLCollection", () => {
       document.body.appendChild(elm);
 
       expect(elements.length).to.equal(2);
-      expect(elements[1].innerText).to.equal("my new elm");
+      expect(elements[1].textContent).to.equal("my new elm");
     });
 
     it("updates empty list if node is inserted that match selector", () => {
@@ -240,7 +240,7 @@ describe("HTMLCollection", () => {
       document.body.appendChild(elm);
 
       expect(elements.length).to.equal(1);
-      expect(elements[0].innerText).to.equal("my new elm");
+      expect(elements[0].textContent).to.equal("my new elm");
     });
   });
 
