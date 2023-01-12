@@ -43,8 +43,8 @@ describe("HTMLInputElement", () => {
       button.click();
       expect(submitted).to.equal(false);
 
-      form.req.value = "test";
-      form.reqsize.value = "test";
+      form.elements.req.value = "test";
+      form.elements.reqsize.value = "test";
       button.click();
       expect(submitted).to.equal(true);
     });
@@ -53,15 +53,15 @@ describe("HTMLInputElement", () => {
       const form = document.forms[0];
       expect(form.reportValidity()).to.equal(false);
 
-      form.req.value = "test";
+      form.elements.req.value = "test";
       expect(form.reportValidity()).to.equal(false);
 
-      form.reqsize.value = "test";
+      form.elements.reqsize.value = "test";
       expect(form.reportValidity()).to.equal(true);
     });
 
     it("should get validity on element", () => {
-      const el = document.forms[0].req;
+      const el = document.forms[0].elements.req;
       expect(el.reportValidity()).to.equal(false);
 
       el.value = "test";
@@ -69,7 +69,7 @@ describe("HTMLInputElement", () => {
     });
 
     it("should get validity on optional element with min and max", () => {
-      const el = document.forms[0].size;
+      const el = document.forms[0].elements.size;
       expect(el.reportValidity()).to.equal(true);
 
       el.value = 10;
@@ -86,7 +86,7 @@ describe("HTMLInputElement", () => {
     });
 
     it("should get validity on number element with step", () => {
-      const el = document.forms[0].step;
+      const el = document.forms[0].elements.step;
       expect(el.reportValidity()).to.equal(true);
 
       el.value = 10;
@@ -103,7 +103,7 @@ describe("HTMLInputElement", () => {
     });
 
     it("should get validity on optional element with pattern", () => {
-      const el = document.forms[0].pattern;
+      const el = document.forms[0].elements.pattern;
       expect(el.reportValidity()).to.equal(true);
 
       el.value = "foo";
@@ -117,7 +117,7 @@ describe("HTMLInputElement", () => {
     });
 
     it("element should fire 'invalid' event for all elements if validation fails", () => {
-      const {req, reqsize} = document.forms[0];
+      const {req, reqsize} = document.forms[0].elements;
       const button = document.getElementsByTagName("button")[0];
 
       let reqFired = 0;
@@ -142,17 +142,17 @@ describe("HTMLInputElement", () => {
 
     it("type email reports type mismatch if no @ in value", () => {
       const form = document.forms[0];
-      const validity = form.mailme.validity;
+      const validity = form.elements.mailme.validity;
 
       expect(validity).to.have.property("typeMismatch", false);
       expect(validity).to.have.property("valid", true);
 
-      form.mailme.value = "bar";
+      form.elements.mailme.value = "bar";
 
       expect(validity).to.have.property("typeMismatch", true);
       expect(validity).to.have.property("valid", false);
 
-      form.mailme.value = "foo@bar";
+      form.elements.mailme.value = "foo@bar";
 
       expect(validity).to.have.property("typeMismatch", false);
       expect(validity).to.have.property("valid", true);
@@ -160,20 +160,20 @@ describe("HTMLInputElement", () => {
 
     it("required type email reports type mismatch if no @ in value", () => {
       const form = document.forms[0];
-      form.mailme.required = true;
-      const validity = form.mailme.validity;
+      form.elements.mailme.required = true;
+      const validity = form.elements.mailme.validity;
 
       expect(validity).to.have.property("valueMissing", true);
       expect(validity).to.have.property("typeMismatch", false);
       expect(validity).to.have.property("valid", false);
 
-      form.mailme.value = "bar";
+      form.elements.mailme.value = "bar";
 
       expect(validity).to.have.property("valueMissing", false);
       expect(validity).to.have.property("typeMismatch", true);
       expect(validity).to.have.property("valid", false);
 
-      form.mailme.value = "foo@bar";
+      form.elements.mailme.value = "foo@bar";
 
       expect(validity).to.have.property("valueMissing", false);
       expect(validity).to.have.property("typeMismatch", false);
@@ -182,18 +182,18 @@ describe("HTMLInputElement", () => {
 
     it("required type checkbox reports value missing if not checked", () => {
       const form = document.forms[0];
-      form.agree.required = true;
-      const validity = form.agree.validity;
+      form.elements.agree.required = true;
+      const validity = form.elements.agree.validity;
 
       expect(validity).to.have.property("valueMissing", true);
       expect(validity).to.have.property("valid", false);
 
-      form.agree.click();
+      form.elements.agree.click();
 
       expect(validity).to.have.property("valueMissing", false);
       expect(validity).to.have.property("valid", true);
 
-      form.agree.click();
+      form.elements.agree.click();
 
       expect(validity).to.have.property("valueMissing", true);
       expect(validity).to.have.property("valid", false);
@@ -201,7 +201,7 @@ describe("HTMLInputElement", () => {
 
     it("required type radio reports value missing if not checked", () => {
       const form = document.forms[0];
-      const list = form.interests;
+      const list = form.elements.interests;
       const validityOption0 = list[0].validity;
       const validityOption1 = list[1].validity;
 
@@ -238,7 +238,7 @@ describe("HTMLInputElement", () => {
 
     it("minlength and maxlength triggers validation", () => {
       const form = document.forms[0];
-      const input = form.reqsize;
+      const input = form.elements.reqsize;
       const validity = input.validity;
 
       expect(validity).to.have.property("valueMissing", true);
@@ -265,7 +265,7 @@ describe("HTMLInputElement", () => {
 
     it("type mail requires x@y", () => {
       const form = document.forms[0];
-      const input = form.mailme;
+      const input = form.elements.mailme;
       const validity = input.validity;
 
       input.required = true;
@@ -309,7 +309,7 @@ describe("HTMLInputElement", () => {
 
     it("type url requires URL", () => {
       const form = document.forms[0];
-      const input = form.uri;
+      const input = form.elements.uri;
       const validity = input.validity;
 
       input.required = true;
@@ -343,22 +343,22 @@ describe("HTMLInputElement", () => {
     describe("willValidate", () => {
       it("returns false if hidden, readOnly, or disabled", () => {
         const form = document.forms[0];
-        form.size.readOnly = true;
-        expect(form.size).to.have.property("willValidate", false);
-        expect(form.hide).to.have.property("willValidate", false);
+        form.elements.size.readOnly = true;
+        expect(form.elements.size).to.have.property("willValidate", false);
+        expect(form.elements.hide).to.have.property("willValidate", false);
 
-        form.pattern.disabled = true;
-        expect(form.pattern).to.have.property("willValidate", false);
+        form.elements.pattern.disabled = true;
+        expect(form.elements.pattern).to.have.property("willValidate", false);
       });
 
       it("returns true otherwise", () => {
         const form = document.forms[0];
-        expect(form.size).to.have.property("willValidate", true);
-        expect(form.req).to.have.property("willValidate", true);
-        expect(form.reqsize).to.have.property("willValidate", true);
-        expect(form.step).to.have.property("willValidate", true);
-        expect(form.pattern).to.have.property("willValidate", true);
-        expect(form.uri).to.have.property("willValidate", true);
+        expect(form.elements.size).to.have.property("willValidate", true);
+        expect(form.elements.req).to.have.property("willValidate", true);
+        expect(form.elements.reqsize).to.have.property("willValidate", true);
+        expect(form.elements.step).to.have.property("willValidate", true);
+        expect(form.elements.pattern).to.have.property("willValidate", true);
+        expect(form.elements.uri).to.have.property("willValidate", true);
       });
     });
   });
@@ -385,30 +385,30 @@ describe("HTMLInputElement", () => {
 
     it("setCustomValidity() without argument throws TypeError", () => {
       const form = document.forms[0];
-      expect(() => form.foo.setCustomValidity()).to.throw(TypeError, "Failed to execute 'setCustomValidity' on 'HTMLInputElement': 1 argument required, but only 0 present.");
+      expect(() => form.elements.foo.setCustomValidity()).to.throw(TypeError, "Failed to execute 'setCustomValidity' on 'HTMLInputElement': 1 argument required, but only 0 present.");
     });
 
     it("setCustomValidity(null) sets 'null'", () => {
       const form = document.forms[0];
-      form.foo.setCustomValidity(null);
-      expect(form.foo.validationMessage).to.equal("null");
+      form.elements.foo.setCustomValidity(null);
+      expect(form.elements.foo.validationMessage).to.equal("null");
     });
 
     it("setCustomValidity(undefined) sets 'undefined'", () => {
       const form = document.forms[0];
-      form.foo.setCustomValidity(undefined);
-      expect(form.foo.validationMessage).to.equal("undefined");
+      form.elements.foo.setCustomValidity(undefined);
+      expect(form.elements.foo.validationMessage).to.equal("undefined");
     });
 
     it("checkValidity() returns false if required input is empty", () => {
       const form = document.forms[0];
-      expect(form.foo.checkValidity()).to.equal(false);
+      expect(form.elements.foo.checkValidity()).to.equal(false);
     });
 
     it("checkValidity() returns true if required input is disabled", () => {
       const form = document.forms[0];
-      form.foo.disabled = true;
-      expect(form.foo.checkValidity()).to.equal(true);
+      form.elements.foo.disabled = true;
+      expect(form.elements.foo.checkValidity()).to.equal(true);
     });
 
     it("disabled required input is ignored", () => {
@@ -417,11 +417,11 @@ describe("HTMLInputElement", () => {
       let submitted = false;
       document.addEventListener("submit", () => submitted = true);
 
-      form.foo.disabled = true;
+      form.elements.foo.disabled = true;
       document.getElementById("submit-form").click();
       expect(submitted).to.be.true;
 
-      expect(form.foo.validationMessage).to.equal("");
+      expect(form.elements.foo.validationMessage).to.equal("");
     });
 
     it("form submit is prevented if input is required", () => {
@@ -431,8 +431,8 @@ describe("HTMLInputElement", () => {
       document.addEventListener("submit", () => submitted = true);
 
       document.getElementById("submit-form").click();
-      expect(form.foo.validationMessage).to.equal("Required");
-      expect(form.foo.validity).to.have.property("customError", true);
+      expect(form.elements.foo.validationMessage).to.equal("Required");
+      expect(form.elements.foo.validity).to.have.property("customError", true);
 
       expect(submitted).to.be.false;
     });
@@ -444,13 +444,13 @@ describe("HTMLInputElement", () => {
       document.addEventListener("submit", () => submitted = true);
 
       document.getElementById("submit-form").click();
-      expect(form.foo.validationMessage).to.equal("Required");
+      expect(form.elements.foo.validationMessage).to.equal("Required");
 
       expect(submitted).to.be.false;
 
-      form.foo.value = "a";
+      form.elements.foo.value = "a";
 
-      expect(form.foo.validationMessage).to.equal("");
+      expect(form.elements.foo.validationMessage).to.equal("");
 
       document.getElementById("submit-form").click();
 

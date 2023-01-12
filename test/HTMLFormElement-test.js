@@ -29,7 +29,7 @@ describe("HTMLFormElement", () => {
 
     it("form input can be addressed by name", () => {
       const form = document.getElementsByTagName("form")[0];
-      expect(form.foo.tagName).to.equal("INPUT");
+      expect(form.elements.foo.tagName).to.equal("INPUT");
     });
 
     it("form non-existing symbol property is falsy", () => {
@@ -51,7 +51,7 @@ describe("HTMLFormElement", () => {
       const form = document.forms[0];
       expect(form.elements.length).to.equal(7);
 
-      form.img.type = "text";
+      form.elements.img.type = "text";
 
       expect(form.elements.length).to.equal(8);
     });

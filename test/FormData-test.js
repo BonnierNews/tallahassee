@@ -35,13 +35,13 @@ describe("FormData", () => {
   });
 
   it("includes checked checkbox entry", () => {
-    form.mycheck.checked = true;
+    form.elements.mycheck.checked = true;
     const entries = new FormData(form).entries();
     expect([...entries]).to.deep.equal([["mycheck", "1"], ["myinput", "Foo"]]);
   });
 
   it("can be converted into object directly from instance", () => {
-    form.mycheck.checked = true;
+    form.elements.mycheck.checked = true;
     const data = new FormData(form);
     expect(Object.fromEntries(data)).to.deep.equal({
       mycheck: "1",
@@ -51,9 +51,9 @@ describe("FormData", () => {
 
   it("returns empty strings if values are nulled", () => {
     const data = new FormData(form);
-    form.mycheck.checked = true;
-    form.mycheck.value = null;
-    form.myinput.value = null;
+    form.elements.mycheck.checked = true;
+    form.elements.mycheck.value = null;
+    form.elements.myinput.value = null;
     expect(Object.fromEntries(data)).to.deep.equal({
       mycheck: "on",
       myinput: "",
@@ -62,7 +62,7 @@ describe("FormData", () => {
 
   it("ignores fields without name", () => {
     const data = new FormData(form);
-    form.mycheck.checked = true;
+    form.elements.mycheck.checked = true;
     form.elements[1].name = "";
     expect(Object.fromEntries(data)).to.deep.equal({
       mycheck: "1",
@@ -71,8 +71,8 @@ describe("FormData", () => {
 
   it("ignores fields that are disabled", () => {
     const data = new FormData(form);
-    form.mycheck.checked = true;
-    form.mycheck.disabled = true;
+    form.elements.mycheck.checked = true;
+    form.elements.mycheck.disabled = true;
     expect(Object.fromEntries(data)).to.deep.equal({
       myinput: "Foo",
     });

@@ -18,7 +18,7 @@ describe("HTMLTextAreaElement", () => {
   });
 
   it("innerText is empty if value is set", () => {
-    const elm = document.forms[0].novel;
+    const elm = document.forms[0].elements.novel;
     elm.value = "a";
     expect(elm.textContent).to.equal("");
   });
