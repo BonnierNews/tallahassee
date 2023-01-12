@@ -189,7 +189,6 @@ describe("Tallahassee", () => {
       const scriptElement = browser.document.getElementById("implicit-javascript-script");
       expect(scriptElement).to.exist;
 
-
       browser.runScript(scriptElement);
 
       expect(browser.document.documentElement.classList.contains("no-js")).to.be.false;

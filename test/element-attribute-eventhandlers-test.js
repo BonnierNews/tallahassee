@@ -1,21 +1,12 @@
 "use strict";
 
 const Browser = require("../");
+const app = require("../app/app");
 
 describe("element attribute eventhandler", () => {
   let browser;
   beforeEach(async () => {
-    browser = await new Browser().load(`
-      <html>
-        <body>
-          <form>
-            <input name="foo" required oninvalid="window.invalidForm = true" oninput="document.getElementsByName('btn')[0].innerText = 'Save changes'">
-            <input name="bar" minlength="2" oninvalid="classList.add('error')">
-            <button name="btn">Button</button>
-          </form>
-        </body>
-      </html>
-    `);
+    browser = await new Browser(app, {runScripts: true}).navigateTo("/inline-scripts");
   });
 
   it("has access to window", () => {
