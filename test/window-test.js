@@ -260,6 +260,33 @@ describe("Window", () => {
     });
   });
 
+  describe("setTimeout", () => {
+    it("runs callback immediately", (done) => {
+      window.setTimeout(done, 100);
+    });
+  });
+
+  describe("clearTimeout", () => {
+    it("does nothing", () => {
+      const result = window.clearTimeout();
+      expect(result).to.be.undefined;
+    });
+  });
+
+  describe("setInterval", () => {
+    it("does nothing", () => {
+      const result = window.setInterval();
+      expect(result).to.be.undefined;
+    });
+  });
+
+  describe("clearInterval", () => {
+    it("does nothing", () => {
+      const result = window.clearInterval();
+      expect(result).to.be.undefined;
+    });
+  });
+
   describe("navigator", () => {
     it(".userAgent returns Tallahassee by default", () => {
       const wndw = new Window({
