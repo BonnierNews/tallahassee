@@ -3,6 +3,15 @@ Changelog
 
 ## Unreleased
 
+## 14.0.0
+
+- now supports `Image` on `window` along with other image only attributes being supported as native props
+- default timers are now defined as stubs. `setTimeout` will fire its callback immediately but can be overridden if needed
+
+### Breaking
+
+- only `elements` is now supported on retrieving form elements
+
 ## 13.3.0
 
 - added `popstate` event to be fired
