@@ -207,15 +207,9 @@ describe("forms", () => {
 
   it("named input field can be retreived by named property", () => {
     const form = document.getElementsByTagName("form")[0];
-    expect(form.myinput).to.be.ok;
-    expect(form.myinput.name).to.equal("myinput");
-    expect(form.myinput.tagName).to.equal("INPUT");
-  });
-
-  it("named input field is in form", () => {
-    const form = document.getElementsByTagName("form")[0];
-    expect("myinput" in form).to.be.true;
-    expect("abrakadabra" in form).to.be.false;
+    expect(form.elements.myinput).to.be.ok;
+    expect(form.elements.myinput.name).to.equal("myinput");
+    expect(form.elements.myinput.tagName).to.equal("INPUT");
   });
 
   it("unknown input field returns undefined", () => {

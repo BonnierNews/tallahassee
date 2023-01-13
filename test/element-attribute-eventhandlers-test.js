@@ -20,24 +20,24 @@ describe("element attribute eventhandler", () => {
 
   it("has access to window", () => {
     const form = browser.document.forms[0];
-    form.btn.click();
+    form.elements.btn.click();
 
     expect(browser.window.invalidForm).to.be.true;
   });
 
   it("has access to document", () => {
     const form = browser.document.forms[0];
-    form.foo.value = "abc";
+    form.elements.foo.value = "abc";
 
-    expect(form.btn.textContent).to.equal("Save changes");
+    expect(form.elements.btn.textContent).to.equal("Save changes");
   });
 
   it("has access to element", () => {
     const form = browser.document.forms[0];
-    form.foo.value = "abc";
-    form.bar.value = "a";
-    form.btn.click();
+    form.elements.foo.value = "abc";
+    form.elements.bar.value = "a";
+    form.elements.btn.click();
 
-    expect(form.bar.classList.contains("error")).to.be.true;
+    expect(form.elements.bar.classList.contains("error")).to.be.true;
   });
 });
