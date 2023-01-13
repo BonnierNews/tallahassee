@@ -31,6 +31,10 @@ describe("Window", () => {
       expect(window).to.have.property("Element");
     });
 
+    it("has Image", () => {
+      expect(window).to.have.property("Image");
+    });
+
     it("has FormData", () => {
       expect(window).to.have.property("FormData");
     });
