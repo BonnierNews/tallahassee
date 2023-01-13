@@ -31,6 +31,10 @@ describe("Window", () => {
       expect(window).to.have.property("Element");
     });
 
+    it("has HTMLIFrameElement", () => {
+      expect(window).to.have.property("HTMLIFrameElement");
+    });
+
     it("has Image", () => {
       expect(window).to.have.property("Image");
     });
