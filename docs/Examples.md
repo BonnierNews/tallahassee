@@ -118,6 +118,6 @@ it("script navigates away by changing location", async () => {
   browser = await browser._pending;
 
   expect(browser.window.location.href).to.equal("https://www.example.local/landing");
-  expect(browser.document.body.innerText).to.contain("Success!");
+  expect(browser.document.body.textContent).to.contain("Success!");
 });
 ```
