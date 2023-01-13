@@ -20,6 +20,6 @@ describe("HTMLTextAreaElement", () => {
   it("innerText is empty if value is set", () => {
     const elm = document.forms[0].novel;
     elm.value = "a";
-    expect(elm.innerText).to.equal("");
+    expect(elm.textContent).to.equal("");
   });
 });

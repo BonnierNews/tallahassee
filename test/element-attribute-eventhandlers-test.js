@@ -29,7 +29,7 @@ describe("element attribute eventhandler", () => {
     const form = browser.document.forms[0];
     form.foo.value = "abc";
 
-    expect(form.btn.innerText).to.equal("Save changes");
+    expect(form.btn.textContent).to.equal("Save changes");
   });
 
   it("has access to element", () => {

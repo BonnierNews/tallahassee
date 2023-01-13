@@ -421,7 +421,7 @@ describe("Tallahassee", () => {
   describe("non 200 response", () => {
     it("can override expected status code", async () => {
       const browser = await Browser(app).navigateTo("/404", null, 404);
-      expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
+      expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
     });
 
   });

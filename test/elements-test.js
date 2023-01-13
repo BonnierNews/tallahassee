@@ -1678,7 +1678,7 @@ describe("elements", () => {
 
       expect(el.parentElement === document.body).to.equal(true);
 
-      expect(el.innerText).to.equal("åäö");
+      expect(el.textContent).to.equal("åäö");
       expect(el.dataset.json).to.equal("{\"var\":1}");
     });
 
