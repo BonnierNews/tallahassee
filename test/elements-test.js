@@ -403,6 +403,11 @@ describe("elements", () => {
     describe("appendChild(aChild)", () => {
       let document;
       beforeEach(() => {
+        const window = {
+          get window() {
+            return this;
+          }
+        };
         document = new Document({
           text: `
             <html>
@@ -412,7 +417,7 @@ describe("elements", () => {
                 <div id="parent-2"></div>
               </body>
             </html>`
-        });
+        }, null, window);
       });
 
       it("moves existing child", () => {
@@ -445,14 +450,6 @@ describe("elements", () => {
       it("executes if script", () => {
         const elm = document.createElement("script");
         elm.innerText = "window.appended = true;";
-
-        const window = {
-          get window() {
-            return this;
-          }
-        };
-
-        document.defaultView = window;
 
         document.body.appendChild(elm);
 

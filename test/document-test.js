@@ -56,6 +56,10 @@ describe("Document", () => {
       expect(document.documentElement.abrakadabra === undefined, "undefined property").to.be.true;
     });
 
+    it("has a default defaultView property", () => {
+      expect(document.defaultView).to.equal(null);
+    });
+
     it("referrer is empty if direct call", () => {
       expect(document.referrer).to.equal("");
     });
