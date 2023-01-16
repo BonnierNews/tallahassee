@@ -94,6 +94,10 @@
       <button name="named-button" formaction="https://www.example.com/1">Send name</button>
       <button name="named-button-with-value" value="1" formaction="https://www.example.com/2">Send name and value</button>
     </form>
+    <form id="form-attribute-form" method="post" action="/">
+      <input type="checkbox" value="cb1" name="filter" checked>
+    </form>
+    <button type="submit" id="outside-form-button" form="form-attribute-form">Form attribute submit</button>
     <form id="validate-form" type="get" action="/">
       <input type="text" name="optional">
       <input type="number" name="size" min="4" max="5">

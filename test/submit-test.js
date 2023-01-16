@@ -446,4 +446,30 @@ describe("submit", () => {
     const body = JSON.stringify({ test: ["1", "2", "3"], c: "d" });
     expect(newNavigation.document.body.innerHTML).to.contain(body);
   });
+
+  it("supports submitting form by clicking on elements outside the form with form attribute", async () => {
+    const browser = await Browser(app, {
+      headers: {host: "www.expressen.se"}
+    }).navigateTo("/");
+
+    const button = browser.document.getElementById("outside-form-button");
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+  });
+
+  it("preventing default on buttons with form attribute", async () => {
+    const browser = await Browser(app, {
+      headers: {host: "www.expressen.se"}
+    }).navigateTo("/");
+
+    const button = browser.document.getElementById("outside-form-button");
+    button.addEventListener("click", (e) => {
+      e.preventDefault();
+    });
+    button.click();
+
+    expect(browser._pending).to.not.be.ok;
+  });
 });
