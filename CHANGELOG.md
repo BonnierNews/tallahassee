@@ -3,7 +3,7 @@ Changelog
 
 ## Unreleased
 
-## 14.1.0
+## 14.2.0
 
 - added `form` attribute submit
 
