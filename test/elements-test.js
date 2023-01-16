@@ -452,11 +452,11 @@ describe("elements", () => {
           }
         };
 
-        document._window = window;
+        document.defaultView = window;
 
         document.body.appendChild(elm);
 
-        expect(document._window.appended).to.be.true;
+        expect(document.defaultView.appended).to.be.true;
       });
     });
 
