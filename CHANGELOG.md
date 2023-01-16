@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 14.1.0
+
+- added `form` attribute submit
+
 ## 14.0.0
 
 - now supports `Image` on `window` along with other image only attributes being supported as native props
