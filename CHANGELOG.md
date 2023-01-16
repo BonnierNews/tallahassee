@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 14.3.0
+
+- button outside form but with `form` attribute triggers submit event
+
 ## 14.1.0
 
 - added `form` attribute submit
