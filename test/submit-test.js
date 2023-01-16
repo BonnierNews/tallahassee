@@ -452,11 +452,14 @@ describe("submit", () => {
       headers: {host: "www.expressen.se"}
     }).navigateTo("/");
 
+    let submitEvents = 0;
+    browser.document.addEventListener("submit", () => submitEvents++);
     const button = browser.document.getElementById("outside-form-button");
 
     button.click();
 
     expect(browser._pending).to.be.ok;
+    expect(submitEvents).to.eql(1);
   });
 
   it("preventing default on buttons with form attribute", async () => {
@@ -468,8 +471,11 @@ describe("submit", () => {
     button.addEventListener("click", (e) => {
       e.preventDefault();
     });
+    let submitEvent = false;
+    browser.document.addEventListener("submit", () => submitEvent = true);
     button.click();
 
     expect(browser._pending).to.not.be.ok;
+    expect(submitEvent).to.be.false;
   });
 });
