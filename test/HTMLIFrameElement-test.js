@@ -20,6 +20,11 @@ describe("HTMLIframeElement", () => {
     }, null, window);
   });
 
+  it("can read contentDocument property", () => {
+    const [iframe] = document.getElementsByTagName("iframe");
+    expect(iframe.contentDocument).to.equal(document);
+  });
+
   it("can read contentWindow property", () => {
     const [iframe] = document.getElementsByTagName("iframe");
     expect(iframe.contentWindow).to.equal(document.defaultView);
