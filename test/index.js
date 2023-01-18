@@ -266,7 +266,7 @@ describe("Tallahassee", () => {
   describe("document", () => {
     it("expose current window on document", async () => {
       const browser = await Browser(app).navigateTo("/");
-      expect(browser.document).to.have.property("_window").that.equal(browser.window);
+      expect(browser.document).to.have.property("defaultView").that.equal(browser.window);
     });
 
     it("doesn't expose classList on document", async () => {

@@ -403,6 +403,11 @@ describe("elements", () => {
     describe("appendChild(aChild)", () => {
       let document;
       beforeEach(() => {
+        const window = {
+          get window() {
+            return this;
+          }
+        };
         document = new Document({
           text: `
             <html>
@@ -412,7 +417,7 @@ describe("elements", () => {
                 <div id="parent-2"></div>
               </body>
             </html>`
-        });
+        }, null, window);
       });
 
       it("moves existing child", () => {
@@ -446,17 +451,9 @@ describe("elements", () => {
         const elm = document.createElement("script");
         elm.innerText = "window.appended = true;";
 
-        const window = {
-          get window() {
-            return this;
-          }
-        };
-
-        document._window = window;
-
         document.body.appendChild(elm);
 
-        expect(document._window.appended).to.be.true;
+        expect(document.defaultView.appended).to.be.true;
       });
     });
 
