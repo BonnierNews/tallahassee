@@ -3,6 +3,12 @@ Changelog
 
 ## Unreleased
 
+## 14.4.0
+
+- add `HTMLIFrameElement` to `window`
+- add `defaultView` to `document`
+- add `nodeValue` setter to `Text`
+
 ## 14.3.0
 
 - button outside form but with `form` attribute triggers submit event
