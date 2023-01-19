@@ -59,7 +59,7 @@ app.post("/external-redirect", (req, res) => {
 });
 
 app.get("/rel-link", (req, res) => {
-  res.send("<html><body><a href='/absolute-link'>test</a></body></html>");
+  res.send("<html><body><a href='/absolute-link?foo=bar'>test</a></body></html>");
 });
 app.get("/absolute-link", (req, res) => {
   res.send("<html><body><a href='http://example.com'>test</a></body></html>");

@@ -13,21 +13,23 @@ describe("Tallahassee", () => {
     });
 
     it("clicking on relative link navigates to href", async () => {
-      let browser = await Browser(app).navigateTo("/rel-link");
-      expect(browser.location.pathname).to.equal("/rel-link");
+      const host = "www.test.com";
+      let browser = await Browser(app, {headers: {host}}).navigateTo("/rel-link");
+      expect(browser.window.location.href).to.equal("http://www.test.com/rel-link");
 
       const [link] = browser.document.getElementsByTagName("a");
       link.click();
 
       browser = await browser._pending;
-      expect(browser.location.pathname).to.equal("/absolute-link");
+      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link?foo=bar");
       const [newLink] = browser.document.getElementsByTagName("a");
       expect(newLink.href).to.equal("http://example.com/");
     });
 
     it("clicking on absolute link navigates to href", async () => {
-      let browser = await Browser(app).navigateTo("/absolute-link");
-      expect(browser.window.location.pathname).to.equal("/absolute-link");
+      const host = "www.test.com";
+      let browser = await Browser(app, {headers: {host}}).navigateTo("/absolute-link");
+      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link");
 
       const [link] = browser.document.getElementsByTagName("a");
       link.click();
@@ -42,8 +44,9 @@ describe("Tallahassee", () => {
     });
 
     it("clicking on link with preventDefault() does nothing", async () => {
-      let browser = await Browser(app).navigateTo("/absolute-link");
-      expect(browser.window.location.pathname).to.equal("/absolute-link");
+      const host = "www.test.com";
+      let browser = await Browser(app, {headers: {host}}).navigateTo("/absolute-link");
+      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link");
 
       const [link] = browser.document.getElementsByTagName("a");
       link.addEventListener("click", (e) => {
@@ -52,7 +55,7 @@ describe("Tallahassee", () => {
       link.click();
 
       browser = await browser._pending;
-      expect(browser.window.location.pathname).to.equal("/absolute-link");
+      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link");
     });
 
     it("returns browser window", async () => {
