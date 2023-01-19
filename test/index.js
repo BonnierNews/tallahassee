@@ -12,6 +12,49 @@ describe("Tallahassee", () => {
       await Browser(app).navigateTo("/");
     });
 
+    it("clicking on relative link navigates to href", async () => {
+      let browser = await Browser(app).navigateTo("/rel-link");
+      expect(browser.location.pathname).to.equal("/rel-link");
+
+      const [link] = browser.document.getElementsByTagName("a");
+      link.click();
+
+      browser = await browser._pending;
+      expect(browser.location.pathname).to.equal("/absolute-link");
+      const [newLink] = browser.document.getElementsByTagName("a");
+      expect(newLink.href).to.equal("http://example.com/");
+    });
+
+    it("clicking on absolute link navigates to href", async () => {
+      let browser = await Browser(app).navigateTo("/absolute-link");
+      expect(browser.window.location.pathname).to.equal("/absolute-link");
+
+      const [link] = browser.document.getElementsByTagName("a");
+      link.click();
+
+      nock("http://example.com")
+        .get("/")
+        .reply(200, "<html><body>worked</body></html>");
+
+      browser = await browser._pending;
+      expect(browser.window.location.href).to.equal("http://example.com/");
+      expect(browser.document.body.textContent).to.equal("worked");
+    });
+
+    it("clicking on link with preventDefault() does nothing", async () => {
+      let browser = await Browser(app).navigateTo("/absolute-link");
+      expect(browser.window.location.pathname).to.equal("/absolute-link");
+
+      const [link] = browser.document.getElementsByTagName("a");
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+      });
+      link.click();
+
+      browser = await browser._pending;
+      expect(browser.window.location.pathname).to.equal("/absolute-link");
+    });
+
     it("returns browser window", async () => {
       const browser = await Browser(app).navigateTo("/");
       expect(browser.window).to.be.ok;
@@ -423,6 +466,5 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/404", null, 404);
       expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
     });
-
   });
 });
