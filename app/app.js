@@ -6,6 +6,7 @@ const app = express();
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const index = path.join(__dirname, "assets/public/index.html");
 const errorPage = path.join(__dirname, "assets/public/error.html");
+const dndPage = path.join(__dirname, "assets/public/dnd.html");
 
 app.set("trust proxy", true);
 
@@ -58,6 +59,8 @@ app.get("/external-redirect", (req, res) => {
 app.post("/external-redirect", (req, res) => {
   res.redirect("https://www.example.com");
 });
+
+app.get("/dnd", (req, res) => res.sendFile(dndPage));
 
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));
