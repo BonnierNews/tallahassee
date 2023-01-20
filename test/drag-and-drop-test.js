@@ -112,7 +112,7 @@ describe("drag and drop", () => {
       });
       browser.dragStart(draggable);
       browser.drag(droppable);
-      browser.dragEnd();
+      browser.dragEnd(droppable);
     });
 
     it("does not dispatch drop event when dropping if not prevented default", () => {
@@ -122,7 +122,7 @@ describe("drag and drop", () => {
       });
       browser.dragStart(draggable);
       browser.drag(droppable);
-      browser.dragEnd();
+      browser.dragEnd(droppable);
     });
   });
 });
