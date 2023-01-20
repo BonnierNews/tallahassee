@@ -58,13 +58,6 @@ app.post("/external-redirect", (req, res) => {
   res.redirect("https://www.example.com");
 });
 
-app.get("/rel-link", (req, res) => {
-  res.send("<html><body><a href='/absolute-link?foo=bar'>test</a></body></html>");
-});
-app.get("/absolute-link", (req, res) => {
-  res.send("<html><body><a href='http://example.com'>test</a></body></html>");
-});
-
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));
 

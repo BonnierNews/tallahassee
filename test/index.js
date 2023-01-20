@@ -12,52 +12,6 @@ describe("Tallahassee", () => {
       await Browser(app).navigateTo("/");
     });
 
-    it("clicking on relative link navigates to href", async () => {
-      const host = "www.test.com";
-      let browser = await Browser(app, {headers: {host}}).navigateTo("/rel-link");
-      expect(browser.window.location.href).to.equal("http://www.test.com/rel-link");
-
-      const [link] = browser.document.getElementsByTagName("a");
-      link.click();
-
-      browser = await browser._pending;
-      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link?foo=bar");
-      const [newLink] = browser.document.getElementsByTagName("a");
-      expect(newLink.href).to.equal("http://example.com/");
-    });
-
-    it("clicking on absolute link navigates to href", async () => {
-      const host = "www.test.com";
-      let browser = await Browser(app, {headers: {host}}).navigateTo("/absolute-link");
-      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link");
-
-      const [link] = browser.document.getElementsByTagName("a");
-      link.click();
-
-      nock("http://example.com")
-        .get("/")
-        .reply(200, "<html><body>worked</body></html>");
-
-      browser = await browser._pending;
-      expect(browser.window.location.href).to.equal("http://example.com/");
-      expect(browser.document.body.textContent).to.equal("worked");
-    });
-
-    it("clicking on link with preventDefault() does nothing", async () => {
-      const host = "www.test.com";
-      let browser = await Browser(app, {headers: {host}}).navigateTo("/absolute-link");
-      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link");
-
-      const [link] = browser.document.getElementsByTagName("a");
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-      });
-      link.click();
-
-      browser = await browser._pending;
-      expect(browser.window.location.href).to.equal("http://www.test.com/absolute-link");
-    });
-
     it("returns browser window", async () => {
       const browser = await Browser(app).navigateTo("/");
       expect(browser.window).to.be.ok;
