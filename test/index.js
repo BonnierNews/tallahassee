@@ -423,6 +423,5 @@ describe("Tallahassee", () => {
       const browser = await Browser(app).navigateTo("/404", null, 404);
       expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
     });
-
   });
 });
