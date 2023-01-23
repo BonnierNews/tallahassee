@@ -22,6 +22,9 @@ describe("forms", () => {
               <input name="myemail" type="email">
               <input name="mynumber" type="number">
               <input name="mytel" type="tel">
+              <fieldset>
+                <legend>Legend text</legend>
+              </fieldset>
               <button type="submit">Submit</submit>
               <button>Submit</submit>
               <button type="reset">Reset</submit>
@@ -199,9 +202,9 @@ describe("forms", () => {
     const form = document.getElementsByTagName("form")[0];
     expect(form).to.have.property("elements");
     const elements = form.elements;
-    expect(elements.length).to.equal(11);
+    expect(elements.length).to.equal(12);
     for (let i = 0; i < elements.length; ++i) {
-      expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
+      expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA", "FIELDSET"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
     }
   });
 
@@ -221,6 +224,16 @@ describe("forms", () => {
     const form = document.getElementsByTagName("form")[0];
     const obj = form.abrakadabra = {};
     expect(form.abrakadabra === obj).to.be.true;
+  });
+
+  it("fieldset returns closest form", () => {
+    const fieldset = document.getElementsByTagName("fieldset")[0];
+    expect(fieldset.form).to.equal(document.forms[0]);
+  });
+
+  it("legend returns closest form", () => {
+    const legend = document.getElementsByTagName("legend")[0];
+    expect(legend.form).to.equal(document.forms[0]);
   });
 
   describe("disabled", () => {
