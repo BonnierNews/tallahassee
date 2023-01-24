@@ -25,6 +25,7 @@ describe("forms", () => {
               <fieldset>
                 <legend>Legend text</legend>
               </fieldset>
+              <input type="file" name="file" accept="image/png">
               <button type="submit">Submit</submit>
               <button>Submit</submit>
               <button type="reset">Reset</submit>
@@ -234,6 +235,24 @@ describe("forms", () => {
   it("legend returns closest form", () => {
     const legend = document.getElementsByTagName("legend")[0];
     expect(legend.form).to.equal(document.forms[0]);
+  });
+
+  it("input can get and set accept", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.accept).to.equal("image/png");
+    expect(file).to.have.property("accept", "image/png");
+    file.accept = "image/jpg";
+    expect(file).to.have.property("accept", "image/jpg");
+  });
+
+  it("input can get files that are 'uploaded' and fire change event", (done) => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.files).to.deep.equal([]);
+    file.addEventListener("change", () => done());
+    file._uploadFile("dummy");
+    expect(file.files).to.deep.equal(["dummy"]);
   });
 
   describe("disabled", () => {
