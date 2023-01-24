@@ -263,6 +263,7 @@ describe("forms", () => {
     expect(file.value).to.deep.equal("C:\\fakepath\\dummy");
     file.addEventListener("input", () => done());
     file.value = "";
+    expect(file.files).to.deep.equal([]);
   });
 
   it("input does not fire change event if files are not changed", () => {
