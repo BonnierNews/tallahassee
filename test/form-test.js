@@ -255,6 +255,14 @@ describe("forms", () => {
     expect(file.files).to.deep.equal(["dummy"]);
   });
 
+  it("input can get value of uploaded file", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.value).to.equal("");
+    file._uploadFile({name: "dummy"});
+    expect(file.value).to.deep.equal("C:\\fakepath\\dummy");
+  });
+
   it("input does not fire change event if files are not changed", () => {
     const form = document.getElementsByTagName("form")[0];
     const file = form.elements.file;
