@@ -250,17 +250,19 @@ describe("forms", () => {
     const form = document.getElementsByTagName("form")[0];
     const file = form.elements.file;
     expect(file.files).to.deep.equal([]);
-    file.addEventListener("change", () => done());
+    file.addEventListener("input", () => done());
     file._uploadFile("dummy");
     expect(file.files).to.deep.equal(["dummy"]);
   });
 
-  it("input can get value of uploaded file", () => {
+  it("input can get value of uploaded file", (done) => {
     const form = document.getElementsByTagName("form")[0];
     const file = form.elements.file;
     expect(file.value).to.equal("");
     file._uploadFile({name: "dummy"});
     expect(file.value).to.deep.equal("C:\\fakepath\\dummy");
+    file.addEventListener("input", () => done());
+    file.value = "";
   });
 
   it("input does not fire change event if files are not changed", () => {
@@ -268,7 +270,7 @@ describe("forms", () => {
     const file = form.elements.file;
     expect(file.files).to.deep.equal([]);
     let events = 0;
-    file.addEventListener("change", () => events++);
+    file.addEventListener("input", () => events++);
     file._uploadFile("dummy");
     file._uploadFile("dummy");
     expect(file.files).to.deep.equal(["dummy"]);
