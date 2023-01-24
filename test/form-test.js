@@ -336,6 +336,27 @@ describe("forms", () => {
     });
   });
 
+  describe("multiple", () => {
+    [ "input", "select" ].forEach((tagName) => {
+      it(`${tagName} have multiple property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect("multiple" in elm, tagName).to.be.true;
+        elm.multiple = true;
+      });
+    });
+
+    it("h2 lacks multiple property", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+      expect(elm).to.not.have.property("multiple");
+    });
+
+    it("button lacks multiple property", () => {
+      const elm = document.getElementsByTagName("button")[0];
+      expect(elm).to.not.have.property("multiple");
+    });
+  });
+
   describe("events", () => {
     [
       "input[type=text]",
