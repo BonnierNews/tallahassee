@@ -255,6 +255,32 @@ describe("forms", () => {
     expect(file.files).to.deep.equal(["dummy"]);
   });
 
+  it("input does not fire change event if files are not changed", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.files).to.deep.equal([]);
+    let events = 0;
+    file.addEventListener("change", () => events++);
+    file._uploadFile("dummy");
+    file._uploadFile("dummy");
+    expect(file.files).to.deep.equal(["dummy"]);
+    expect(events).to.equal(1);
+  });
+
+  it("input only contains one file unless multiple", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.files).to.deep.equal([]);
+
+    file._uploadFile("dummy1");
+    expect(file.files).to.deep.equal(["dummy1"]);
+    file._uploadFile("dummy2");
+    expect(file.files).to.deep.equal(["dummy2"]);
+    file.multiple = true;
+    file._uploadFile("dummy1");
+    expect(file.files).to.deep.equal(["dummy2", "dummy1"]);
+  });
+
   describe("disabled", () => {
     [ "input", "button", "select", "textarea" ].forEach((tagName) => {
       it(`${tagName} have disabled property`, () => {
