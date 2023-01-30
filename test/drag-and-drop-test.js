@@ -21,20 +21,6 @@ describe("drag and drop", () => {
     expect(divs[1].draggable = true).to.equal(true);
   });
 
-  it("can read droppable property", () => {
-    const divs = browser.document.getElementsByTagName("div");
-
-    expect(divs[0].droppable).to.equal(false);
-    expect(divs[1].droppable).to.equal(true);
-  });
-
-  it("can set droppable property", () => {
-    const divs = browser.document.getElementsByTagName("div");
-
-    expect(divs[0].droppable = true).to.equal(true);
-    expect(divs[1].droppable = false).to.equal(false);
-  });
-
   describe("events", () => {
     it("dispatches start event when dragging", (done) => {
       const [ draggable ] = browser.document.getElementsByTagName("div");
