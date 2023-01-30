@@ -25,6 +25,7 @@ describe("forms", () => {
               <fieldset>
                 <legend>Legend text</legend>
               </fieldset>
+              <input type="file" name="file" accept="image/png">
               <button type="submit">Submit</submit>
               <button>Submit</submit>
               <button type="reset">Reset</submit>
@@ -202,7 +203,7 @@ describe("forms", () => {
     const form = document.getElementsByTagName("form")[0];
     expect(form).to.have.property("elements");
     const elements = form.elements;
-    expect(elements.length).to.equal(12);
+    expect(elements.length).to.equal(13);
     for (let i = 0; i < elements.length; ++i) {
       expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA", "FIELDSET"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
     }
@@ -234,6 +235,61 @@ describe("forms", () => {
   it("legend returns closest form", () => {
     const legend = document.getElementsByTagName("legend")[0];
     expect(legend.form).to.equal(document.forms[0]);
+  });
+
+  it("input can get and set accept", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.accept).to.equal("image/png");
+    expect(file).to.have.property("accept", "image/png");
+    file.accept = "image/jpg";
+    expect(file).to.have.property("accept", "image/jpg");
+  });
+
+  it("input can get files that are 'uploaded' and fire change event", (done) => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.files).to.deep.equal([]);
+    file.addEventListener("input", () => done());
+    file._uploadFile("dummy");
+    expect(file.files).to.deep.equal(["dummy"]);
+  });
+
+  it("input can get value of uploaded file", (done) => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.value).to.equal("");
+    file._uploadFile({name: "dummy"});
+    expect(file.value).to.deep.equal("C:\\fakepath\\dummy");
+    file.addEventListener("input", () => done());
+    file.value = "";
+    expect(file.files).to.deep.equal([]);
+  });
+
+  it("input does not fire change event if files are not changed", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.files).to.deep.equal([]);
+    let events = 0;
+    file.addEventListener("input", () => events++);
+    file._uploadFile("dummy");
+    file._uploadFile("dummy");
+    expect(file.files).to.deep.equal(["dummy"]);
+    expect(events).to.equal(1);
+  });
+
+  it("input only contains one file unless multiple", () => {
+    const form = document.getElementsByTagName("form")[0];
+    const file = form.elements.file;
+    expect(file.files).to.deep.equal([]);
+
+    file._uploadFile("dummy1");
+    expect(file.files).to.deep.equal(["dummy1"]);
+    file._uploadFile("dummy2");
+    expect(file.files).to.deep.equal(["dummy2"]);
+    file.multiple = true;
+    file._uploadFile("dummy1");
+    expect(file.files).to.deep.equal(["dummy2", "dummy1"]);
   });
 
   describe("disabled", () => {
@@ -314,6 +370,27 @@ describe("forms", () => {
     it("button lacks required property", () => {
       const elm = document.getElementsByTagName("button")[0];
       expect(elm).to.not.have.property("required");
+    });
+  });
+
+  describe("multiple", () => {
+    [ "input", "select" ].forEach((tagName) => {
+      it(`${tagName} have multiple property`, () => {
+        const form = document.forms[0];
+        const elm = form.getElementsByTagName(tagName)[0];
+        expect("multiple" in elm, tagName).to.be.true;
+        elm.multiple = true;
+      });
+    });
+
+    it("h2 lacks multiple property", () => {
+      const elm = document.getElementsByTagName("h2")[0];
+      expect(elm).to.not.have.property("multiple");
+    });
+
+    it("button lacks multiple property", () => {
+      const elm = document.getElementsByTagName("button")[0];
+      expect(elm).to.not.have.property("multiple");
     });
   });
 
