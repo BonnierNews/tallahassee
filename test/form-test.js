@@ -203,7 +203,7 @@ describe("forms", () => {
     const form = document.getElementsByTagName("form")[0];
     expect(form).to.have.property("elements");
     const elements = form.elements;
-    expect(elements.length).to.equal(12);
+    expect(elements.length).to.equal(13);
     for (let i = 0; i < elements.length; ++i) {
       expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA", "FIELDSET"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
     }
