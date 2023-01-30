@@ -3,6 +3,13 @@ Changelog
 
 ## Unreleased
 
+## 14.5.0
+
+- now supports node 18
+- support for `input[type=file]`
+  - this includes a basic support for uploading a file programmatically on element: `_uploadFile()`
+- add `fieldset` and `legend`
+
 ## 14.4.0
 
 - add `HTMLIFrameElement` to `window`
