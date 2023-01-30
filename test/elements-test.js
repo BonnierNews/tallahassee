@@ -1766,6 +1766,15 @@ describe("elements", () => {
       expect(focusCount).to.equal(1);
     });
 
+    it("listens to blur event", () => {
+      let blurCount = 0;
+      buttons[0].addEventListener("blur", () => {
+        ++blurCount;
+      });
+      buttons[0].blur();
+      expect(blurCount).to.equal(1);
+    });
+
     it("does not trigger focus event when the element is disabled", () => {
       let focusCount = 0;
       buttons[2].addEventListener("focus", () => {
