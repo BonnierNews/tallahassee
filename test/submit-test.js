@@ -430,9 +430,7 @@ describe("submit", () => {
   });
 
   it("submitting form with multipart/form-data", async () => {
-    const browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("multipart-formdata-form");
     const input = form.getElementsByTagName("input")[0];
@@ -441,10 +439,10 @@ describe("submit", () => {
     browser.document.addEventListener("submit", (e) => {
       const data = new browser.window.FormData(e.target);
       expect(data.a).to.be.undefined;
-      expect(data.get("a")).to.eql({name: "dummy.jpg"});
+      expect(data.get("a")).to.eql({ name: "dummy.jpg" });
     });
 
-    input._uploadFile({name: "dummy.jpg"});
+    input._uploadFile({ name: "dummy.jpg" });
 
     button.click();
 
