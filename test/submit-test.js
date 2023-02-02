@@ -429,6 +429,29 @@ describe("submit", () => {
     expect(submitEvents).to.eql(1);
   });
 
+  it("submitting form with multipart/form-data", async () => {
+    const browser = await Browser(app, {
+      headers: {host: "www.expressen.se"}
+    }).navigateTo("/");
+
+    const form = browser.document.getElementById("multipart-formdata-form");
+    const input = form.getElementsByTagName("input")[0];
+    const button = form.getElementsByTagName("button")[0];
+
+    browser.document.addEventListener("submit", (e) => {
+      const data = new browser.window.FormData(e.target);
+      expect(data.a).to.be.undefined;
+      expect(data.get("a")).to.eql({name: "dummy.jpg"});
+    });
+
+    input._uploadFile({name: "dummy.jpg"});
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+    await browser._pending;
+  });
+
   it("preventing default on buttons with form attribute", async () => {
     const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 

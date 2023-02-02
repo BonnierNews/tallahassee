@@ -27,6 +27,12 @@ describe("FormData", () => {
     expect(entries).to.not.have.property("length");
   });
 
+  it("can not get value of entry with index but by method", () => {
+    const data = new FormData(form);
+    expect(data.myinput).to.be.undefined;
+    expect(data.get("myinput")).to.equal("Foo");
+  });
+
   it("can get input entries", () => {
     const entries = new FormData(form).entries();
     expect([ ...entries ]).to.deep.equal([ [ "myinput", "Foo" ] ]);
