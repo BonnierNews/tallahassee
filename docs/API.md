@@ -1,5 +1,5 @@
 <!-- version -->
-# 14.6.0 API Reference
+# 14.7.0 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -85,8 +85,6 @@ Test you abundant sticky logic.
 ## `browser.scrollToTopOfElement()`
 
 ```javascript
-"use strict";
-
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const Script = require("@bonniernews/wichita");
@@ -130,8 +128,6 @@ Resets element top to wherever it was before sticked.
 # IntersectionObserver
 
 ```javascript
-"use strict";
-
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const Script = require("@bonniernews/wichita");
@@ -175,8 +171,6 @@ describe("IntersectionObserver", () => {
 Switch scopes between iframe window and main window.
 
 ```javascript
-"use strict";
-
 const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const nock = require("nock");

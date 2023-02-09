@@ -12,8 +12,6 @@ Examples
 ## Capture DOM manipulation with mutation observer
 
 ```javascript
-"use strict";
-
 const Browser = require("@expressen/tallahassee");
 
 it("script mutates DOM", async () => {
@@ -53,8 +51,6 @@ it("script mutates DOM", async () => {
 ## Capture navigation when changing location
 
 ```javascript
-"use strict";
-
 const Browser = require("@expressen/tallahassee");
 
 it("script navigates away by changing location", async () => {
@@ -89,8 +85,6 @@ it("script navigates away by changing location", async () => {
 ## Capture navigation when submitting form
 
 ```javascript
-"use strict";
-
 const Browser = require("@expressen/tallahassee");
 const nock = require("nock");
 nock.enableNetConnect("127.0.0.1");

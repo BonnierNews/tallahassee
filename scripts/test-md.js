@@ -1,15 +1,13 @@
 /* eslint no-console:0 */
-"use strict";
+import {promises as fs, readFileSync} from "fs";
+import vm from "vm";
+import {Linter} from "eslint";
 
-const {promises: fs} = require("fs");
-const vm = require("vm");
-
-const lintConf = require("../.eslintrc.json");
+const lintConf = JSON.parse(readFileSync(".eslintrc.json"));
 lintConf.rules["no-unused-expressions"] = 0;
 lintConf.rules["no-unused-vars"] = 2;
 
-const {Linter} = require("eslint");
-const {name} = require("../package.json");
+const {name} = JSON.parse(readFileSync("package.json"));
 
 const requirePattern = new RegExp(`(require\\()(["'"])(${name.replace("/", "\\/")})(\\/|\\2)`, "g");
 
@@ -22,13 +20,11 @@ const filenames = getFileNames();
 const blockIdx = Number(process.argv[3]);
 
 const testScript = new vm.Script(`
-    "use strict";
-
+    import {expect} from "chai";
+    
     const describe = test;
     const before = test;
     const it = test;
-
-    const {expect} = require("chai");
 
     async function test(...args) {
       const cb = args.pop();
@@ -108,16 +104,14 @@ async function parseDoc(filePath) {
 }
 
 function execute(script) {
-  const context = {
-    require: require,
-    console: console,
+  const vmContext = new vm.createContext({
+    console,
     setTimeout,
     setImmediate,
-  };
-  const vmContext = new vm.createContext(context);
+  });
   testScript.runInContext(vmContext);
 
-  return script.runInContext(vmContext);
+  return new vm.SourceTextModule(script, vmContext).evaluate();
 }
 
 function displayLinting(result, filename, offset) {

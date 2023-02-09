@@ -1,9 +1,9 @@
-"use strict";
+import Script from "@bonniernews/wichita";
+import path from "path";
 
-const app = require("../app/app");
-const Browser = require("../");
-const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("../lib");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
+import {IntersectionObserver} from "../lib/index.js";
 
 describe("IntersectionObserver", () => {
   it("observes elements", async () => {
@@ -12,7 +12,7 @@ describe("IntersectionObserver", () => {
     });
     const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
 
-    await Script("../app/assets/scripts/main").run(browser.window);
+    await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
     expect(browser.window.IntersectionObserverEntry).to.exist;
@@ -30,7 +30,7 @@ describe("IntersectionObserver", () => {
 
     expect(lazyLoadElements.length).to.equal(1);
 
-    await Script("../app/assets/scripts/main").run(browser.window);
+    await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
     browser.setElementsToScroll(() => {
       return lazyLoadElements;

@@ -1,14 +1,11 @@
-"use strict";
+import {CookieJar, Cookie} from "cookiejar";
 
-const {CookieJar, Cookie} = require("cookiejar");
-const {normalizeHeaders} = require("./lib/getHeaders");
-const WebPage = require("./lib/WebPage");
+import {normalizeHeaders} from "./lib/getHeaders.js";
+import WebPage from "./lib/WebPage.js";
 
 const kOrigin = Symbol.for("origin");
 
-module.exports = Tallahassee;
-
-function Tallahassee(...args) {
+export default function Tallahassee(...args) {
   let origin, options;
   if (typeof args[0] === "object") {
     options = args[0];

@@ -1,6 +1,4 @@
-"use strict";
-
-const {Document, Window} = require("../lib");
+import {Document, Window} from "../lib/index.js";
 
 describe("HTMLIframeElement", () => {
   let document;

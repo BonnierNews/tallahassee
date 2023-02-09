@@ -1,10 +1,11 @@
-"use strict";
+import chai from "chai";
+import nock from "nock";
 
-const chai = require("chai");
+process.env.TZ = "Europe/Stockholm";
+process.env.NODE_ENV = "test";
 
 chai.config.includeStack = true;
 
-const nock = require("nock");
 nock.enableNetConnect("127.0.0.1");
 
 global.expect = chai.expect;

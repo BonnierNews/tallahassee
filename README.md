@@ -18,9 +18,7 @@ Supports just about everything.
 # Example:
 
 ```javascript
-"use strict";
-
-const app = require("../app/app");
+const {app} = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const Script = require("@bonniernews/wichita");
 
