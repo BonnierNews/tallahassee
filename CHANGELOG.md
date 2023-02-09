@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 14.6.0
+
+- support for required validation for select elements
+
 ## 14.5.0
 
 - now supports node 18
