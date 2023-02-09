@@ -352,4 +352,118 @@ describe("HTMLSelectElement", () => {
       select.options[0].selected = true;
     });
   });
+
+  describe("required", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <form id="get-form" type="get" action="/">
+                <label for="pet-select">Choose a pet:</label>
+                <select name="pets" id="pet-select" required>
+                    <option></option>
+                    <option value="dog">Dog</option>
+                    <option>No value</option>
+                </select>
+                <input id="submit-form" type="submit">
+              </form>
+            </body>
+          </html>`
+      });
+    });
+
+    it("reports valueMissing when empty value has been selected", () => {
+      const elm = document.getElementById("pet-select");
+      expect(elm).to.have.property("validity");
+      const validity = elm.validity;
+
+      expect(validity).to.have.property("valueMissing", true);
+      expect(elm.checkValidity()).to.equal(false);
+    });
+
+    it("does not report valueMissing when value has been selected", () => {
+      const elm = document.getElementById("pet-select");
+      elm.getElementsByTagName("option")[1].selected = true;
+      expect(elm).to.have.property("validity");
+      const validity = elm.validity;
+
+      expect(validity).to.have.property("valueMissing", false);
+      expect(elm.checkValidity()).to.equal(true);
+    });
+
+    it("does not report valueMissing when first value has text but no value attribute", () => {
+      const elm = document.getElementById("pet-select");
+      const firstOption = elm.getElementsByTagName("option")[0];
+      firstOption.innerText = "Text";
+      expect(elm).to.have.property("validity");
+      const validity = elm.validity;
+
+      expect(validity).to.have.property("valueMissing", false);
+      expect(elm.checkValidity()).to.equal(true);
+    });
+
+    it("form submit is prevented if input is required", () => {
+      let submitted = false;
+      document.addEventListener("submit", () => submitted = true);
+
+      document.getElementById("submit-form").click();
+
+      expect(submitted).to.be.false;
+    });
+  });
+
+  describe("custom validity", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <form id="get-form" type="get" action="/">
+                <label for="pet-select">Choose a pet:</label>
+                <select name="pets" id="pet-select" required oninvalid="setCustomValidity('Required')">
+                    <option value=""></option>
+                    <option value="dog">Dog</option>
+                </select>
+                <input id="submit-form" type="submit">
+              </form>
+            </body>
+          </html>`
+      });
+    });
+
+    it("setCustomValidity() without argument throws TypeError", () => {
+      const form = document.forms[0];
+      expect(() => form.elements.pets.setCustomValidity()).to.throw(TypeError, "Failed to execute 'setCustomValidity' on 'HTMLSelectElement': 1 argument required, but only 0 present.");
+    });
+
+    it("shows custom error message", () => {
+      const form = document.forms[0];
+      document.getElementById("submit-form").click();
+
+      expect(form.elements.pets.validationMessage).to.equal("Required");
+      expect(form.elements.pets.validity).to.have.property("customError", true);
+    });
+
+    it("checkValidity() returns true if required select is disabled", () => {
+      const form = document.forms[0];
+      form.elements.pets.disabled = true;
+      expect(form.elements.pets.checkValidity()).to.equal(true);
+    });
+
+    it("disabled required input is ignored", () => {
+      const form = document.forms[0];
+
+      let submitted = false;
+      document.addEventListener("submit", () => submitted = true);
+
+      form.elements.pets.disabled = true;
+      document.getElementById("submit-form").click();
+      expect(submitted).to.be.true;
+
+      expect(form.elements.pets.validationMessage).to.equal("");
+    });
+  });
 });
