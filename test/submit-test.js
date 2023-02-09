@@ -1,5 +1,5 @@
 import nock from "nock";
-import { Blob } from "buffer";
+import { File } from "buffer";
 
 import { app } from "../app/app.js";
 import Browser from "../index.js";
@@ -437,14 +437,14 @@ describe("submit", () => {
     const input = form.getElementsByTagName("input")[0];
     const button = form.getElementsByTagName("button")[0];
 
-    const fakeBlob = new Blob([ 1, 2, 3 ]);
+    const fakeFile = new File([ "" ], "filename", { type: "text/html" });
     browser.document.addEventListener("submit", (e) => {
       const data = new browser.window.FormData(e.target);
       expect(data.a).to.be.undefined;
-      expect(data.get("a").name).to.eq("blob");
+      expect(data.get("a").name).to.eq(fakeFile.name);
     });
 
-    input._uploadFile(fakeBlob);
+    input._uploadFile(fakeFile);
 
     button.click();
 

@@ -9,5 +9,8 @@
   ],
   "rules": {
     "no-setter-return": 0
+  },
+  "globals": {
+    "FormData": true
   }
 }
