@@ -534,5 +534,20 @@ describe("MutationObserver", () => {
 
       expect(records.length).to.equal(2);
     });
+
+    it("observer with attributes calls callback when element dataset changes", () => {
+      browser.document.body.setAttribute("data-count", "1");
+      const records = [];
+      const observer = new browser.window.MutationObserver((mutatedRecords) => {
+        records.push(...mutatedRecords);
+      });
+      observer.observe(browser.document.body, {attributes: true});
+
+      browser.document.body.dataset.count = "2";
+
+      expect(records.length).to.equal(1);
+
+      expect(records[0]).to.have.property("attributeName", "data-count");
+    });
   });
 });
