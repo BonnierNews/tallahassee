@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 14.7.0
+
+- changing a data attribute using dataset can trigger mutation observer
+
 ## 14.6.0
 
 - support for required validation for select elements
