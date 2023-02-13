@@ -10,7 +10,6 @@ lintConf.rules["no-unused-vars"] = 2;
 
 const {name} = JSON.parse(readFileSync("package.json"));
 
-// const requirePattern = new RegExp(`(require\\()(["'"])(${name.replace("/", "\\/")})(\\/|\\2)`, "g");
 const requirePattern = new RegExp(`(from )(["'"])(${name.replace("/", "\\/")})(\\/lib)?(\\2)`, "g");
 
 let blockCounter = 0;
@@ -90,12 +89,6 @@ async function parseDoc(filePath) {
 }
 
 async function execute(script) {
-  // const vmContext = new vm.createContext({
-  //   console,
-  //   setTimeout,
-  //   setImmediate,
-  // });
-  // await testScript.evaluate();
   await script.link(linker);
   return script.evaluate();
 }
