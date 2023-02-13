@@ -1,7 +1,5 @@
-"use strict";
-
-const app = require("../app/app");
-const Browser = require("../");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
 
 describe("CustomEvent", () => {
   it("creates an object with the expected properties", async () => {

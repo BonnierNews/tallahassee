@@ -1,10 +1,9 @@
-"use strict";
+import nock from "nock";
+import path from "path";
+import Script from "@bonniernews/wichita";
 
-const app = require("../app/app");
-const Browser = require("../");
-const nock = require("nock");
-const Path = require("path");
-const Script = require("@bonniernews/wichita");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
@@ -350,9 +349,7 @@ describe("Tallahassee", () => {
       });
       expect(browser.document.cookie).to.equal("_ga=1");
 
-      const script = Script("../app/assets/scripts/main");
-
-      await script.run(browser.window);
+      await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
       expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(1);
     });
@@ -360,9 +357,7 @@ describe("Tallahassee", () => {
     it("again", async () => {
       const browser = await Browser(app).navigateTo("/");
 
-      const script = Script("../app/assets/scripts/main");
-
-      await script.run(browser.window);
+      await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(0);
@@ -391,7 +386,7 @@ describe("Tallahassee", () => {
     it("iframe from other host scopes window and document", async () => {
       nock("http://example.com")
         .get("/framed-content")
-        .replyWithFile(200, Path.join(__dirname, "../app/assets/public/index.html"), {
+        .replyWithFile(200, path.resolve("app/assets/public", "index.html"), {
           "Content-Type": "text/html"
         });
 

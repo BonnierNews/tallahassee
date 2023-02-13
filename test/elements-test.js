@@ -1,12 +1,11 @@
-"use strict";
+import DOMException from "domexception";
 
-const DocumentFragment = require("../lib/DocumentFragment");
-const DOMException = require("domexception");
-const Element = require("../lib/Element");
-const HTMLAnchorElement = require("../lib/HTMLAnchorElement");
-const HTMLFormElement = require("../lib/HTMLFormElement");
-const {Document} = require("../lib");
-const {Event} = require("../lib/Events");
+import DocumentFragment from "../lib/DocumentFragment.js";
+import Element from "../lib/Element.js";
+import HTMLAnchorElement from "../lib/HTMLAnchorElement.js";
+import HTMLFormElement from "../lib/HTMLFormElement.js";
+import {Document} from "../lib/index.js";
+import {Event} from "../lib/Events.js";
 
 const elementProperties = [
   "children",

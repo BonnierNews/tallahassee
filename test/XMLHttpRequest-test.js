@@ -1,10 +1,9 @@
-"use strict";
+import http from "http";
+import nock from "nock";
 
-const app = require("../app/app");
-const Browser = require("../");
-const http = require("http");
-const nock = require("nock");
-const XMLHttpRequestClass = require("../lib/XMLHttpRequest");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
+import XMLHttpRequestClass from "../lib/XMLHttpRequest.js";
 
 describe("XMLHttpRequest", () => {
   let server, port, browser, tab;

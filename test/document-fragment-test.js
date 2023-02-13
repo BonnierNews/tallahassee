@@ -1,7 +1,5 @@
-"use strict";
-
-const Document = require("../lib/Document");
-const DocumentFragment = require("../lib/DocumentFragment");
+import Document from "../lib/Document.js";
+import DocumentFragment from "../lib/DocumentFragment.js";
 
 describe("DocumentFragment", () => {
   let documentFragment;

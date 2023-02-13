@@ -1,10 +1,8 @@
-"use strict";
+import http from "http";
+import nock from "nock";
 
-const app = require("../app/app");
-const Browser = require("../");
-const http = require("http");
-const nock = require("nock");
-const { expect } = require("chai");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
 
 const PORT = process.env.PORT;
 

@@ -1,7 +1,5 @@
-"use strict";
-
-const { Document } = require("../lib");
-const HTMLCollection = require("../lib/HTMLCollection");
+import { Document } from "../lib/index.js";
+import HTMLCollection from "../lib/HTMLCollection.js";
 
 describe("HTMLCollection", () => {
   let document;

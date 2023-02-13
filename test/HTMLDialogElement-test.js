@@ -1,7 +1,5 @@
-"use strict";
-
-const {Document} = require("../lib");
-const {Event} = require("../lib/Events");
+import {Document} from "../lib/index.js";
+import {Event} from "../lib/Events.js";
 
 describe("HTMLDialogElement", () => {
   let document;

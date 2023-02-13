@@ -1,8 +1,8 @@
-"use strict";
+import Script from "@bonniernews/wichita";
+import path from "path";
 
-const app = require("../app/app");
-const Browser = require("../");
-const Script = require("@bonniernews/wichita");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
 
 describe("MutationObserver", () => {
   it("triggers when element has been inserted into the observed node using appendChild", async () => {
@@ -23,7 +23,7 @@ describe("MutationObserver", () => {
     const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
-    await Script("../app/assets/scripts/main").run(browser.window);
+    await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
     expect(childListMutation).to.be.ok;
   });

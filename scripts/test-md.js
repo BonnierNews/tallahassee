@@ -1,17 +1,16 @@
 /* eslint no-console:0 */
-"use strict";
+import {promises as fs, readFileSync} from "fs";
+import vm from "vm";
+import {Linter} from "eslint";
+import linker from "./helpers/linker.js";
 
-const {promises: fs} = require("fs");
-const vm = require("vm");
-
-const lintConf = require("../.eslintrc.json");
+const lintConf = JSON.parse(readFileSync(".eslintrc.json"));
 lintConf.rules["no-unused-expressions"] = 0;
 lintConf.rules["no-unused-vars"] = 2;
 
-const {Linter} = require("eslint");
-const {name} = require("../package.json");
+const {name} = JSON.parse(readFileSync("package.json"));
 
-const requirePattern = new RegExp(`(require\\()(["'"])(${name.replace("/", "\\/")})(\\/|\\2)`, "g");
+const requirePattern = new RegExp(`(from )(["'"])(${name.replace("/", "\\/")})(\\/lib)?(\\2)`, "g");
 
 let blockCounter = 0;
 const linter = new Linter();
@@ -20,24 +19,6 @@ const exPattern = /```javascript\n([\s\S]*?)```/ig;
 const filenames = getFileNames();
 
 const blockIdx = Number(process.argv[3]);
-
-const testScript = new vm.Script(`
-    "use strict";
-
-    const describe = test;
-    const before = test;
-    const it = test;
-
-    const {expect} = require("chai");
-
-    async function test(...args) {
-      const cb = args.pop();
-      await cb();
-    }
-  `, {
-  filename: "testSetup.js",
-  displayErrors: true
-});
 
 (async () => {
   for await (const file of filenames) {
@@ -57,7 +38,8 @@ async function parseDoc(filePath) {
     var content = fileContent.toString();
 
     content.replace(exPattern, (match, block, idx) => {
-      block = block.replace(requirePattern, "$1$2..$4");
+      block = block.replace(requirePattern, "$1$2../..$4/index.js$5");
+      block = `import "example-test";\n${block}`;
       const blockLine = calculateLine(idx);
 
       blocks.push({
@@ -82,9 +64,8 @@ async function parseDoc(filePath) {
   }
 
   function parse(filename, scriptBody, lineOffset) {
-    return new vm.Script(scriptBody, {
-      filename: filename,
-      displayErrors: true,
+    return new vm.SourceTextModule(scriptBody, {
+      identifier: filename,
       lineOffset: lineOffset,
     });
   }
@@ -107,17 +88,9 @@ async function parseDoc(filePath) {
   }
 }
 
-function execute(script) {
-  const context = {
-    require: require,
-    console: console,
-    setTimeout,
-    setImmediate,
-  };
-  const vmContext = new vm.createContext(context);
-  testScript.runInContext(vmContext);
-
-  return script.runInContext(vmContext);
+async function execute(script) {
+  await script.link(linker);
+  return script.evaluate();
 }
 
 function displayLinting(result, filename, offset) {

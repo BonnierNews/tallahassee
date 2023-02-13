@@ -1,7 +1,5 @@
-"use strict";
-
-const { Window, Document } = require("../lib");
-const HTMLImageElement = require("../lib/HTMLImageElement");
+import { Window, Document } from "../lib/index.js";
+import HTMLImageElement from "../lib/HTMLImageElement.js";
 
 describe("Image", () => {
   let document, window;

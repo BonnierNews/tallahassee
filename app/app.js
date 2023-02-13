@@ -1,15 +1,16 @@
-"use strict";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const express = require("express");
-const Path = require("path");
 const app = express();
-const index = Path.join(__dirname, "assets/public/index.html");
-const errorPage = Path.join(__dirname, "assets/public/error.html");
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const index = path.join(__dirname, "assets/public/index.html");
+const errorPage = path.join(__dirname, "assets/public/error.html");
 
 app.set("trust proxy", true);
 
-app.use("/", express.static(Path.join(__dirname, "assets/public")));
-app.use("/", express.static(Path.join(__dirname, "assets/images")));
+app.use("/", express.static(path.join(__dirname, "assets/public")));
+app.use("/", express.static(path.join(__dirname, "assets/images")));
 
 app.post("/", express.urlencoded({extended: true}), (req, res) => {
   res.send(`<html><body>Post body ${JSON.stringify(req.body)}</body></html>`);
@@ -63,9 +64,9 @@ app.get("(*)?", (req, res) => res.sendFile(index));
 
 app.use(errorHandler);
 
-module.exports = app;
+export { app };
 
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const port = Number(process.env.PORT) || 3000;
   const server = app.listen(port, () => {
     // eslint-disable-next-line no-console

@@ -1,7 +1,5 @@
-"use strict";
-
-const Document = require("../lib/Document");
-const FormData = require("../lib/FormData");
+import Document from "../lib/Document.js";
+import FormData from "../lib/FormData.js";
 
 describe("FormData", () => {
   let form;
@@ -50,10 +48,10 @@ describe("FormData", () => {
   });
 
   it("returns empty strings if values are nulled", () => {
-    const data = new FormData(form);
     form.elements.mycheck.checked = true;
     form.elements.mycheck.value = null;
     form.elements.myinput.value = null;
+    const data = new FormData(form);
     expect(Object.fromEntries(data)).to.deep.equal({
       mycheck: "on",
       myinput: "",
@@ -61,18 +59,18 @@ describe("FormData", () => {
   });
 
   it("ignores fields without name", () => {
-    const data = new FormData(form);
     form.elements.mycheck.checked = true;
     form.elements[1].name = "";
+    const data = new FormData(form);
     expect(Object.fromEntries(data)).to.deep.equal({
       mycheck: "1",
     });
   });
 
   it("ignores fields that are disabled", () => {
-    const data = new FormData(form);
     form.elements.mycheck.checked = true;
     form.elements.mycheck.disabled = true;
+    const data = new FormData(form);
     expect(Object.fromEntries(data)).to.deep.equal({
       myinput: "Foo",
     });

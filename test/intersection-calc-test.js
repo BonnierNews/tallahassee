@@ -1,11 +1,7 @@
-"use strict";
-
-const intersectionCalc = require("../lib/intersectionCalc");
+import {getRootMargin, getIntersectionRatio, getIsIntersecting} from "../lib/intersectionCalc.js";
 
 describe("Intersection Calc", () => {
   describe("getRootMargin", () => {
-    const {getRootMargin} = intersectionCalc;
-
     it("handles undefined argument", () => {
       const result = getRootMargin();
       expect(result).to.eql({top: 0, right: 0, bottom: 0, left: 0});
@@ -48,8 +44,6 @@ describe("Intersection Calc", () => {
   });
 
   describe("getIntersectionRatio", () => {
-    const {getIntersectionRatio} = intersectionCalc;
-
     describe("with no rootMargin", () => {
       it("returns 1 when fully inside window (at the top)", () => {
         const result = getIntersectionRatio({top: 0, height: 100}, 400);
@@ -216,8 +210,6 @@ describe("Intersection Calc", () => {
   });
 
   describe("isIntersecting", () => {
-    const {getIsIntersecting} = intersectionCalc;
-
     describe("with no intersectionRatio", () => {
       it("assumes that it's not intersecting", () => {
         const result = getIsIntersecting();

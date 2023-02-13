@@ -1,9 +1,9 @@
-"use strict";
+import Script from "@bonniernews/wichita";
+import path from "path";
 
-const app = require("../app/app");
-const Browser = require("../");
-const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("../lib");
+import {app} from "../app/app.js";
+import Browser from "../index.js";
+import {IntersectionObserver} from "../lib/index.js";
 
 describe("Window scroller", () => {
   it("observes and sets top of elements passed to stacked elements function", async () => {
@@ -326,7 +326,7 @@ describe("Window scroller", () => {
       const lazyLoaded = browser.document.getElementsByClassName("lazy-load")[0];
       lazyLoaded._setBoundingClientRect({top: 300});
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+      await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
       browser.scrollToTopOfElement(lazyLoaded);
 

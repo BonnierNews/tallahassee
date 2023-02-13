@@ -2,12 +2,13 @@
   "name": "@expressen/tallahassee",
   "version": "14.7.0",
   "description": "Lightweight client testing framework",
+  "type": "module",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "mocha",
     "posttest": "eslint . --cache && npm run test-md && npm run toc",
-    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md,./docs/API.md,./docs/Examples.md",
+    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md.js ./README.md,./docs/API.md,./docs/Examples.md",
     "toc": "node ./scripts/generate-api-toc ./docs/API.md,./docs/Examples.md"
   },
   "engines": {
@@ -31,7 +32,7 @@
     "cheerio": "1.0.0-rc.3",
     "cookiejar": "^2.1.3",
     "domexception": "^4.0.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.9"
   },
   "devDependencies": {
     "@bonniernews/wichita": "^1.1.0",

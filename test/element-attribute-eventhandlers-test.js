@@ -1,6 +1,4 @@
-"use strict";
-
-const Browser = require("../");
+import Browser from "../index.js";
 
 describe("element attribute eventhandler", () => {
   let browser;
