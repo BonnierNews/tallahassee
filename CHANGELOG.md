@@ -3,6 +3,17 @@ Changelog
 
 ## Unreleased
 
+## 14.9.0
+
+- project is now using ESM
+- use of `eslint-config-exp` for linting
+- got rid of most prototype usage and replaced it with classes
+- removed deprecated usage of `url`
+
+## 14.8.0
+
+- support for KeyboardEvent and blur()
+
 ## 14.7.0
 
 - changing a data attribute using dataset can trigger mutation observer
