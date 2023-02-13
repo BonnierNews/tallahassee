@@ -93,7 +93,7 @@ import {app} from "../../app/app.js";
 describe("Window scroller", () => {
   describe("use with IntersectionObserver", () => {
     it("listens to window scroll", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       browser.window.IntersectionObserver = IntersectionObserver(browser);
 
       browser.setElementsToScroll((document) => {
@@ -135,7 +135,7 @@ import {app} from "../../app/app.js";
 
 describe("IntersectionObserver", () => {
   it("observes elements", async () => {
-    const browser = await Browser(app).navigateTo("/", {
+    const browser = await new Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });
     const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
@@ -146,7 +146,7 @@ describe("IntersectionObserver", () => {
   });
 
   it("acts on window scroll", async () => {
-    const browser = await Browser(app).navigateTo("/", {
+    const browser = await new Browser(app).navigateTo("/", {
       Cookie: "_ga=1"
     });
     browser.window.IntersectionObserver = IntersectionObserver(browser);
@@ -177,7 +177,7 @@ import {app} from "../../app/app.js";
 
 describe("Iframe", () => {
   it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
-    const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+    const browser = await new Browser(app).navigateTo("/", {cookie: "_ga=2"});
     const element = browser.document.createElement("iframe");
 
     element.id = "friendly-frame";
@@ -200,7 +200,7 @@ describe("Iframe", () => {
       .replyWithFile(200, "./app/assets/public/index.html", {
         "Content-Type": "text/html"
       });
-    const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+    const browser = await new Browser(app).navigateTo("/", {cookie: "_ga=2"});
     const element = browser.document.createElement("iframe");
     element.id = "iframe";
     element.src = "//example.com/framed-content";

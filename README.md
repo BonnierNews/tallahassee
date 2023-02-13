@@ -25,12 +25,12 @@ import {app} from "../../app/app.js";
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
     it("navigates to url", async () => {
-      await Browser(app).navigateTo("/");
+      await new Browser(app).navigateTo("/");
     });
 
     it("throws if not 200", async () => {
       try {
-        await Browser(app).navigateTo("/404");
+        await new Browser(app).navigateTo("/404");
       } catch (e) {
         var err = e; // eslint-disable-line no-var
       }
@@ -38,14 +38,14 @@ describe("Tallahassee", () => {
     });
 
     it("unless you override status code", async () => {
-      const browser = await Browser(app).navigateTo("/404", null, 404);
+      const browser = await new Browser(app).navigateTo("/404", null, 404);
       expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
     });
   });
 
   describe("run script", () => {
     it("run es6 script sources with @bonniernews/wichita", async () => {
-      const browser = await Browser(app).navigateTo("/", {
+      const browser = await new Browser(app).navigateTo("/", {
         Cookie: "_ga=1"
       });
 
@@ -56,7 +56,7 @@ describe("Tallahassee", () => {
     });
 
     it("again", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       await Script("./app/assets/scripts/main.js").run(browser.window);
 
