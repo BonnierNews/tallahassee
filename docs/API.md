@@ -85,10 +85,10 @@ Test you abundant sticky logic.
 ## `browser.scrollToTopOfElement()`
 
 ```javascript
-const app = require("../app/app");
-const Browser = require("@expressen/tallahassee");
-const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("@expressen/tallahassee/lib");
+import Browser from "@expressen/tallahassee";
+import Script from "@bonniernews/wichita";
+import {IntersectionObserver} from "@expressen/tallahassee/lib";
+import {app} from "../../app/app.js";
 
 describe("Window scroller", () => {
   describe("use with IntersectionObserver", () => {
@@ -128,10 +128,10 @@ Resets element top to wherever it was before sticked.
 # IntersectionObserver
 
 ```javascript
-const app = require("../app/app");
-const Browser = require("@expressen/tallahassee");
-const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("@expressen/tallahassee/lib");
+import Browser from "@expressen/tallahassee";
+import Script from "@bonniernews/wichita";
+import {IntersectionObserver} from "@expressen/tallahassee/lib";
+import {app} from "../../app/app.js";
 
 describe("IntersectionObserver", () => {
   it("observes elements", async () => {
@@ -171,9 +171,9 @@ describe("IntersectionObserver", () => {
 Switch scopes between iframe window and main window.
 
 ```javascript
-const app = require("../app/app");
-const Browser = require("@expressen/tallahassee");
-const nock = require("nock");
+import Browser from "@expressen/tallahassee";
+import nock from "nock";
+import {app} from "../../app/app.js";
 
 describe("Iframe", () => {
   it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {

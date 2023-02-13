@@ -12,7 +12,7 @@ Examples
 ## Capture DOM manipulation with mutation observer
 
 ```javascript
-const Browser = require("@expressen/tallahassee");
+import Browser from "@expressen/tallahassee";
 
 it("script mutates DOM", async () => {
   const markup = `
@@ -51,7 +51,7 @@ it("script mutates DOM", async () => {
 ## Capture navigation when changing location
 
 ```javascript
-const Browser = require("@expressen/tallahassee");
+import Browser from "@expressen/tallahassee";
 
 it("script navigates away by changing location", async () => {
   const markup = `
@@ -85,8 +85,8 @@ it("script navigates away by changing location", async () => {
 ## Capture navigation when submitting form
 
 ```javascript
-const Browser = require("@expressen/tallahassee");
-const nock = require("nock");
+import Browser from "@expressen/tallahassee";
+import nock from "nock";
 nock.enableNetConnect("127.0.0.1");
 
 it("script navigates away by changing location", async () => {

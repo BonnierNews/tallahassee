@@ -7,7 +7,7 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "mocha",
-    "posttest": "eslint . --cache && npm run toc",
+    "posttest": "eslint . --cache && npm run test-md && npm run toc",
     "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md.js ./README.md,./docs/API.md,./docs/Examples.md",
     "toc": "node ./scripts/generate-api-toc ./docs/API.md,./docs/Examples.md"
   },
