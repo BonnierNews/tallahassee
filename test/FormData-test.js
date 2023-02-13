@@ -74,6 +74,7 @@ describe("FormData", () => {
 
   it("throws type error if constructing with element that is not a form", () => {
     expect(() => {
+      // eslint-disable-next-line no-new
       new FormData(form.elements[0]);
     }).to.throw(TypeError, "Failed to construct 'FormData': parameter 1 is not of type 'HTMLFormElement'");
   });
