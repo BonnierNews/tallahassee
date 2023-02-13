@@ -3,6 +3,12 @@ Changelog
 
 ## Unreleased
 
+## 14.10.0
+
+- support for `multipart/form-data` in forms, specifically submitting files
+- upgraded `node-fetch` in order to get a more robust `FormData`
+- add `enctype` to `HTMLFormElement`
+
 ## 14.9.0
 
 - project is now using ESM
