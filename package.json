@@ -1,6 +1,6 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "14.89.0",
+  "version": "14.9.0",
   "description": "Lightweight client testing framework",
   "type": "module",
   "main": "index.js",
