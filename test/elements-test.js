@@ -4,8 +4,8 @@ import DocumentFragment from "../lib/DocumentFragment.js";
 import Element from "../lib/Element.js";
 import HTMLAnchorElement from "../lib/HTMLAnchorElement.js";
 import HTMLFormElement from "../lib/HTMLFormElement.js";
-import {Document} from "../lib/index.js";
-import {Event} from "../lib/Events.js";
+import { Document } from "../lib/index.js";
+import { Event } from "../lib/Events.js";
 
 const elementProperties = [
   "children",
@@ -24,7 +24,7 @@ const elementProperties = [
   "style",
   "tagName",
   "type",
-  "nextElementSibling"
+  "nextElementSibling",
 ];
 
 const elementApi = [
@@ -69,7 +69,7 @@ describe("elements", () => {
               <iframe class="test-src" src="/qs/?widget=malservice">Relative frame with query parameter</iframe>
               <span>Text <b>bold</b> and some</span>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -109,7 +109,7 @@ describe("elements", () => {
       expect(elm.attributes.id.name).to.equal("id");
       expect(elm.attributes.id.value).to.equal("headline");
 
-      expect(() => elm.attributes.id.name = "test").to.throw();
+      expect(() => (elm.attributes.id.name = "test")).to.throw();
 
       elm.attributes.id.value = "test";
       expect(elm.attributes.id.value).to.equal("test");
@@ -126,8 +126,8 @@ describe("elements", () => {
     });
 
     describe("className", () => {
-      it("exposes className with the expected behaviour", async () => {
-        const [elm] = document.getElementsByTagName("h1");
+      it("exposes className with the expected behaviour", () => {
+        const [ elm ] = document.getElementsByTagName("h1");
         expect(elm.className).to.equal("");
 
         elm.className = "class-name";
@@ -142,10 +142,10 @@ describe("elements", () => {
       let elm;
 
       beforeEach(() => {
-        [elm] = document.getElementsByTagName("h1");
+        [ elm ] = document.getElementsByTagName("h1");
       });
 
-      it("exposes classList with the expected behaviour", async () => {
+      it("exposes classList with the expected behaviour", () => {
         expect(elm.classList).to.be.ok;
         elm.classList.add("class-list");
 
@@ -164,10 +164,10 @@ describe("elements", () => {
         expect(elm.classList._classes).to.not.contain("class-list");
 
         elm.classList.add("class-list", "second-class");
-        expect(elm.classList._classes).to.include.members(["class-list", "second-class"]);
+        expect(elm.classList._classes).to.include.members([ "class-list", "second-class" ]);
 
         elm.classList.remove("class-list", "second-class");
-        expect(elm.classList._classes).to.not.include.members(["class-list", "second-class"]);
+        expect(elm.classList._classes).to.not.include.members([ "class-list", "second-class" ]);
       });
 
       it("exposes hook for manipulating element when class is added", () => {
@@ -196,7 +196,7 @@ describe("elements", () => {
       });
     });
 
-    it("exposes disabled with the expected behaviour on input element", async () => {
+    it("exposes disabled with the expected behaviour on input element", () => {
       const elm = document.getElementsByTagName("input")[0];
       expect(elm).to.have.property("disabled").that.is.false;
       elm.disabled = true;
@@ -205,7 +205,7 @@ describe("elements", () => {
       expect(elm.outerHTML).to.equal("<input type=\"button\">");
     });
 
-    it("exposes anchors with the expected behaviour", async () => {
+    it("exposes anchors with the expected behaviour", () => {
       const anchors = document.getElementsByTagName("a");
       expect(anchors[0]).to.be.instanceof(HTMLAnchorElement);
       expect(anchors[0]).to.have.property("href", "https://example.com/");
@@ -216,7 +216,7 @@ describe("elements", () => {
       expect(anchors[3]).to.have.property("href", "https://www.expressen.se/?signed_out=true");
     });
 
-    it("exposes .src with the expected behaviour", async () => {
+    it("exposes .src with the expected behaviour", () => {
       const sources = document.getElementsByClassName("test-src");
       expect(sources[0]).to.have.property("src", "https://example.com/img.png");
       expect(sources[1]).to.have.property("src", "http://example.com/");
@@ -232,7 +232,7 @@ describe("elements", () => {
       expect(emptySource, "empty src").to.have.property("src", "");
     });
 
-    it("triggers load event when setting .src", async () => {
+    it("triggers load event when setting .src", () => {
       const images = document.getElementsByTagName("img");
       const img1 = images[0];
       const img2 = images[1];
@@ -266,7 +266,7 @@ describe("elements", () => {
     });
 
     describe("childNodes", () => {
-      it("return all child nodes including text", async () => {
+      it("return all child nodes including text", () => {
         const span = document.getElementsByTagName("span")[0];
         const childNodes = span.childNodes;
         expect(childNodes.length).to.equal(3);
@@ -276,7 +276,7 @@ describe("elements", () => {
         expect(childNodes[2].nodeType).to.equal(3);
       });
 
-      it("returns the same nodes if called again", async () => {
+      it("returns the same nodes if called again", () => {
         const span = document.getElementsByTagName("span")[0];
         const call1 = span.childNodes;
         const call2 = span.childNodes;
@@ -290,12 +290,12 @@ describe("elements", () => {
     });
 
     describe("parentNode", () => {
-      it("returns parent node", async () => {
+      it("returns parent node", () => {
         const span = document.getElementsByTagName("span")[0];
         expect(span.parentNode === document.body).to.be.true;
       });
 
-      it("body parent node is document.documentElement", async () => {
+      it("body parent node is document.documentElement", () => {
         expect(document.body.parentNode === document.documentElement).to.be.true;
       });
     });
@@ -314,7 +314,7 @@ describe("elements", () => {
                   <span class="row--boat">Wide</span>
                 </div>
               </body>
-            </html>`
+            </html>`,
         });
       });
 
@@ -345,7 +345,7 @@ describe("elements", () => {
                 <span class="row--boat">Wide</span>
               </div>
             </section>
-          `
+          `,
         });
         element = document.getElementsByTagName("section")[0];
       });
@@ -370,7 +370,7 @@ describe("elements", () => {
                 <span class="row--boat">Wide</span>
               </div>
             </section>
-          `
+          `,
         });
         element = document.getElementsByTagName("section")[0];
       });
@@ -404,7 +404,7 @@ describe("elements", () => {
         const window = {
           get window() {
             return this;
-          }
+          },
         };
         document = new Document({
           text: `
@@ -414,7 +414,7 @@ describe("elements", () => {
                 <div id="parent-1"></div>
                 <div id="parent-2"></div>
               </body>
-            </html>`
+            </html>`,
         }, null, window);
       });
 
@@ -434,7 +434,7 @@ describe("elements", () => {
 
       it("inserts new child", () => {
         const elm = document.createElement("span");
-        elm.dataset.json = JSON.stringify({data: 1});
+        elm.dataset.json = JSON.stringify({ data: 1 });
         elm.textContent = "åäö";
         document.body.appendChild(elm);
 
@@ -442,7 +442,7 @@ describe("elements", () => {
 
         expect(newElm.outerHTML).to.equal("<span data-json=\"{\"data\":1}\">åäö</span>");
         expect(newElm.dataset.json).to.equal("{\"data\":1}");
-        expect(JSON.parse(newElm.dataset.json)).to.eql({data: 1});
+        expect(JSON.parse(newElm.dataset.json)).to.eql({ data: 1 });
       });
 
       it("executes if script", () => {
@@ -467,7 +467,7 @@ describe("elements", () => {
                 </div>
                 <div id="parent-2"></div>
               </body>
-            </html>`
+            </html>`,
         });
       });
 
@@ -517,23 +517,23 @@ describe("elements", () => {
               <h2 id="headline">Test</h2>
               <img style="display: none;height:0; -moz-transition-duration: 12ms">
             </body>
-          </html>`
+          </html>`,
       });
     });
 
-    it("exposes style with the expected behaviour", async () => {
-      const [elm] = document.getElementsByTagName("h2");
+    it("exposes style with the expected behaviour", () => {
+      const [ elm ] = document.getElementsByTagName("h2");
       expect(elm).to.have.property("style").that.eql({});
       elm.style.display = "none";
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"display: none;\">Test</h2>");
       elm.style.removeProperty("display");
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\">Test</h2>");
 
-      const [img] = document.getElementsByTagName("img");
+      const [ img ] = document.getElementsByTagName("img");
       expect(img.style).to.eql({
         mozTransitionDuration: "12ms",
         display: "none",
-        height: "0"
+        height: "0",
       });
 
       img.style.height = "12px";
@@ -541,8 +541,8 @@ describe("elements", () => {
       expect(img.getAttribute("style")).to.equal("display: none;height: 12px;-moz-transition-duration: 12ms;width: 0;");
     });
 
-    it("handles setting camel cased properties", async () => {
-      const [elm] = document.getElementsByTagName("h2");
+    it("handles setting camel cased properties", () => {
+      const [ elm ] = document.getElementsByTagName("h2");
 
       elm.style.mozTransitionDuration = "6s";
       expect(elm.outerHTML).to.equal("<h2 id=\"headline\" style=\"-moz-transition-duration: 6s;\">Test</h2>");
@@ -557,7 +557,7 @@ describe("elements", () => {
     });
 
     it("handles empty string as reset value", () => {
-      const [elm] = document.getElementsByTagName("img");
+      const [ elm ] = document.getElementsByTagName("img");
       expect(elm.style.display).to.equal("none");
 
       elm.style.display = "";
@@ -565,7 +565,7 @@ describe("elements", () => {
     });
 
     it("handles null as reset value", () => {
-      const [elm] = document.getElementsByTagName("img");
+      const [ elm ] = document.getElementsByTagName("img");
       expect(elm.style.display).to.equal("none");
 
       elm.style.display = null;
@@ -584,7 +584,7 @@ describe("elements", () => {
               <input type="button">
               <script>var a = 1;</script>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -611,7 +611,7 @@ describe("elements", () => {
                 <input type="radio" name="test" value="2">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -700,7 +700,7 @@ describe("elements", () => {
                 <input type="radio" name="test" value="2">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
 
       const elms1 = document.getElementById("form1").getElementsByTagName("input");
@@ -726,7 +726,7 @@ describe("elements", () => {
               </form>
               <input type="checkbox" name="test3" value="3">
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -818,7 +818,7 @@ describe("elements", () => {
                 <p>Bar</p>
               </details>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -870,12 +870,12 @@ describe("elements", () => {
               <h2>Test</h2>
               <p>Body text</p>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
     it("sets result of getBoundingClientRect", () => {
-      const [elm] = document.getElementsByTagName("p");
+      const [ elm ] = document.getElementsByTagName("p");
       elm._setBoundingClientRect({
         top: 10,
         bottom: 20,
@@ -894,10 +894,8 @@ describe("elements", () => {
     });
 
     it("sets height to 0 and sets bottom value to top value if there is only top", () => {
-      const [elm] = document.getElementsByTagName("p");
-      elm._setBoundingClientRect({
-        top: 10,
-      });
+      const [ elm ] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect({ top: 10 });
 
       expect(elm.getBoundingClientRect()).to.eql({
         top: 10,
@@ -905,25 +903,25 @@ describe("elements", () => {
         right: 0,
         width: 0,
         bottom: 10,
-        height: 0
+        height: 0,
       });
     });
 
     it("sets offsetHeight as well", () => {
-      const [elm] = document.getElementsByTagName("p");
-      elm._setBoundingClientRect({top: 10, bottom: 200});
+      const [ elm ] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect({ top: 10, bottom: 200 });
       expect(elm.offsetHeight).to.equal(190);
 
-      elm._setBoundingClientRect({top: -300, bottom: 0});
+      elm._setBoundingClientRect({ top: -300, bottom: 0 });
       expect(elm.offsetHeight).to.equal(300);
     });
 
     it("sets offsetWidth as well", () => {
-      const [elm] = document.getElementsByTagName("p");
-      elm._setBoundingClientRect({left: 10, right: 200});
+      const [ elm ] = document.getElementsByTagName("p");
+      elm._setBoundingClientRect({ left: 10, right: 200 });
       expect(elm.offsetWidth).to.equal(190);
 
-      elm._setBoundingClientRect({left: -300, right: 0});
+      elm._setBoundingClientRect({ left: -300, right: 0 });
       expect(elm.offsetWidth).to.equal(300);
     });
   });
@@ -938,7 +936,7 @@ describe("elements", () => {
               <h2>Test</h2>
               <script>var a = 1;</script>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -980,7 +978,7 @@ describe("elements", () => {
                 Some <strong>string</strong> text
               </p>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1007,7 +1005,7 @@ describe("elements", () => {
               <p>Some <strong>string</strong> text</p>
               <p class="empty"></p>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1038,7 +1036,7 @@ describe("elements", () => {
                 Some <strong>string</strong> <b>bold</b> text
               </p>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1064,7 +1062,7 @@ describe("elements", () => {
             <body>
               <h2>Test <b>title</b></h2>
               <p>Some <strong>string</strong> <b>bold</b> text</p>
-            <p class="empty"></p></body></html>`
+            <p class="empty"></p></body></html>`,
       });
     });
 
@@ -1100,7 +1098,7 @@ describe("elements", () => {
               <p class="empty"></p>
             </div>
             <div id="outside"></div>
-          </body></html>`
+          </body></html>`,
       });
     });
 
@@ -1144,19 +1142,19 @@ describe("elements", () => {
                 <span class="element"></span>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
     it("should get parent element", () => {
-      const [element] = document.getElementsByTagName("span");
+      const [ element ] = document.getElementsByTagName("span");
       const closest = element.closest(".parent");
 
       expect(closest).to.equal(document.getElementsByClassName("parent")[0]);
     });
 
     it("should get itself", () => {
-      const [element] = document.getElementsByTagName("span");
+      const [ element ] = document.getElementsByTagName("span");
       const closest = element.closest(".element");
 
       expect(closest).to.equal(element);
@@ -1172,7 +1170,7 @@ describe("elements", () => {
             <body>
               <h2 id="h" class="header">Test <b>title</b></h2>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1199,7 +1197,7 @@ describe("elements", () => {
                 <div class="child"></div>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
 
       const children = document.getElementsByClassName("child");
@@ -1207,7 +1205,7 @@ describe("elements", () => {
         const el = children[i];
         el._setBoundingClientRect({
           left: 100 * i,
-          right: 100 * (i + 1)
+          right: 100 * (i + 1),
         });
       }
     });
@@ -1230,7 +1228,7 @@ describe("elements", () => {
                 <div class="child"></div>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
 
       const children = document.getElementsByClassName("child");
@@ -1238,7 +1236,7 @@ describe("elements", () => {
         const el = children[i];
         el._setBoundingClientRect({
           top: 100 * i,
-          bottom: 100 * (i + 1)
+          bottom: 100 * (i + 1),
         });
       }
     });
@@ -1257,12 +1255,12 @@ describe("elements", () => {
             <body>
               <span data-json="{&quot;var&quot;:1}">åäö</span>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
     it("should return the expected markup", () => {
-      const [elm] = document.getElementsByTagName("span");
+      const [ elm ] = document.getElementsByTagName("span");
       expect(elm.outerHTML).to.equal("<span data-json=\"{\"var\":1}\">åäö</span>");
     });
   });
@@ -1276,17 +1274,17 @@ describe("elements", () => {
             <body>
               <span>åäö</span>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
     it("get returns text content", () => {
-      const [elm] = document.getElementsByTagName("span");
+      const [ elm ] = document.getElementsByTagName("span");
       expect(elm.innerText).to.equal("åäö");
     });
 
     it("set replaces content should insert child", () => {
-      const [elm] = document.getElementsByTagName("span");
+      const [ elm ] = document.getElementsByTagName("span");
       elm.innerText = "ÖÄÅ";
       expect(elm.innerText).to.equal("ÖÄÅ");
     });
@@ -1305,7 +1303,7 @@ describe("elements", () => {
                 <span>Child element node</span>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1341,7 +1339,7 @@ describe("elements", () => {
               <h2>Test <b>title</b></h2>
               <video id="video-element"></video>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1397,17 +1395,17 @@ describe("elements", () => {
               <h1>Template</h1>
               <template><h2>Test <b>title</b></h2></template>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
     it("has content property that is a DocumentFragment", () => {
-      const [element] = document.getElementsByTagName("template");
+      const [ element ] = document.getElementsByTagName("template");
       expect(element.content).to.be.instanceof(DocumentFragment);
     });
 
     it("non-template element returns undefined", () => {
-      const [element] = document.getElementsByTagName("h1");
+      const [ element ] = document.getElementsByTagName("h1");
       expect(element.content).to.be.undefined;
     });
   });
@@ -1424,7 +1422,7 @@ describe("elements", () => {
                 <button type="submit">Submit</submit>
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1452,7 +1450,7 @@ describe("elements", () => {
               text
               <div class="next-element"></div>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1489,7 +1487,7 @@ describe("elements", () => {
               <div class="element-20"></div>
               text2
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1574,7 +1572,7 @@ describe("elements", () => {
             <body>
               <div class="div-1"></div>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1644,7 +1642,7 @@ describe("elements", () => {
             <body>
               <div class="div-1"></div>
             </body>
-          </html>`
+          </html>`,
       });
       elementToInsert = document.createElement("p");
       elementToInsert.className = "p-1";
@@ -1708,7 +1706,7 @@ describe("elements", () => {
               <div class="element" data-attr="value"></div>
             </body>
           </html>
-          `
+          `,
       });
     });
 
@@ -1750,7 +1748,7 @@ describe("elements", () => {
                 <button id="button-3" type="button" disabled="disabled"></button>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
       buttons = document.getElementsByTagName("button");
       clickCount = 0;
@@ -1798,7 +1796,7 @@ describe("elements", () => {
     });
 
     it("listens to click event once", () => {
-      buttons[0].addEventListener("click", increment, {once: true});
+      buttons[0].addEventListener("click", increment, { once: true });
 
       buttons[0].click();
       expect(clickCount).to.equal(1);
@@ -1865,7 +1863,7 @@ describe("elements", () => {
 
       buttons[2].dispatchEvent(new Event("columbus", { bubbles: true }));
 
-      expect(bubbled).to.eql(["button", "div", "body", "html", "document"]);
+      expect(bubbled).to.eql([ "button", "div", "body", "html", "document" ]);
     });
 
     it("should NOT bubble event if bubbles is disabled (default)", () => {
@@ -1886,7 +1884,7 @@ describe("elements", () => {
 
       buttons[2].dispatchEvent(new Event("wichita"));
 
-      expect(bubbled).to.eql(["button"]);
+      expect(bubbled).to.eql([ "button" ]);
     });
 
     it("should NOT propagate click to parent when propagation stopped", () => {
@@ -1908,11 +1906,11 @@ describe("elements", () => {
       it("disregards multiple 'identical' event listeners", () => {
         buttons[0].addEventListener("click", increment);
         buttons[0].addEventListener("click", increment, false);
-        buttons[0].addEventListener("click", increment, {capture: false});
-        buttons[0].addEventListener("click", increment, {passive: true});
+        buttons[0].addEventListener("click", increment, { capture: false });
+        buttons[0].addEventListener("click", increment, { passive: true });
 
         buttons[0].addEventListener("click", increment, true);
-        buttons[0].addEventListener("click", increment, {capture: true});
+        buttons[0].addEventListener("click", increment, { capture: true });
 
         buttons[0].click();
         expect(clickCount).to.equal(2);
@@ -1927,11 +1925,11 @@ describe("elements", () => {
       });
 
       it("multiple listeners with different once option", () => {
-        buttons[0].addEventListener("click", increment, {once: false});
-        buttons[0].addEventListener("click", increment, {once: true}); // won't be once
+        buttons[0].addEventListener("click", increment, { once: false });
+        buttons[0].addEventListener("click", increment, { once: true }); // won't be once
 
-        buttons[1].addEventListener("click", increment, {once: true});
-        buttons[1].addEventListener("click", increment, {once: false}); // will be once
+        buttons[1].addEventListener("click", increment, { once: true });
+        buttons[1].addEventListener("click", increment, { once: false }); // will be once
 
         buttons[0].click();
         buttons[0].click();
@@ -1968,7 +1966,7 @@ describe("elements", () => {
               <div class="element-20"></div>
               text2
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -1991,17 +1989,17 @@ describe("elements", () => {
                 <div></div>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
       const element = document.getElementsByClassName("element")[0];
       element._setBoundingClientRect({
         left: 0,
-        right: 100
+        right: 100,
       });
 
       element.firstElementChild._setBoundingClientRect({
         left: 0,
-        right: 200
+        right: 200,
       });
     });
 
@@ -2021,7 +2019,7 @@ describe("elements", () => {
     it("should affect other elements inside", () => {
       const element = document.getElementsByClassName("element")[0];
       const child = element.firstElementChild;
-      element.setElementsToScroll(() => [child]);
+      element.setElementsToScroll(() => [ child ]);
       element.scrollLeft = 10;
 
       expect(child.getBoundingClientRect().left).to.equal(-10);
@@ -2053,17 +2051,17 @@ describe("elements", () => {
                 <div></div>
               </div>
             </body>
-          </html>`
+          </html>`,
       });
       const element = document.getElementsByClassName("element")[0];
       element._setBoundingClientRect({
         top: 0,
-        bottom: 100
+        bottom: 100,
       });
 
       element.firstElementChild._setBoundingClientRect({
         top: 0,
-        bottom: 200
+        bottom: 200,
       });
     });
 
@@ -2083,7 +2081,7 @@ describe("elements", () => {
     it("should affect other elements inside", () => {
       const element = document.getElementsByClassName("element")[0];
       const child = element.firstElementChild;
-      element.setElementsToScroll(() => [child]);
+      element.setElementsToScroll(() => [ child ]);
       element.scrollTop = 10;
 
       expect(child.getBoundingClientRect().top).to.equal(-10);
@@ -2115,7 +2113,7 @@ describe("elements", () => {
           <html>
             <body>
             </body>
-          </html>`
+          </html>`,
       });
       element = document.createElement("div");
       element.addEventListener("click", clickListener);

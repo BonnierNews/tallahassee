@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("HTMLInputElement", () => {
   describe("validation", () => {
@@ -25,7 +25,7 @@ describe("HTMLInputElement", () => {
                 <button type="submit">Submit</button>
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -115,7 +115,7 @@ describe("HTMLInputElement", () => {
     });
 
     it("element should fire 'invalid' event for all elements if validation fails", () => {
-      const {req, reqsize} = document.forms[0].elements;
+      const { req, reqsize } = document.forms[0].elements;
       const button = document.getElementsByTagName("button")[0];
 
       let reqFired = 0;
@@ -377,7 +377,7 @@ describe("HTMLInputElement", () => {
                 <input id="submit-form" type="submit">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -413,7 +413,7 @@ describe("HTMLInputElement", () => {
       const form = document.forms[0];
 
       let submitted = false;
-      document.addEventListener("submit", () => submitted = true);
+      document.addEventListener("submit", () => (submitted = true));
 
       form.elements.foo.disabled = true;
       document.getElementById("submit-form").click();
@@ -426,7 +426,7 @@ describe("HTMLInputElement", () => {
       const form = document.forms[0];
 
       let submitted = false;
-      document.addEventListener("submit", () => submitted = true);
+      document.addEventListener("submit", () => (submitted = true));
 
       document.getElementById("submit-form").click();
       expect(form.elements.foo.validationMessage).to.equal("Required");
@@ -439,7 +439,7 @@ describe("HTMLInputElement", () => {
       const form = document.forms[0];
 
       let submitted = false;
-      document.addEventListener("submit", () => submitted = true);
+      document.addEventListener("submit", () => (submitted = true));
 
       document.getElementById("submit-form").click();
       expect(form.elements.foo.validationMessage).to.equal("Required");
@@ -467,7 +467,7 @@ describe("HTMLInputElement", () => {
                 <input id="submit-form" type="submit">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
 
       expect(() => {
@@ -485,7 +485,7 @@ describe("HTMLInputElement", () => {
                 <input id="submit-form" type="submit">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
 
       expect(() => {
@@ -528,7 +528,7 @@ describe("HTMLInputElement", () => {
                   för ditt svar.</span>
               </div>
             </form>
-        </body></html>`
+        </body></html>`,
       });
     });
 

@@ -1,6 +1,6 @@
-import {CookieJar, Cookie} from "cookiejar";
+import { CookieJar, Cookie } from "cookiejar";
 
-import {normalizeHeaders} from "./lib/getHeaders.js";
+import { normalizeHeaders } from "./lib/getHeaders.js";
 import WebPage from "./lib/WebPage.js";
 
 const kOrigin = Symbol.for("origin");
@@ -19,7 +19,7 @@ export default function Tallahassee(...args) {
   this.options = options;
 }
 
-Tallahassee.prototype.navigateTo = async function navigateTo(uri, headers = {}, statusCode = 200) {
+Tallahassee.prototype.navigateTo = function navigateTo(uri, headers = {}, statusCode = 200) {
   const webPage = this._getWebPage(headers);
   return webPage.navigateTo(uri, webPage.isOriginUrl(uri) && webPage.originRequestHeaders, statusCode);
 };
@@ -28,7 +28,7 @@ Tallahassee.prototype.load = function load(markup) {
   const webPage = this._getWebPage();
   const resp = {
     text: () => markup,
-    url: `${webPage.protocol}//${webPage.originHost || "127.0.0.1"}`
+    url: `${webPage.protocol}//${webPage.originHost || "127.0.0.1"}`,
   };
   return webPage.load(resp);
 };
@@ -41,7 +41,7 @@ Tallahassee.prototype._getWebPage = function getWebPage(headers) {
 
   const setCookieHeader = requestHeaders["set-cookie"];
   if (setCookieHeader) {
-    for (const cookieStr of Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader]) {
+    for (const cookieStr of Array.isArray(setCookieHeader) ? setCookieHeader : [ setCookieHeader ]) {
       const cookie = new Cookie(cookieStr);
       this.jar.setCookie(cookie.toString());
     }

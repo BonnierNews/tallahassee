@@ -14,7 +14,7 @@ describe("Image", () => {
     window = new Window("", {
       get document() {
         return document;
-      }
+      },
     });
   });
 

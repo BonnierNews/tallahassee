@@ -9,4 +9,3 @@ chai.config.includeStack = true;
 nock.enableNetConnect("127.0.0.1");
 
 global.expect = chai.expect;
-

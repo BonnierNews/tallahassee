@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("Link", () => {
   let document, links;
@@ -13,7 +13,7 @@ describe("Link", () => {
           <link>
         </head>
         <body></body>
-      </html>`
+      </html>`,
     });
 
     links = document.getElementsByTagName("link");

@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("HTMLFormElement", () => {
   describe("form elements", () => {
@@ -21,7 +21,7 @@ describe("HTMLFormElement", () => {
                 <div></div>
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -75,7 +75,7 @@ describe("HTMLFormElement", () => {
                 <button type="submit">OK</button>
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 

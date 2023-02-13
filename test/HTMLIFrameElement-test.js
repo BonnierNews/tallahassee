@@ -1,4 +1,4 @@
-import {Document, Window} from "../lib/index.js";
+import { Document, Window } from "../lib/index.js";
 
 describe("HTMLIframeElement", () => {
   let document;
@@ -6,7 +6,7 @@ describe("HTMLIframeElement", () => {
     const window = new Window("", {
       get document() {
         return document;
-      }
+      },
     });
     document = new Document({
       text: `
@@ -14,17 +14,17 @@ describe("HTMLIframeElement", () => {
           <body>
             <iframe class="test-src" src="/slug/">Relative frame</iframe>
           </body>
-        </html>`
+        </html>`,
     }, null, window);
   });
 
   it("can read contentDocument property", () => {
-    const [iframe] = document.getElementsByTagName("iframe");
+    const [ iframe ] = document.getElementsByTagName("iframe");
     expect(iframe.contentDocument).to.equal(document);
   });
 
   it("can read contentWindow property", () => {
-    const [iframe] = document.getElementsByTagName("iframe");
+    const [ iframe ] = document.getElementsByTagName("iframe");
     expect(iframe.contentWindow).to.equal(document.defaultView);
   });
 });

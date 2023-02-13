@@ -39,7 +39,7 @@ describe("DocumentFragment", () => {
 
   describe(".appendChild()", () => {
     it("appends a new child", () => {
-      const child = new Document({text: ""}).createElement("li");
+      const child = new Document({ text: "" }).createElement("li");
       documentFragment.appendChild(child);
       const children = documentFragment.querySelectorAll("li");
       expect(children).to.have.length(2);

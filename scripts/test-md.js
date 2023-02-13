@@ -1,14 +1,15 @@
 /* eslint no-console:0 */
-import {promises as fs, readFileSync} from "fs";
+import { promises as fs, readFileSync } from "fs";
 import vm from "vm";
-import {Linter} from "eslint";
+import { Linter } from "eslint";
+
 import linker from "./helpers/linker.js";
 
 const lintConf = JSON.parse(readFileSync(".eslintrc.json"));
 lintConf.rules["no-unused-expressions"] = 0;
 lintConf.rules["no-unused-vars"] = 2;
 
-const {name} = JSON.parse(readFileSync("package.json"));
+const { name } = JSON.parse(readFileSync("package.json"));
 
 const requirePattern = new RegExp(`(from )(["'"])(${name.replace("/", "\\/")})(\\/lib)?(\\2)`, "g");
 
@@ -47,11 +48,11 @@ async function parseDoc(filePath) {
         line: blockLine,
         len: block.length,
         script: parse(`${filePath}`, block, blockLine),
-        lint: linting(`${filePath}`, block, blockLine)
+        lint: linting(`${filePath}`, block, blockLine),
       });
     });
 
-    for await (const {line, script, lint} of blocks) {
+    for await (const { line, script, lint } of blocks) {
       if (isNaN(blockIdx) || blockCounter === blockIdx) {
         console.log(`${blockCounter}: ${filePath}:${line}`);
         await execute(script);
@@ -66,15 +67,13 @@ async function parseDoc(filePath) {
   function parse(filename, scriptBody, lineOffset) {
     return new vm.SourceTextModule(scriptBody, {
       identifier: filename,
-      lineOffset: lineOffset,
+      lineOffset,
     });
   }
 
   function linting(filename, scriptBody, lineOffset) {
     return function lint() {
-      const result = linter.verify(scriptBody, lintConf, {
-        filename: `${filename}@${lineOffset}`
-      });
+      const result = linter.verify(scriptBody, lintConf, { filename: `${filename}@${lineOffset}` });
 
       displayLinting(result, filename, lineOffset);
     };
@@ -101,7 +100,7 @@ function displayLinting(result, filename, offset) {
 
   console.log(`\x1b[4m${filename}:\x1b[0m`);
 
-  result.forEach(({severity, message, line, column, ruleId}) => {
+  result.forEach(({ severity, message, line, column, ruleId }) => {
     const log = severity === 2 ? err : warn;
     log(`  \x1b[90m${offset + line}:${column}`, severity === 2 ? "\x1b[31merror" : "  \x1b[33mwarning", `\x1b[0m${message}`, `\x1b[90m${ruleId}\x1b[0m`);
   });
