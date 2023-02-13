@@ -1,7 +1,7 @@
 import http from "http";
 import nock from "nock";
 
-import {app} from "../app/app.js";
+import { app } from "../app/app.js";
 import Browser from "../index.js";
 import XMLHttpRequestClass from "../lib/XMLHttpRequest.js";
 
@@ -19,7 +19,7 @@ describe("XMLHttpRequest", () => {
   });
   beforeEach(nock.cleanAll);
 
-  it("is instance of XMLHttpRequest", async () => {
+  it("is instance of XMLHttpRequest", () => {
     const XMLHttpRequest = browser.window.XMLHttpRequest;
     const xhr = new XMLHttpRequest();
     expect(xhr).to.be.instanceof(XMLHttpRequestClass);
@@ -30,7 +30,7 @@ describe("XMLHttpRequest", () => {
       nock("http://example.com")
         .get("/")
         .query(true)
-        .reply(200, {data: 1});
+        .reply(200, { data: 1 });
 
       const XMLHttpRequest = browser.window.XMLHttpRequest;
       const xhr = new XMLHttpRequest();
@@ -49,14 +49,14 @@ describe("XMLHttpRequest", () => {
       xhr.send();
 
       const body = await response;
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("external post is supported", async () => {
       const json = JSON.stringify({ foo: "bar" });
       nock("http://example.com")
         .post("/", json)
-        .reply(200, {data: 1});
+        .reply(200, { data: 1 });
 
       const xhr = new browser.window.XMLHttpRequest();
       const load = new Promise((resolve) => {
@@ -68,7 +68,7 @@ describe("XMLHttpRequest", () => {
       xhr.send(json);
 
       const body = await load;
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("local post to Express app is supported", async () => {
@@ -84,14 +84,14 @@ describe("XMLHttpRequest", () => {
       xhr.send(json);
 
       const body = await load;
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("external delete is supported", async () => {
       const json = JSON.stringify({ foo: "bar" });
       nock("http://example.com")
         .delete("/", json)
-        .reply(200, {data: 1});
+        .reply(200, { data: 1 });
 
       const xhr = new browser.window.XMLHttpRequest();
       const load = new Promise((resolve) => {
@@ -103,7 +103,7 @@ describe("XMLHttpRequest", () => {
       xhr.send(json);
 
       const body = await load;
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("local delete is supported", async () => {
@@ -119,7 +119,7 @@ describe("XMLHttpRequest", () => {
       xhr.send(json);
 
       const body = await load;
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("local head is supported", async () => {
@@ -147,7 +147,7 @@ describe("XMLHttpRequest", () => {
       xhr.send();
 
       const body = await load;
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("local resource routes to app if host match", async () => {
@@ -167,7 +167,7 @@ describe("XMLHttpRequest", () => {
 
       const body = await load;
 
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("local resource routes to app if x-forwarded-host match", async () => {
@@ -188,7 +188,7 @@ describe("XMLHttpRequest", () => {
 
       const body = await load;
 
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
   });
 
@@ -199,9 +199,7 @@ describe("XMLHttpRequest", () => {
 
   describe("cookie", () => {
     it("passes cookie to local resource", async () => {
-      const page = await tab.navigateTo("/", {
-        cookie: "_ga=1"
-      });
+      const page = await tab.navigateTo("/", { cookie: "_ga=1" });
 
       const xhr = new page.window.XMLHttpRequest();
       const load = new Promise((resolve) => {
@@ -220,7 +218,7 @@ describe("XMLHttpRequest", () => {
     it("passes the request headers to local resource", async () => {
       const page = await tab.navigateTo("/", {
         "X-Forwarded-Proto": "https",
-        "X-Forwarded-Host": "www.expressen.se"
+        "X-Forwarded-Host": "www.expressen.se",
       });
 
       const xhr = new page.window.XMLHttpRequest();
@@ -242,7 +240,7 @@ describe("XMLHttpRequest", () => {
     it("sends headers when calling local resource", async () => {
       const page = await tab.navigateTo("/", {
         "X-Forwarded-Proto": "https",
-        "X-Forwarded-Host": "www.expressen.se"
+        "X-Forwarded-Host": "www.expressen.se",
       });
 
       const xhr = new page.window.XMLHttpRequest();
@@ -272,9 +270,9 @@ describe("XMLHttpRequest", () => {
       nock("https://example.com")
         .get("/with-header")
         .reply(function () {
-          const {headers} = this.req;
-          if (headers["x-forwarded-proto"]) return [403, {}];
-          return [200, {data: 1}];
+          const { headers } = this.req;
+          if (headers["x-forwarded-proto"]) return [ 403, {} ];
+          return [ 200, { data: 1 } ];
         });
 
       const xhr = new page.window.XMLHttpRequest();
@@ -290,24 +288,24 @@ describe("XMLHttpRequest", () => {
       const body = await load;
       expect(xhr.status).to.equal(200);
 
-      expect(body).to.deep.equal({data: 1});
+      expect(body).to.deep.equal({ data: 1 });
     });
 
     it("should attach cookies from req header to exactly the app host", async () => {
-      const page = await Browser(port, {
+      const page = await new Browser(port, {
         headers: {
           "X-Forwarded-Proto": "https",
-          "X-Forwarded-Host": "www.expressen.se"
-        }
+          "X-Forwarded-Host": "www.expressen.se",
+        },
       }).navigateTo("/", { cookie: "_ga=1" });
 
       let cookie;
       nock("https://blahonga.expressen.se")
         .get("/")
         .reply(function blahongaReply() {
-          const {headers} = this.req;
+          const { headers } = this.req;
           cookie = headers.cookie;
-          return [200, {}];
+          return [ 200, {} ];
         });
 
       const xhr = new page.window.XMLHttpRequest();
@@ -324,11 +322,11 @@ describe("XMLHttpRequest", () => {
     });
 
     it("truthy withCredentials should use cookie jar when making external fetch requests", async () => {
-      let page = Browser(app, {
+      let page = new Browser(app, {
         headers: {
           "X-Forwarded-Proto": "https",
-          "X-Forwarded-Host": "www.expressen.se"
-        }
+          "X-Forwarded-Host": "www.expressen.se",
+        },
       });
       page.jar.setCookies("_ga=1; Domain=.expressen.se; Path=/; Secure");
 
@@ -338,9 +336,9 @@ describe("XMLHttpRequest", () => {
       nock("https://blahonga.expressen.se")
         .get("/")
         .reply(function blahongaReply() {
-          const {headers} = this.req;
+          const { headers } = this.req;
           cookie = headers.cookie;
-          return [200, {}];
+          return [ 200, {} ];
         });
 
       const xhr = new page.window.XMLHttpRequest();
@@ -356,11 +354,11 @@ describe("XMLHttpRequest", () => {
     });
 
     it("falsy withCredentials sends no cookies when making external fetch requests", async () => {
-      let page = Browser(app, {
+      let page = new Browser(app, {
         headers: {
           "X-Forwarded-Proto": "https",
-          "X-Forwarded-Host": "www.expressen.se"
-        }
+          "X-Forwarded-Host": "www.expressen.se",
+        },
       });
       page.jar.setCookies("_ga=1; Domain=.expressen.se; Path=/; Secure");
 
@@ -370,9 +368,9 @@ describe("XMLHttpRequest", () => {
       nock("https://blahonga.expressen.se")
         .get("/")
         .reply(function blahongaReply() {
-          const {headers} = this.req;
+          const { headers } = this.req;
           cookie = headers.cookie;
-          return [200, {}];
+          return [ 200, {} ];
         });
 
       const xhr = new page.window.XMLHttpRequest();
@@ -390,7 +388,7 @@ describe("XMLHttpRequest", () => {
   describe("readyState", () => {
     it("returns readyState on readystate change", async () => {
       const xhr = new browser.window.XMLHttpRequest();
-      const readyStates = [xhr.readyState];
+      const readyStates = [ xhr.readyState ];
 
       xhr.open("GET", "/", true);
       readyStates.push(xhr.readyState);
@@ -416,10 +414,10 @@ describe("XMLHttpRequest", () => {
     it("returns status text with with different ready states", async () => {
       nock("http://example.com")
         .get("/")
-        .reply(200, {data: 1});
+        .reply(200, { data: 1 });
 
       const xhr = new browser.window.XMLHttpRequest();
-      const statusTexts = [xhr.statusText];
+      const statusTexts = [ xhr.statusText ];
 
       xhr.open("GET", "http://example.com/", true);
       statusTexts.push(xhr.statusText);

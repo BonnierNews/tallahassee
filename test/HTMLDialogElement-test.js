@@ -1,5 +1,5 @@
-import {Document} from "../lib/index.js";
-import {Event} from "../lib/Events.js";
+import { Document } from "../lib/index.js";
+import { Event } from "../lib/Events.js";
 
 describe("HTMLDialogElement", () => {
   let document;
@@ -12,23 +12,23 @@ describe("HTMLDialogElement", () => {
               <p>Test</p>
             </dialog>
           </body>
-        </html>`
+        </html>`,
     });
   });
 
   it("can read open property", () => {
-    const [dialog] = document.getElementsByTagName("dialog");
+    const [ dialog ] = document.getElementsByTagName("dialog");
     expect(dialog.open).to.be.false;
   });
 
   it("can set open property", () => {
-    const [dialog] = document.getElementsByTagName("dialog");
+    const [ dialog ] = document.getElementsByTagName("dialog");
     expect(dialog.open = true).to.be.true;
   });
 
   describe("Methods", () => {
     it("showModal() sets open", () => {
-      const [dialog] = document.getElementsByTagName("dialog");
+      const [ dialog ] = document.getElementsByTagName("dialog");
       expect(dialog.open).to.be.false;
 
       dialog.showModal();
@@ -36,7 +36,7 @@ describe("HTMLDialogElement", () => {
     });
 
     it("close() removes open", () => {
-      const [dialog] = document.getElementsByTagName("dialog");
+      const [ dialog ] = document.getElementsByTagName("dialog");
       dialog.open = true;
       expect(dialog.open).to.be.true;
 
@@ -47,7 +47,7 @@ describe("HTMLDialogElement", () => {
 
   describe("Events", () => {
     it("close() fires close event", (done) => {
-      const [dialog] = document.getElementsByTagName("dialog");
+      const [ dialog ] = document.getElementsByTagName("dialog");
 
       dialog.addEventListener("close", () => done());
 
@@ -55,7 +55,7 @@ describe("HTMLDialogElement", () => {
     });
 
     it("pressing escape fires cancel event and closes", () => {
-      const [dialog] = document.getElementsByTagName("dialog");
+      const [ dialog ] = document.getElementsByTagName("dialog");
       dialog.open = true;
 
       let i = 0;

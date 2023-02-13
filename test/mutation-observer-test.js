@@ -1,14 +1,12 @@
 import Script from "@bonniernews/wichita";
 import path from "path";
 
-import {app} from "../app/app.js";
+import { app } from "../app/app.js";
 import Browser from "../index.js";
 
 describe("MutationObserver", () => {
   it("triggers when element has been inserted into the observed node using appendChild", async () => {
-    const browser = await Browser(app).navigateTo("/", {
-      Cookie: "_ga=1"
-    });
+    const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -23,13 +21,13 @@ describe("MutationObserver", () => {
     const observer = new browser.window.MutationObserver(callback);
     observer.observe(targetNode, config);
 
-    await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
+    await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
     expect(childListMutation).to.be.ok;
   });
 
   it("triggers when element has been inserted into a child of the observed node using appendChild", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -52,7 +50,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into a grand child of the observed node using appendChild", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const p = browser.document.createElement("p");
@@ -81,7 +79,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using insertAdjacentHTML(beforeend)", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -101,7 +99,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using insertAdjacentHTML(afterbegin)", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -121,7 +119,7 @@ describe("MutationObserver", () => {
   });
 
   it("doesn't trigger when element has been inserted into the observed node using insertAdjacentHTML(beforebegin)", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -141,7 +139,7 @@ describe("MutationObserver", () => {
   });
 
   it("doesn't trigger when element has been inserted into the observed node using insertAdjacentHTML(afterend)", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -161,7 +159,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using insertBefore", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -185,7 +183,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using innerHTML", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -205,7 +203,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using outerHTML", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -225,7 +223,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using textContent", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -245,7 +243,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been inserted into the observed node using innerText", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -265,7 +263,7 @@ describe("MutationObserver", () => {
   });
 
   it("triggers when element has been removed from the observed node using removeChild", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const elementToRemove = browser.document.createElement("div");
@@ -288,7 +286,7 @@ describe("MutationObserver", () => {
   });
 
   it("disconnect() stops listening for mutations", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -312,7 +310,7 @@ describe("MutationObserver", () => {
   });
 
   it("mutation callback (non-arrow) is called with mutation scope", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -331,7 +329,7 @@ describe("MutationObserver", () => {
   });
 
   it("mutation callback this.disconnect() stops listening for mutations", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };
@@ -354,39 +352,39 @@ describe("MutationObserver", () => {
   });
 
   it("mutation when insertAdjacentHTML afterend triggers mutation on parent", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const sequence = [];
     const observer = new browser.window.MutationObserver(() => {
       sequence.push("mutated");
     });
-    observer.observe(browser.document.body, {childList: true });
+    observer.observe(browser.document.body, { childList: true });
 
     const div = browser.document.createElement("div");
 
     browser.document.body.lastElementChild.insertAdjacentHTML("afterend", div);
 
-    expect(sequence).to.eql(["mutated"]);
+    expect(sequence).to.eql([ "mutated" ]);
   });
 
   it("mutation when insertAdjacentHTML beforebegin triggers mutation on parent", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const sequence = [];
     const observer = new browser.window.MutationObserver(() => {
       sequence.push("mutated");
     });
-    observer.observe(browser.document.body, {childList: true });
+    observer.observe(browser.document.body, { childList: true });
 
     const div = browser.document.createElement("div");
 
     browser.document.body.lastElementChild.insertAdjacentHTML("beforebegin", div);
 
-    expect(sequence).to.eql(["mutated"]);
+    expect(sequence).to.eql([ "mutated" ]);
   });
 
   it("mutation when appendChild with script executes before mutation event", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     const sequence = browser.window.sequence = [];
     const config = { attributes: true, childList: true };
@@ -400,13 +398,13 @@ describe("MutationObserver", () => {
 
     browser.document.body.appendChild(script);
 
-    expect(sequence).to.eql(["executed", "mutated"]);
+    expect(sequence).to.eql([ "executed", "mutated" ]);
   });
 
   describe("MutationObserverInit options", () => {
     let browser;
     beforeEach(async () => {
-      browser = await Browser(app).navigateTo("/");
+      browser = await new Browser(app).navigateTo("/");
     });
 
     it("observer with attributes option calls callback when element class changes", () => {
@@ -414,7 +412,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true});
+      observer.observe(browser.document.body, { attributes: true });
 
       browser.document.body.classList.add("mutate");
 
@@ -432,7 +430,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true});
+      observer.observe(browser.document.body, { attributes: true });
 
       browser.document.body.attributes.id.value = "mutate";
 
@@ -449,7 +447,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true, subtree: true});
+      observer.observe(browser.document.body, { attributes: true, subtree: true });
 
       const img = browser.document.getElementsByTagName("img")[0];
       img.src = "/images/tallahassee-2.png";
@@ -467,7 +465,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true, subtree: true});
+      observer.observe(browser.document.body, { attributes: true, subtree: true });
 
       const img = browser.document.getElementsByTagName("img")[0];
       img.src = "/images/tallahassee-2.png";
@@ -485,7 +483,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true});
+      observer.observe(browser.document.body, { attributes: true });
 
       const div = browser.document.createElement("div");
       browser.document.body.appendChild(div);
@@ -498,7 +496,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true});
+      observer.observe(browser.document.body, { attributes: true });
 
       browser.document.body.setAttribute("setattr", "1");
 
@@ -517,7 +515,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true});
+      observer.observe(browser.document.body, { attributes: true });
 
       browser.document.body.setAttribute("setattr", "1");
 
@@ -541,7 +539,7 @@ describe("MutationObserver", () => {
       const observer = new browser.window.MutationObserver((mutatedRecords) => {
         records.push(...mutatedRecords);
       });
-      observer.observe(browser.document.body, {attributes: true});
+      observer.observe(browser.document.body, { attributes: true });
 
       browser.document.body.dataset.count = "2";
 

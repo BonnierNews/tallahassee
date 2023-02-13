@@ -14,7 +14,7 @@ describe("FormData", () => {
               <button name="mysubmit" type="submit">Submit</submit>
             </form>
           </body>
-        </html>`
+        </html>`,
     });
 
     form = document.getElementById("get-form");
@@ -29,13 +29,13 @@ describe("FormData", () => {
 
   it("can get input entries", () => {
     const entries = new FormData(form).entries();
-    expect([...entries]).to.deep.equal([["myinput", "Foo"]]);
+    expect([ ...entries ]).to.deep.equal([ [ "myinput", "Foo" ] ]);
   });
 
   it("includes checked checkbox entry", () => {
     form.elements.mycheck.checked = true;
     const entries = new FormData(form).entries();
-    expect([...entries]).to.deep.equal([["mycheck", "1"], ["myinput", "Foo"]]);
+    expect([ ...entries ]).to.deep.equal([ [ "mycheck", "1" ], [ "myinput", "Foo" ] ]);
   });
 
   it("can be converted into object directly from instance", () => {
@@ -62,22 +62,19 @@ describe("FormData", () => {
     form.elements.mycheck.checked = true;
     form.elements[1].name = "";
     const data = new FormData(form);
-    expect(Object.fromEntries(data)).to.deep.equal({
-      mycheck: "1",
-    });
+    expect(Object.fromEntries(data)).to.deep.equal({ mycheck: "1" });
   });
 
   it("ignores fields that are disabled", () => {
     form.elements.mycheck.checked = true;
     form.elements.mycheck.disabled = true;
     const data = new FormData(form);
-    expect(Object.fromEntries(data)).to.deep.equal({
-      myinput: "Foo",
-    });
+    expect(Object.fromEntries(data)).to.deep.equal({ myinput: "Foo" });
   });
 
   it("throws type error if constructing with element that is not a form", () => {
     expect(() => {
+      // eslint-disable-next-line no-new
       new FormData(form.elements[0]);
     }).to.throw(TypeError, "Failed to construct 'FormData': parameter 1 is not of type 'HTMLFormElement'");
   });

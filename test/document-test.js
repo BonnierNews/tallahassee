@@ -7,7 +7,7 @@ import HTMLCollection from "../lib/HTMLCollection.js";
 describe("Document", () => {
   let document;
   beforeEach(() => {
-    const jar = CookieJar();
+    const jar = new CookieJar();
     jar.setCookies("_ga=1");
     document = new Document({
       url: "https://www.expressen.se/nyheter/article-slug/",
@@ -34,7 +34,7 @@ describe("Document", () => {
             <p class="row--boat">Wide</p>
           </div>
         </body>
-      </html>`
+      </html>`,
     }, jar);
   });
 
@@ -45,11 +45,11 @@ describe("Document", () => {
       expect(document.location).to.have.property("pathname", "/nyheter/article-slug/");
     });
 
-    it("doesn't expose classList on document", async () => {
+    it("doesn't expose classList on document", () => {
       expect(document.classList, "classList on document").to.be.undefined;
     });
 
-    it("exposes documentElement with expected behaviour", async () => {
+    it("exposes documentElement with expected behaviour", () => {
       expect(document.documentElement).to.have.property("tagName", "HTML");
       expect(document.documentElement.ownerDocument === document, "documentElement.ownerDocument is document").to.be.true;
       expect(document.documentElement.abrakadabra === undefined, "undefined property").to.be.true;
@@ -67,7 +67,7 @@ describe("Document", () => {
       const doc = new Document({
         url: "https://www.expressen.se/nyheter/article-slug/",
         referrer: "https://example.com",
-        text: "<html></html>"
+        text: "<html></html>",
       });
       expect(doc).to.have.property("referrer", "https://example.com");
     });
@@ -220,17 +220,17 @@ describe("Document", () => {
   });
 
   describe("api", () => {
-    it("getElementById returns element if found", async () => {
+    it("getElementById returns element if found", () => {
       const elm = document.getElementById("headline");
       expect(elm).to.be.ok;
       expect(elm.getElementById, "getElementById on element").to.be.undefined;
     });
 
-    it("getElementById returns element with id containing dot", async () => {
+    it("getElementById returns element with id containing dot", () => {
       expect(document.getElementById("with.dot")).to.be.ok;
     });
 
-    it("getElementById returns null id element is not found", async () => {
+    it("getElementById returns null id element is not found", () => {
       expect(document.getElementById("non-existing")).to.be.null;
     });
   });
@@ -275,7 +275,7 @@ describe("Document", () => {
       expect(elm === elmClone).to.be.false;
     });
 
-    it("importNode() on templateElement.content combined with appendChild() inserts element content", async () => {
+    it("importNode() on templateElement.content combined with appendChild() inserts element content", () => {
       const templateElement = document.getElementById("schablon");
       const templateContentClone = document.importNode(templateElement.content, true);
 
@@ -299,9 +299,9 @@ describe("Document", () => {
       expect(document.getElementById("insert")).to.be.ok;
 
       const topDocJSON = JSON.parse(templateElement.dataset.json);
-      expect(topDocJSON).to.deep.equal({"json": "åäö in top document child"});
+      expect(topDocJSON).to.deep.equal({ json: "åäö in top document child" });
       const subDocInTopDocJSON = JSON.parse(subDocChildInTopDoc.dataset.json);
-      expect(subDocInTopDocJSON).to.deep.equal({"json": "åäö in sub document child"});
+      expect(subDocInTopDocJSON).to.deep.equal({ json: "åäö in sub document child" });
     });
   });
 

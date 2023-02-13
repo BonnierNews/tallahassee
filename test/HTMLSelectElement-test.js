@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("HTMLSelectElement", () => {
   describe("single select", () => {
@@ -20,7 +20,7 @@ describe("HTMLSelectElement", () => {
                   <option value="goldfish">Goldfish</option>
               </select>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -124,7 +124,7 @@ describe("HTMLSelectElement", () => {
                   <option selected value="cat">Cat</option>
               </select>
             </body>
-          </html>`
+          </html>`,
       });
       const elm = doc.getElementById("pet-select");
       elm.options[1].selected = false;
@@ -150,7 +150,7 @@ describe("HTMLSelectElement", () => {
                   <option value="goldfish">Goldfish</option>
               </select>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -190,7 +190,7 @@ describe("HTMLSelectElement", () => {
                   <option value="goldfish">Goldfish</option>
               </select>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -223,7 +223,7 @@ describe("HTMLSelectElement", () => {
               <select name="pets" id="pet-select">
               </select>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -251,18 +251,18 @@ describe("HTMLSelectElement", () => {
                 <option value="3">value of 3</option>
               </select>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
     it("multiple is set", () => {
-      const [select, multiple] = document.getElementsByTagName("select");
+      const [ select, multiple ] = document.getElementsByTagName("select");
       expect(select.multiple).to.be.false;
       expect(multiple.multiple).to.be.true;
     });
 
     it("set multiple alters select element", () => {
-      const [select, multiple] = document.getElementsByTagName("select");
+      const [ select, multiple ] = document.getElementsByTagName("select");
       select.multiple = true;
       expect(select.multiple).to.be.true;
 
@@ -271,7 +271,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("returns options in select", () => {
-      const [select] = document.getElementsByTagName("select");
+      const [ select ] = document.getElementsByTagName("select");
       const options = select.getElementsByTagName("option");
 
       expect(select.options.length).to.equal(3);
@@ -281,7 +281,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("returns selected index of options in select", () => {
-      const [select] = document.getElementsByTagName("select");
+      const [ select ] = document.getElementsByTagName("select");
       expect(select.selectedIndex).to.equal(1);
     });
 
@@ -304,7 +304,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("should change selected index when changing selected option", () => {
-      const [select] = document.getElementsByTagName("select");
+      const [ select ] = document.getElementsByTagName("select");
 
       select.options[0].selected = true;
 
@@ -314,7 +314,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("should not de-select other options when selecting in multiple select", () => {
-      const [, select] = document.getElementsByTagName("select");
+      const [ , select ] = document.getElementsByTagName("select");
 
       select.options[0].selected = true;
 
@@ -323,7 +323,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("should return selected option in selectedOptions", () => {
-      const [select] = document.getElementsByTagName("select");
+      const [ select ] = document.getElementsByTagName("select");
       select.options[1].selected = true;
       select.options[2].selected = true;
       expect(select.selectedIndex).to.equal(2);
@@ -332,7 +332,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("muliple should return selected options in selectedOptions", () => {
-      const [, select] = document.getElementsByTagName("select");
+      const [ , select ] = document.getElementsByTagName("select");
 
       select.options[1].selected = true;
       select.options[2].selected = true;
@@ -343,7 +343,7 @@ describe("HTMLSelectElement", () => {
     });
 
     it("should emit change on select when changing selected option", (done) => {
-      const [select] = document.getElementsByTagName("select");
+      const [ select ] = document.getElementsByTagName("select");
 
       select.addEventListener("change", () => done());
 
@@ -368,7 +368,7 @@ describe("HTMLSelectElement", () => {
                 <input id="submit-form" type="submit">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -404,7 +404,7 @@ describe("HTMLSelectElement", () => {
 
     it("form submit is prevented if input is required", () => {
       let submitted = false;
-      document.addEventListener("submit", () => submitted = true);
+      document.addEventListener("submit", () => (submitted = true));
 
       document.getElementById("submit-form").click();
 
@@ -428,7 +428,7 @@ describe("HTMLSelectElement", () => {
                 <input id="submit-form" type="submit">
               </form>
             </body>
-          </html>`
+          </html>`,
       });
     });
 
@@ -455,7 +455,7 @@ describe("HTMLSelectElement", () => {
       const form = document.forms[0];
 
       let submitted = false;
-      document.addEventListener("submit", () => submitted = true);
+      document.addEventListener("submit", () => (submitted = true));
 
       form.elements.pets.disabled = true;
       document.getElementById("submit-form").click();

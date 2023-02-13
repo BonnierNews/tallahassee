@@ -16,7 +16,7 @@ describe("HTMLCollection", () => {
               <p>Paragraph</p>
             </div>
           </body>
-        </html>`
+        </html>`,
     });
   });
 
@@ -72,11 +72,11 @@ describe("HTMLCollection", () => {
   it("result has own keys representing index as strings", () => {
     const elements = new HTMLCollection(document.body, ".row.row--boat");
     expect(elements.length).to.equal(2);
-    expect(Object.getOwnPropertyNames(elements)).to.eql(["0", "1", "length", "item", "namedItem"]);
+    expect(Object.getOwnPropertyNames(elements)).to.eql([ "0", "1", "length", "item", "namedItem" ]);
   });
 
   it("result can be for looped", () => {
-    const elements = new HTMLCollection(document.body, "div", {attributes: false});
+    const elements = new HTMLCollection(document.body, "div", { attributes: false });
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -85,11 +85,11 @@ describe("HTMLCollection", () => {
       tags.push(elements[i].tagName);
     }
 
-    expect(tags).to.eql(["DIV", "DIV", "DIV"]);
+    expect(tags).to.eql([ "DIV", "DIV", "DIV" ]);
   });
 
   it("result can be for-of looped", () => {
-    const elements = new HTMLCollection(document.body, "div", {attributes: false});
+    const elements = new HTMLCollection(document.body, "div", { attributes: false });
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -98,11 +98,11 @@ describe("HTMLCollection", () => {
       tags.push(elm.tagName);
     }
 
-    expect(tags).to.eql(["DIV", "DIV", "DIV"]);
+    expect(tags).to.eql([ "DIV", "DIV", "DIV" ]);
   });
 
   it("result can be for-in looped", () => {
-    const elements = new HTMLCollection(document.body, "div", {attributes: false});
+    const elements = new HTMLCollection(document.body, "div", { attributes: false });
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -111,7 +111,7 @@ describe("HTMLCollection", () => {
       tags.push(key);
     }
 
-    expect(tags).to.eql(["0", "1", "2", "length", "item", "namedItem"]);
+    expect(tags).to.eql([ "0", "1", "2", "length", "item", "namedItem" ]);
   });
 
   it("mutates all collections", () => {
@@ -153,7 +153,7 @@ describe("HTMLCollection", () => {
     });
 
     it("mutates document tag collection", () => {
-      const elements = new HTMLCollection(document.documentElement, "div", {attributes: false});
+      const elements = new HTMLCollection(document.documentElement, "div", { attributes: false });
       expect(elements.length).to.equal(3);
 
       const firstItem = elements[0];
@@ -173,7 +173,7 @@ describe("HTMLCollection", () => {
     });
 
     it("mutates parentNode tag collection", () => {
-      const elements = new HTMLCollection(document.body, "div", {attributes: false});
+      const elements = new HTMLCollection(document.body, "div", { attributes: false });
       expect(elements.length).to.equal(3);
 
       const firstItem = elements[0];
@@ -183,7 +183,7 @@ describe("HTMLCollection", () => {
     });
 
     it("mutates parent parentNode tag collection", () => {
-      const elements = new HTMLCollection(document.body, "p", {attributes: false});
+      const elements = new HTMLCollection(document.body, "p", { attributes: false });
       expect(elements.length).to.equal(1);
 
       const firstItem = elements[0];

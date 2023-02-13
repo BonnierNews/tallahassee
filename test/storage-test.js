@@ -1,4 +1,4 @@
-import {Storage, Window} from "../lib/index.js";
+import { Storage, Window } from "../lib/index.js";
 
 describe("Storage", () => {
   let window;
@@ -9,13 +9,13 @@ describe("Storage", () => {
   });
 
   it("should return empty storage", () => {
-    expect(window.localStorage).to.eql({length: 0});
+    expect(window.localStorage).to.eql({ length: 0 });
   });
 
   it("should return all values currently stored", () => {
     window.localStorage.setItem("test-item", "foo");
 
-    expect(window.localStorage).to.eql({"test-item": "foo", length: 1});
+    expect(window.localStorage).to.eql({ "test-item": "foo", length: 1 });
   });
 
   it("should return null if no item is found", () => {
@@ -27,7 +27,7 @@ describe("Storage", () => {
   it("should always set item as string", () => {
     window.localStorage.setItem("number", 1);
     window.localStorage.setItem("date", new Date(2018, 3, 18));
-    window.localStorage.setItem("array", [1, 2]);
+    window.localStorage.setItem("array", [ 1, 2 ]);
     window.localStorage.setItem("obj", {});
     window.localStorage.setItem("undef", undefined);
     window.localStorage.setItem("null", null);
@@ -83,7 +83,7 @@ describe("Storage", () => {
   it("should clear all", () => {
     window.localStorage.clear();
 
-    expect(window.localStorage).to.eql({length: 0});
+    expect(window.localStorage).to.eql({ length: 0 });
   });
 
   it("can be deleted for testing purposes", () => {

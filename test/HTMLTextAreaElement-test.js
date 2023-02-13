@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("HTMLTextAreaElement", () => {
   let document;
@@ -11,7 +11,7 @@ describe("HTMLTextAreaElement", () => {
               <textarea name="novel"></textarea>
             </form>
           </body>
-        </html>`
+        </html>`,
     });
   });
 

@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("RadioNodeList", () => {
   let document;
@@ -14,7 +14,7 @@ describe("RadioNodeList", () => {
               <input type="radio" name="choosewisely" value="3">
             </form>
           </body>
-        </html>`
+        </html>`,
     });
   });
 

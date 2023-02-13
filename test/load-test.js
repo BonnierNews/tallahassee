@@ -1,7 +1,7 @@
 import http from "http";
 import nock from "nock";
 
-import {app} from "../app/app.js";
+import { app } from "../app/app.js";
 import Browser from "../index.js";
 
 const PORT = process.env.PORT;
@@ -58,18 +58,14 @@ describe("load", () => {
     const browser = await new Browser(undefined, {
       headers: {
         "x-forwarded-host": "www.expressen.se",
-        "x-forwarded-proto": "https"
-      }
+        "x-forwarded-proto": "https",
+      },
     }).load("");
     expect(browser.window.location.href).to.equal("https://www.expressen.se/");
   });
 
   it("document has cookie from implicit host", async () => {
-    const browser = await new Browser(undefined, {
-      headers: {
-        cookie: "myCookie=singoalla"
-      }
-    }).load();
+    const browser = await new Browser(undefined, { headers: { cookie: "myCookie=singoalla" } }).load();
     expect(browser.document.cookie).to.equal("myCookie=singoalla");
   });
 
@@ -78,18 +74,14 @@ describe("load", () => {
       headers: {
         cookie: "myCookie=singoalla",
         "x-forwarded-host": "www.expressen.se",
-        "x-forwarded-proto": "https"
-      }
+        "x-forwarded-proto": "https",
+      },
     }).load();
     expect(browser.document.cookie).to.equal("myCookie=singoalla");
   });
 
   it("should be possible to pass options as first argument", async () => {
-    const browser = await new Browser({
-      headers: {
-        cookie: "myCookie=ballerina",
-      }
-    }).load();
+    const browser = await new Browser({ headers: { cookie: "myCookie=ballerina" } }).load();
     expect(browser.document.cookie).to.equal("myCookie=ballerina");
   });
 });

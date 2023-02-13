@@ -1,4 +1,4 @@
-import {Document} from "../lib/index.js";
+import { Document } from "../lib/index.js";
 
 describe("Anchor", () => {
   describe("Anchor properties", () => {
@@ -19,7 +19,7 @@ describe("Anchor", () => {
               <a>Not defined</a>
               <a href="">Empty</a>
             </body>
-          </html>`
+          </html>`,
       });
 
       anchors = document.getElementsByTagName("a");
@@ -133,7 +133,7 @@ describe("Anchor", () => {
               <a href="tel:+46700000000">Talk</a>
               <a href=" mailto:padded@expressen.se"> Mail</a>
             </body>
-          </html>`
+          </html>`,
       });
 
       anchors = document.getElementsByTagName("a");

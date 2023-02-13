@@ -4,7 +4,7 @@
 import toc from "markdown-toc";
 import fs from "fs";
 
-const {version} = JSON.parse(fs.readFileSync("package.json"));
+const { version } = JSON.parse(fs.readFileSync("package.json"));
 
 // Declare internals
 const filenames = getFileNames();
@@ -23,11 +23,11 @@ function generate(filename) {
       return text.toLowerCase()
         .replace(/\s/g, "-")
         .replace(/[^\w-]/g, "");
-    }
+    },
   };
 
   const output = toc.insert(api, tocOptions)
-    .replace(/<!-- version -->(.|\n)*<!-- versionstop -->/, `<!-- version -->\n# ${ version } API Reference\n<!-- versionstop -->`);
+    .replace(/<!-- version -->(.|\n)*<!-- versionstop -->/, `<!-- version -->\n# ${version} API Reference\n<!-- versionstop -->`);
 
   fs.writeFileSync(filename, output);
 }

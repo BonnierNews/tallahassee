@@ -1,6 +1,6 @@
 import DOMException from "domexception";
 
-import {app} from "../app/app.js";
+import { app } from "../app/app.js";
 import Browser from "../index.js";
 
 describe("Custom elements", () => {

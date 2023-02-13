@@ -31,7 +31,7 @@ describe("forms", () => {
             <form id="default-form">
             </form>
           </body>
-        </html>`
+        </html>`,
     });
   });
 
@@ -90,14 +90,14 @@ describe("forms", () => {
   });
 
   it("submit button has associated form property", () => {
-    const [form] = document.getElementsByTagName("form");
-    const [button] = document.getElementsByTagName("button");
+    const [ form ] = document.getElementsByTagName("form");
+    const [ button ] = document.getElementsByTagName("button");
 
     expect(form === button.form).to.be.true;
   });
 
   it("submit button click emits submit on document", (done) => {
-    const [button] = document.getElementsByTagName("button");
+    const [ button ] = document.getElementsByTagName("button");
 
     document.addEventListener("submit", () => done());
 
@@ -105,8 +105,8 @@ describe("forms", () => {
   });
 
   it("submit button click emits submit on form", (done) => {
-    const [form] = document.getElementsByTagName("form");
-    const [button] = document.getElementsByTagName("button");
+    const [ form ] = document.getElementsByTagName("form");
+    const [ button ] = document.getElementsByTagName("button");
 
     form.addEventListener("submit", () => done());
 
@@ -114,8 +114,8 @@ describe("forms", () => {
   });
 
   it("typeless button click emits submit on form", (done) => {
-    const [form] = document.getElementsByTagName("form");
-    const [, button] = document.getElementsByTagName("button");
+    const [ form ] = document.getElementsByTagName("form");
+    const [ , button ] = document.getElementsByTagName("button");
 
     form.addEventListener("submit", () => done());
 
@@ -203,7 +203,7 @@ describe("forms", () => {
     const elements = form.elements;
     expect(elements.length).to.equal(13);
     for (let i = 0; i < elements.length; ++i) {
-      expect(["INPUT", "BUTTON", "SELECT", "TEXTAREA", "FIELDSET"].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
+      expect([ "INPUT", "BUTTON", "SELECT", "TEXTAREA", "FIELDSET" ].indexOf(elements[i].tagName), elements[i].tagName).to.be.above(-1);
     }
   });
 
@@ -250,14 +250,14 @@ describe("forms", () => {
     expect(file.files).to.deep.equal([]);
     file.addEventListener("input", () => done());
     file._uploadFile("dummy");
-    expect(file.files).to.deep.equal(["dummy"]);
+    expect(file.files).to.deep.equal([ "dummy" ]);
   });
 
   it("input can get value of uploaded file", (done) => {
     const form = document.getElementsByTagName("form")[0];
     const file = form.elements.file;
     expect(file.value).to.equal("");
-    file._uploadFile({name: "dummy"});
+    file._uploadFile({ name: "dummy" });
     expect(file.value).to.deep.equal("C:\\fakepath\\dummy");
     file.addEventListener("input", () => done());
     file.value = "";
@@ -272,7 +272,7 @@ describe("forms", () => {
     file.addEventListener("input", () => events++);
     file._uploadFile("dummy");
     file._uploadFile("dummy");
-    expect(file.files).to.deep.equal(["dummy"]);
+    expect(file.files).to.deep.equal([ "dummy" ]);
     expect(events).to.equal(1);
   });
 
@@ -282,12 +282,12 @@ describe("forms", () => {
     expect(file.files).to.deep.equal([]);
 
     file._uploadFile("dummy1");
-    expect(file.files).to.deep.equal(["dummy1"]);
+    expect(file.files).to.deep.equal([ "dummy1" ]);
     file._uploadFile("dummy2");
-    expect(file.files).to.deep.equal(["dummy2"]);
+    expect(file.files).to.deep.equal([ "dummy2" ]);
     file.multiple = true;
     file._uploadFile("dummy1");
-    expect(file.files).to.deep.equal(["dummy2", "dummy1"]);
+    expect(file.files).to.deep.equal([ "dummy2", "dummy1" ]);
   });
 
   describe("disabled", () => {
@@ -399,7 +399,7 @@ describe("forms", () => {
       "input[type=tel]",
       "input[type=number]",
       "textarea",
-      "select"
+      "select",
     ].forEach((tagName) => {
       it(`should fire 'input' event on ${tagName} when value is changed`, (done) => {
         const el = document.querySelector(tagName);

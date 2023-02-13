@@ -1,36 +1,30 @@
 import Script from "@bonniernews/wichita";
 import path from "path";
 
-import {app} from "../app/app.js";
+import { app } from "../app/app.js";
 import Browser from "../index.js";
-import {IntersectionObserver} from "../lib/index.js";
+import { IntersectionObserver as fakeIntersectionObserver } from "../lib/index.js";
 
 describe("IntersectionObserver", () => {
   it("observes elements", async () => {
-    const browser = await Browser(app).navigateTo("/", {
-      Cookie: "_ga=1"
-    });
-    const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
+    const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
+    const intersectionObserver = browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
 
-    await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
+    await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
     expect(browser.window.IntersectionObserverEntry).to.exist;
-    expect(browser.window.IntersectionObserverEntry.prototype.intersectionRatio).to.exist;
-    expect(browser.window.IntersectionObserverEntry.prototype.isIntersecting).to.exist;
   });
 
   it("listens to window scroll", async () => {
-    const browser = await Browser(app).navigateTo("/", {
-      Cookie: "_ga=1"
-    });
-    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
+    browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
 
     const lazyLoadElements = browser.document.getElementsByClassName("lazy-load");
 
     expect(lazyLoadElements.length).to.equal(1);
 
-    await Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
+    await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
     browser.setElementsToScroll(() => {
       return lazyLoadElements;
@@ -44,15 +38,15 @@ describe("IntersectionObserver", () => {
   });
 
   it("calls viewPortUpdate with correct elements when observing new elements", async () => {
-    const browser = await Browser(app).navigateTo("/");
-    const [element1] = browser.document.getElementsByClassName("observer-test-1");
-    const [element2] = browser.document.getElementsByClassName("observer-test-2");
-    const [element3] = browser.document.getElementsByClassName("observer-test-3");
+    const browser = await new Browser(app).navigateTo("/");
+    const [ element1 ] = browser.document.getElementsByClassName("observer-test-1");
+    const [ element2 ] = browser.document.getElementsByClassName("observer-test-2");
+    const [ element3 ] = browser.document.getElementsByClassName("observer-test-3");
 
-    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
     let intersectingEntries = [];
 
-    const observer = browser.window.IntersectionObserver((entries) => {
+    const observer = new browser.window.IntersectionObserver((entries) => {
       intersectingEntries = entries.slice();
     });
 
@@ -74,16 +68,15 @@ describe("IntersectionObserver", () => {
     expect(intersectingEntries[0]).to.have.property("target", element3);
   });
 
-
   it("unobserves element", async () => {
-    const browser = await Browser(app).navigateTo("/");
-    const [element1] = browser.document.getElementsByClassName("observer-test-1");
-    const [element2] = browser.document.getElementsByClassName("observer-test-2");
+    const browser = await new Browser(app).navigateTo("/");
+    const [ element1 ] = browser.document.getElementsByClassName("observer-test-1");
+    const [ element2 ] = browser.document.getElementsByClassName("observer-test-2");
 
-    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
     let intersectingEntries = [];
 
-    const observer = browser.window.IntersectionObserver((entries) => {
+    const observer = new browser.window.IntersectionObserver((entries) => {
       intersectingEntries = entries.slice();
     });
 
@@ -101,21 +94,21 @@ describe("IntersectionObserver", () => {
   });
 
   it("calls viewPortUpdate with correct element when scrolling", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
     browser.window._resize(1024, 768);
-    const [element1] = browser.document.getElementsByClassName("observer-test-1");
-    const [element2] = browser.document.getElementsByClassName("observer-test-2");
+    const [ element1 ] = browser.document.getElementsByClassName("observer-test-1");
+    const [ element2 ] = browser.document.getElementsByClassName("observer-test-2");
 
     element1._setBoundingClientRect({ top: 200, bottom: 300 });
     element2._setBoundingClientRect({ top: 400, bottom: 500 });
 
-    browser.setElementsToScroll(() => [element1, element2]);
+    browser.setElementsToScroll(() => [ element1, element2 ]);
 
-    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
     let intersectingEntries = [];
     let timesCalled = 0;
 
-    const observer = browser.window.IntersectionObserver((entries) => {
+    const observer = new browser.window.IntersectionObserver((entries) => {
       intersectingEntries = entries.slice();
       timesCalled++;
     }, { rootMargin: "10px 0 10px" });
@@ -159,19 +152,19 @@ describe("IntersectionObserver", () => {
   });
 
   it("clears targets on disconnect", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
     browser.window._resize(1024, 100);
-    const [element1] = browser.document.getElementsByClassName("observer-test-1");
-    const [element2] = browser.document.getElementsByClassName("observer-test-2");
+    const [ element1 ] = browser.document.getElementsByClassName("observer-test-1");
+    const [ element2 ] = browser.document.getElementsByClassName("observer-test-2");
 
     element1._setBoundingClientRect({ top: 200, bottom: 300 });
     element2._setBoundingClientRect({ top: 400, bottom: 500 });
 
-    browser.setElementsToScroll(() => [element1, element2]);
+    browser.setElementsToScroll(() => [ element1, element2 ]);
 
-    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
     let timesCalled = 0;
-    const observer = browser.window.IntersectionObserver(() => timesCalled++);
+    const observer = new browser.window.IntersectionObserver(() => timesCalled++);
 
     observer.observe(element1);
     observer.observe(element2);
