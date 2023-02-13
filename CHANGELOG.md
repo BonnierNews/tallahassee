@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 14.8.0
+
+- supports `KeyboardEvent` and `blur()`
+
 ## 14.7.0
 
 - changing a data attribute using dataset can trigger mutation observer
