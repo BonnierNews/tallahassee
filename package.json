@@ -12,7 +12,7 @@
     "toc": "node ./scripts/generate-api-toc ./docs/API.md,./docs/Examples.md"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "keywords": [
     "headless",
