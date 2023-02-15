@@ -3,6 +3,11 @@ Changelog
 
 ## Unreleased
 
+## 14.10.1
+
+- add missing default filename on upload (`"blob"`)
+- handling multiple files correctly
+
 ## 14.10.0
 
 - support for `multipart/form-data` in forms, specifically submitting files
