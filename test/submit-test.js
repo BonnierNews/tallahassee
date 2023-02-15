@@ -437,15 +437,18 @@ describe("submit", () => {
     const input = form.getElementsByTagName("input")[0];
     const button = form.getElementsByTagName("button")[0];
 
-    const fakeFile = new Blob([]);
-    fakeFile.name = "filename";
+    const fakeFiles = [ new Blob([]), new Blob([]) ];
+    fakeFiles[0].name = "filename";
     browser.document.addEventListener("submit", (e) => {
       const data = new browser.window.FormData(e.target);
       expect(data.a).to.be.undefined;
-      expect(data.get("a").name).to.eq(fakeFile.name);
+      const files = data.getAll("a");
+      expect(files[0]).to.have.property("name", fakeFiles[0].name);
+      expect(files[1]).to.have.property("name", "blob");
     });
 
-    input._uploadFile(fakeFile);
+    input._uploadFile(fakeFiles[0]);
+    input._uploadFile(fakeFiles[1]);
 
     button.click();
 
