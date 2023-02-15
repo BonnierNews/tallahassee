@@ -298,7 +298,7 @@ describe("window.fetch", () => {
       });
 
     await browser.window.fetch("https://blahonga.expressen.se/");
-    expect(cookie).to.eql([ "_ga=1" ]);
+    expect(cookie).to.eql("_ga=1");
   });
 
   it("exposes pendingRequests promise list", async () => {
@@ -416,7 +416,7 @@ describe("window.fetch", () => {
 
         const resp = await browser.window.fetch("/redirect").then((r) => r.json());
 
-        expect(resp).to.eql({ cookie: [ "_ga=2" ] });
+        expect(resp).to.eql({ cookie: "_ga=2" });
       });
     });
 
@@ -513,7 +513,7 @@ describe("window.fetch", () => {
 
       const browser = await new Browser(localApp).navigateTo("/");
       const resp = await browser.window.fetch("/redirect", { redirect: "manual" });
-      expect(resp.headers.get("location")).to.equal("https://www.example.com/");
+      expect(resp.headers.get("location")).to.equal("https://www.example.com");
     });
 
     it("redirect from remote resource to local resource is handled", async () => {

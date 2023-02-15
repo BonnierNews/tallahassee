@@ -1,4 +1,5 @@
 import nock from "nock";
+import { Blob } from "buffer";
 
 import { app } from "../app/app.js";
 import Browser from "../index.js";
@@ -427,6 +428,29 @@ describe("submit", () => {
 
     expect(browser._pending).to.be.ok;
     expect(submitEvents).to.eql(1);
+  });
+
+  it("submitting form with multipart/form-data", async () => {
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+
+    const form = browser.document.getElementById("multipart-formdata-form");
+    const input = form.getElementsByTagName("input")[0];
+    const button = form.getElementsByTagName("button")[0];
+
+    const fakeFile = new Blob([]);
+    fakeFile.name = "filename";
+    browser.document.addEventListener("submit", (e) => {
+      const data = new browser.window.FormData(e.target);
+      expect(data.a).to.be.undefined;
+      expect(data.get("a").name).to.eq(fakeFile.name);
+    });
+
+    input._uploadFile(fakeFile);
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+    await browser._pending;
   });
 
   it("preventing default on buttons with form attribute", async () => {
