@@ -1,8 +1,10 @@
-import http from "http";
-import nock from "nock";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const http = require("http");
+const nock = require("nock");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 const PORT = process.env.PORT;
 

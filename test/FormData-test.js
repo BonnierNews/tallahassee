@@ -1,5 +1,7 @@
-import Document from "../lib/Document.js";
-import FormData from "../lib/FormData.js";
+"use strict";
+
+const Document = require("../lib/Document.js");
+const FormData = require("../lib/FormData.js");
 
 describe("FormData", () => {
   let form;

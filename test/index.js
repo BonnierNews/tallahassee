@@ -1,9 +1,11 @@
-import nock from "nock";
-import path from "path";
-import Script from "@bonniernews/wichita";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const nock = require("nock");
+const path = require("path");
+const Script = require("@bonniernews/wichita");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
@@ -321,7 +323,7 @@ describe("Tallahassee", () => {
 
   describe("run script", () => {
     it("runs es6 script with browser window as global", async () => {
-      const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
       expect(browser.document.cookie).to.equal("_ga=1");
 
       await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);

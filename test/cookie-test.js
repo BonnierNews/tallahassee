@@ -1,7 +1,9 @@
-import nock from "nock";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const nock = require("nock");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("cookies", () => {
   describe("Browser", () => {

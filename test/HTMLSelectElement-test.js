@@ -1,4 +1,6 @@
-import { Document } from "../lib/index.js";
+"use strict";
+
+const { Document } = require("../lib/index.js");
 
 describe("HTMLSelectElement", () => {
   describe("single select", () => {

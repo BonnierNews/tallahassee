@@ -1,8 +1,10 @@
-import { CookieJar } from "cookiejar";
+"use strict";
 
-import { Document } from "../lib/index.js";
-import DocumentFragment from "../lib/DocumentFragment.js";
-import HTMLCollection from "../lib/HTMLCollection.js";
+const { CookieJar } = require("cookiejar");
+
+const { Document } = require("../lib/index.js");
+const DocumentFragment = require("../lib/DocumentFragment.js");
+const HTMLCollection = require("../lib/HTMLCollection.js");
 
 describe("Document", () => {
   let document;

@@ -1,8 +1,10 @@
-import nock from "nock";
-import { Blob } from "buffer";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const nock = require("nock");
+const { Blob } = require("buffer");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("submit", () => {
   let server, port;

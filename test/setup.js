@@ -1,5 +1,7 @@
-import chai from "chai";
-import nock from "nock";
+"use strict";
+
+const chai = require("chai");
+const nock = require("nock");
 
 process.env.TZ = "Europe/Stockholm";
 process.env.NODE_ENV = "test";

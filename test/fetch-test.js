@@ -1,8 +1,10 @@
-import express from "express";
-import nock from "nock";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const express = require("express");
+const nock = require("nock");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("window.fetch", () => {
   beforeEach(nock.cleanAll);

@@ -1,9 +1,9 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
+"use strict";
+
+const express = require("express");
+const path = require("path");
 
 const app = express();
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const index = path.join(__dirname, "assets/public/index.html");
 const errorPage = path.join(__dirname, "assets/public/error.html");
 
@@ -64,9 +64,9 @@ app.get("(*)?", (req, res) => res.sendFile(index));
 
 app.use(errorHandler);
 
-export { app };
+module.exports = { app };
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (require.main === module) {
   const port = Number(process.env.PORT) || 3000;
   const server = app.listen(port, () => {
     // eslint-disable-next-line no-console

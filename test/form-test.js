@@ -1,4 +1,6 @@
-import Document from "../lib/Document.js";
+"use strict";
+
+const Document = require("../lib/Document.js");
 
 describe("forms", () => {
   let document;
