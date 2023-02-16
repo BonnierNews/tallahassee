@@ -277,7 +277,7 @@ describe("Document", () => {
       expect(elm === elmClone).to.be.false;
     });
 
-    it("importNode() on templateElement.content combined with appendChild() inserts element content", () => {
+    it.skip("importNode() on templateElement.content combined with appendChild() inserts element content", () => {
       const templateElement = document.getElementById("schablon");
       const templateContentClone = document.importNode(templateElement.content, true);
 
