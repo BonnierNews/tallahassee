@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 14.10.2
+
+- reverted ESM
+
 ## 14.10.1
 
 - add missing default filename on upload (`"blob"`)
