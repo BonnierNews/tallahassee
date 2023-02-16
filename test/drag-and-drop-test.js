@@ -1,5 +1,7 @@
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+"use strict";
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("drag and drop", () => {
   let browser;
