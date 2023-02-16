@@ -5,7 +5,7 @@
 
 const Toc = require("markdown-toc");
 const Fs = require("fs");
-const {version} = require("../package.json");
+const { version } = require("../package.json");
 
 // Declare internals
 
@@ -25,11 +25,11 @@ function generate(filename) {
       return text.toLowerCase()
         .replace(/\s/g, "-")
         .replace(/[^\w-]/g, "");
-    }
+    },
   };
 
   const output = Toc.insert(api, tocOptions)
-    .replace(/<!-- version -->(.|\n)*<!-- versionstop -->/, `<!-- version -->\n# ${ version } API Reference\n<!-- versionstop -->`);
+    .replace(/<!-- version -->(.|\n)*<!-- versionstop -->/, `<!-- version -->\n# ${version} API Reference\n<!-- versionstop -->`);
 
   Fs.writeFileSync(filename, output);
 }

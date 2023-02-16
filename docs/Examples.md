@@ -39,7 +39,7 @@ it("script mutates DOM", async () => {
       this.disconnect();
     });
 
-    observer.observe(browser.document.body, {childList: true});
+    observer.observe(browser.document.body, { childList: true });
   });
 
   btn.click();

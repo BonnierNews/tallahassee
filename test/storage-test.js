@@ -1,6 +1,6 @@
 "use strict";
 
-const {Storage} = require("../lib");
+const { Storage } = require("../lib");
 
 describe("Storage", () => {
   let localStorage;
@@ -9,13 +9,13 @@ describe("Storage", () => {
   });
 
   it("should return empty storage", () => {
-    expect(localStorage).to.eql({length: 0});
+    expect(localStorage).to.eql({ length: 0 });
   });
 
   it("should return all values currently stored", () => {
     localStorage.setItem("test-item", "foo");
 
-    expect(localStorage).to.eql({"test-item": "foo", length: 1});
+    expect(localStorage).to.eql({ "test-item": "foo", length: 1 });
   });
 
   it("should return null if no item is found", () => {
@@ -27,7 +27,7 @@ describe("Storage", () => {
   it("should always set item as string", () => {
     localStorage.setItem("number", 1);
     localStorage.setItem("date", new Date(2018, 3, 18));
-    localStorage.setItem("array", [1, 2]);
+    localStorage.setItem("array", [ 1, 2 ]);
     localStorage.setItem("obj", {});
     localStorage.setItem("undef", undefined);
     localStorage.setItem("null", null);
@@ -83,7 +83,7 @@ describe("Storage", () => {
   it("should clear all", () => {
     localStorage.clear();
 
-    expect(localStorage).to.eql({length: 0});
+    expect(localStorage).to.eql({ length: 0 });
   });
 
   it("can be overwritten for testing purposes", () => {

@@ -3,6 +3,70 @@ Changelog
 
 ## Unreleased
 
+## 14.10.2
+
+- reverted ESM
+
+## 14.10.1
+
+- add missing default filename on upload (`"blob"`)
+- handling multiple files correctly
+
+## 14.10.0
+
+- support for `multipart/form-data` in forms, specifically submitting files
+- upgraded `node-fetch` in order to get a more robust `FormData`
+- add `enctype` to `HTMLFormElement`
+
+## 14.9.0
+
+- project is now using ESM
+- use of `eslint-config-exp` for linting
+- got rid of most prototype usage and replaced it with classes
+- removed deprecated usage of `url`
+
+## 14.8.0
+
+- support for KeyboardEvent and blur()
+
+## 14.7.0
+
+- changing a data attribute using dataset can trigger mutation observer
+
+## 14.6.0
+
+- support for required validation for select elements
+
+## 14.5.0
+
+- now supports node 18
+- support for `input[type=file]`
+  - this includes a basic support for uploading a file programmatically on element: `_uploadFile()`
+- add `fieldset` and `legend`
+
+## 14.4.0
+
+- add `HTMLIFrameElement` to `window`
+- add `defaultView` to `document`
+- add `nodeValue` setter to `Text`
+
+## 14.3.0
+
+- button outside form but with `form` attribute triggers submit event
+
+## 14.1.0
+
+- added `form` attribute submit
+
+## 14.0.0
+
+- now supports `Image` on `window` along with other image only attributes being supported as native props
+- default timers are now defined as stubs. `setTimeout` will fire its callback immediately but can be overridden if needed
+
+### Breaking
+
+- only `elements` is now supported on retrieving form elements
+
 ## 13.3.0
 
 - added `popstate` event to be fired

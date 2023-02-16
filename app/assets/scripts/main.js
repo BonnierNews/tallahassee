@@ -1,5 +1,5 @@
-import {getCookie} from "./cookies";
-import lazyLoad from "./lazy-load";
+import { getCookie } from "./cookies.js";
+import lazyLoad from "./lazy-load.js";
 
 (function IIFE() {
   const cookieVal = getCookie("_ga");
@@ -13,4 +13,3 @@ import lazyLoad from "./lazy-load";
 
   lazyLoad();
 })();
-

@@ -1,5 +1,5 @@
 <!-- version -->
-# 13.3.0 API Reference
+# 14.10.2 API Reference
 <!-- versionstop -->
 
 <!-- toc -->
@@ -87,25 +87,25 @@ Test you abundant sticky logic.
 ```javascript
 "use strict";
 
-const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("@expressen/tallahassee/lib");
+const { IntersectionObserver: fakeIntersectionObserver } = require("@expressen/tallahassee/lib");
+const { app } = require("../app/app.js");
 
 describe("Window scroller", () => {
   describe("use with IntersectionObserver", () => {
     it("listens to window scroll", async () => {
-      const browser = await Browser(app).navigateTo("/");
-      browser.window.IntersectionObserver = IntersectionObserver(browser);
+      const browser = await new Browser(app).navigateTo("/");
+      browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
       });
 
-      const [lazyLoaded] = browser.document.getElementsByClassName("lazy-load");
-      lazyLoaded._setBoundingClientRect({top: 300});
+      const [ lazyLoaded ] = browser.document.getElementsByClassName("lazy-load");
+      lazyLoaded._setBoundingClientRect({ top: 300 });
 
-      await Script("../app/assets/scripts/main.js").run(browser.window);
+      await new Script("../app/assets/scripts/main.js").run(browser.window);
 
       browser.scrollToTopOfElement(lazyLoaded);
 
@@ -132,30 +132,26 @@ Resets element top to wherever it was before sticked.
 ```javascript
 "use strict";
 
-const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("@expressen/tallahassee/lib");
+const { IntersectionObserver: fakeIntersectionObserver } = require("@expressen/tallahassee/lib");
+const { app } = require("../app/app.js");
 
 describe("IntersectionObserver", () => {
   it("observes elements", async () => {
-    const browser = await Browser(app).navigateTo("/", {
-      Cookie: "_ga=1"
-    });
-    const intersectionObserver = browser.window.IntersectionObserver = IntersectionObserver(browser);
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
+    const intersectionObserver = browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
 
-    await Script("../app/assets/scripts/main.js").run(browser.window);
+    await new Script("../app/assets/scripts/main.js").run(browser.window);
 
     expect(intersectionObserver._getObserved()).to.have.length(1);
   });
 
   it("acts on window scroll", async () => {
-    const browser = await Browser(app).navigateTo("/", {
-      Cookie: "_ga=1"
-    });
-    browser.window.IntersectionObserver = IntersectionObserver(browser);
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
+    browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
 
-    await Script("../app/assets/scripts/main.js").run(browser.window);
+    await new Script("../app/assets/scripts/main.js").run(browser.window);
 
     browser.setElementsToScroll((document) => {
       return document.getElementsByClassName("lazy-load");
@@ -177,13 +173,13 @@ Switch scopes between iframe window and main window.
 ```javascript
 "use strict";
 
-const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const nock = require("nock");
+const { app } = require("../app/app.js");
 
 describe("Iframe", () => {
   it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
-    const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=2" });
     const element = browser.document.createElement("iframe");
 
     element.id = "friendly-frame";
@@ -203,10 +199,9 @@ describe("Iframe", () => {
   it("iframe from other host scopes window and document", async () => {
     nock("http://example.com")
       .get("/framed-content")
-      .replyWithFile(200, "./app/assets/public/index.html", {
-        "Content-Type": "text/html"
-      });
-    const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+      .replyWithFile(200, "./app/assets/public/index.html", { "Content-Type": "text/html" });
+
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=2" });
     const element = browser.document.createElement("iframe");
     element.id = "iframe";
     element.src = "//example.com/framed-content";

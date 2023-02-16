@@ -1,12 +1,12 @@
 "use strict";
 
-const Browser = require("../");
-const app = require("../app/app");
+const Browser = require("../index.js");
+const app = require("../app/app.js");
 
 describe("element attribute eventhandler", () => {
   let browser;
   beforeEach(async () => {
-    browser = await new Browser(app, {runScripts: true}).navigateTo("/inline-scripts");
+    browser = await new Browser(app, { runScripts: true }).navigateTo("/inline-scripts");
   });
 
   it("has access to window", () => {

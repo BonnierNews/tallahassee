@@ -1,0 +1,12 @@
+{
+  "timeout": 2000,
+  "reporter": "spec",
+  "recursive": true,
+  "require": [
+    "./test/setup.js"
+  ],
+  "node-option": [
+    "experimental-vm-modules",
+    "no-warnings"
+  ]
+}

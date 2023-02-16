@@ -1,13 +1,15 @@
 "use strict";
 
-const app = require("../app/app");
-const Browser = require("../");
 const Script = require("@bonniernews/wichita");
-const {IntersectionObserver} = require("../lib");
+const path = require("path");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
+const { IntersectionObserver: fakeIntersectionObserver } = require("../lib/index.js");
 
 describe("Window scroller", () => {
   it("observes and sets top of elements passed to stacked elements function", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     browser.setElementsToScroll((document) => {
       return document.getElementsByTagName("img");
@@ -18,11 +20,11 @@ describe("Window scroller", () => {
     const img2 = elements[1];
     img1._setBoundingClientRect({
       top: 100,
-      bottom: 120
+      bottom: 120,
     });
     img2._setBoundingClientRect({
       top: 200,
-      bottom: 220
+      bottom: 220,
     });
 
     browser.window.scroll(0, 100);
@@ -42,7 +44,7 @@ describe("Window scroller", () => {
   });
 
   it("observes and sets left of elements passed to stacked elements function", async () => {
-    const browser = await Browser(app).navigateTo("/");
+    const browser = await new Browser(app).navigateTo("/");
 
     browser.setElementsToScroll((document) => {
       return document.getElementsByTagName("img");
@@ -53,11 +55,11 @@ describe("Window scroller", () => {
     const img2 = elements[1];
     img1._setBoundingClientRect({
       left: 100,
-      right: 120
+      right: 120,
     });
     img2._setBoundingClientRect({
       left: 200,
-      right: 220
+      right: 220,
     });
 
     browser.window.scroll(100, 0);
@@ -87,7 +89,7 @@ describe("Window scroller", () => {
 
   describe("scrollToTopOfElement()", () => {
     it("scrolls to top of element", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -96,8 +98,8 @@ describe("Window scroller", () => {
       const elements = browser.document.getElementsByTagName("img");
       const img1 = elements[0];
       const img2 = elements[1];
-      img1._setBoundingClientRect({top: 100, bottom: 120});
-      img2._setBoundingClientRect({top: 200, bottom: 220});
+      img1._setBoundingClientRect({ top: 100, bottom: 120 });
+      img2._setBoundingClientRect({ top: 200, bottom: 220 });
 
       browser.scrollToTopOfElement(img1);
       expect(browser.window.pageYOffset).to.equal(100);
@@ -119,7 +121,7 @@ describe("Window scroller", () => {
     });
 
     it("with offset set top to offset", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -128,8 +130,8 @@ describe("Window scroller", () => {
       const elements = browser.document.getElementsByTagName("img");
       const img1 = elements[0];
       const img2 = elements[1];
-      img1._setBoundingClientRect({top: 100, bottom: 120});
-      img2._setBoundingClientRect({top: 200, bottom: 220});
+      img1._setBoundingClientRect({ top: 100, bottom: 120 });
+      img2._setBoundingClientRect({ top: 200, bottom: 220 });
 
       browser.scrollToTopOfElement(img1, -10);
       expect(browser.window.pageYOffset).to.equal(110);
@@ -145,7 +147,7 @@ describe("Window scroller", () => {
     });
 
     it("offset cannot scroll above pageYOffset 0", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       browser._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
@@ -155,8 +157,8 @@ describe("Window scroller", () => {
       const elements = browser.document.getElementsByTagName("img");
       const img1 = elements[0];
       const img2 = elements[1];
-      img1._setBoundingClientRect({top: 700, bottom: 720});
-      img2._setBoundingClientRect({top: 900, bottom: 920});
+      img1._setBoundingClientRect({ top: 700, bottom: 720 });
+      img2._setBoundingClientRect({ top: 900, bottom: 920 });
 
       browser.scrollToTopOfElement(img1, 99999);
       expect(browser.window.pageYOffset).to.equal(0);
@@ -169,7 +171,7 @@ describe("Window scroller", () => {
 
   describe("scrollToBottomOfElement()", () => {
     it("sets bottom of element to window.innerHeight", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       browser._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
@@ -179,8 +181,8 @@ describe("Window scroller", () => {
       const elements = browser.document.getElementsByTagName("img");
       const img1 = elements[0];
       const img2 = elements[1];
-      img1._setBoundingClientRect({top: 700, bottom: 720});
-      img2._setBoundingClientRect({top: 900, bottom: 920});
+      img1._setBoundingClientRect({ top: 700, bottom: 720 });
+      img2._setBoundingClientRect({ top: 900, bottom: 920 });
 
       browser.scrollToBottomOfElement(img1);
       expect(browser.window.pageYOffset).to.equal(120);
@@ -196,7 +198,7 @@ describe("Window scroller", () => {
     });
 
     it("with offset includes offset from bottom", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       browser._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
@@ -206,12 +208,11 @@ describe("Window scroller", () => {
       const elements = browser.document.getElementsByTagName("img");
       const img1 = elements[0];
       const img2 = elements[1];
-      img1._setBoundingClientRect({top: 700, bottom: 720});
-      img2._setBoundingClientRect({top: 900, bottom: 920});
+      img1._setBoundingClientRect({ top: 700, bottom: 720 });
+      img2._setBoundingClientRect({ top: 900, bottom: 920 });
 
       browser.scrollToBottomOfElement(img1, -10);
       expect(browser.window.pageYOffset).to.equal(130);
-
 
       expect(img1.getBoundingClientRect()).to.have.property("top", 570);
       expect(img2.getBoundingClientRect()).to.have.property("top", 770);
@@ -224,7 +225,7 @@ describe("Window scroller", () => {
     });
 
     it("offset cannot scroll above pageYOffset 0", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       browser._resize(undefined, 600);
 
       browser.setElementsToScroll((document) => {
@@ -235,8 +236,8 @@ describe("Window scroller", () => {
       const img1 = elements[0];
       const img2 = elements[1];
 
-      img1._setBoundingClientRect({top: 700, bottom: 720});
-      img2._setBoundingClientRect({top: 900, bottom: 920});
+      img1._setBoundingClientRect({ top: 700, bottom: 720 });
+      img2._setBoundingClientRect({ top: 900, bottom: 920 });
 
       browser.scrollToBottomOfElement(img1, 99999);
       expect(browser.window.pageYOffset).to.equal(0);
@@ -248,7 +249,7 @@ describe("Window scroller", () => {
 
   describe("stickElementToTop()", () => {
     it("sets top of element to 0", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -258,8 +259,8 @@ describe("Window scroller", () => {
       const img1 = elements[0];
       const img2 = elements[1];
 
-      img1._setBoundingClientRect({top: 700, bottom: 720});
-      img2._setBoundingClientRect({top: 900, bottom: 920});
+      img1._setBoundingClientRect({ top: 700, bottom: 720 });
+      img2._setBoundingClientRect({ top: 900, bottom: 920 });
 
       browser.stickElementToTop(img1);
 
@@ -273,7 +274,7 @@ describe("Window scroller", () => {
     });
 
     it("unstickElementFromTop() resets top in regard to scroll", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -283,8 +284,8 @@ describe("Window scroller", () => {
       const img1 = elements[0];
       const img2 = elements[1];
 
-      img1._setBoundingClientRect({top: 700, bottom: 720});
-      img2._setBoundingClientRect({top: 900, bottom: 920});
+      img1._setBoundingClientRect({ top: 700, bottom: 720 });
+      img2._setBoundingClientRect({ top: 900, bottom: 920 });
 
       browser.stickElementToTop(img1);
 
@@ -300,7 +301,7 @@ describe("Window scroller", () => {
     });
 
     it("cannot scroll to sticky element", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
@@ -316,17 +317,17 @@ describe("Window scroller", () => {
 
   describe("use with IntersectionObserver", () => {
     it("listens to window scroll", async () => {
-      const browser = await Browser(app).navigateTo("/");
-      browser.window.IntersectionObserver = IntersectionObserver(browser);
+      const browser = await new Browser(app).navigateTo("/");
+      browser.window.IntersectionObserver = fakeIntersectionObserver(browser);
 
       browser.setElementsToScroll((document) => {
         return document.getElementsByTagName("img");
       });
 
       const lazyLoaded = browser.document.getElementsByClassName("lazy-load")[0];
-      lazyLoaded._setBoundingClientRect({top: 300});
+      lazyLoaded._setBoundingClientRect({ top: 300 });
 
-      await Script("../app/assets/scripts/main").run(browser.window);
+      await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
       browser.scrollToTopOfElement(lazyLoaded);
 

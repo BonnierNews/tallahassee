@@ -1,8 +1,10 @@
 "use strict";
 
-const app = require("../app/app");
-const Browser = require("../");
 const nock = require("nock");
+const { Blob } = require("buffer");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("submit", () => {
   let server, port;
@@ -15,7 +17,7 @@ describe("submit", () => {
   });
 
   it("submits get form on click with maintained headers", async () => {
-    const browser = await Browser(port).navigateTo("/", {
+    const browser = await new Browser(port).navigateTo("/", {
       host: "www.expressen.se",
       "x-forwarded-proto": "https",
       cookie: "_ga=2",
@@ -41,11 +43,11 @@ describe("submit", () => {
   });
 
   it("submits post form on click with maintained headers", async () => {
-    const browser = await Browser(port).navigateTo("/", {
+    const browser = await new Browser(port).navigateTo("/", {
       host: "www.expressen.se",
       "x-forwarded-proto": "https",
       cookie: "_ga=2",
-      "content-type": "unknown/mime-type"
+      "content-type": "unknown/mime-type",
     });
 
     const form = browser.document.getElementById("post-form");
@@ -65,7 +67,7 @@ describe("submit", () => {
   });
 
   it("submits post form with payload on click", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("post-form");
     const input = form.getElementsByTagName("input")[0];
@@ -84,7 +86,7 @@ describe("submit", () => {
   });
 
   it("submits post form without action to the same route on click", async () => {
-    const browser = await Browser(port).navigateTo("/?a=b");
+    const browser = await new Browser(port).navigateTo("/?a=b");
 
     const form = browser.document.getElementById("post-form-without-action");
     const input = form.getElementsByTagName("input")[0];
@@ -104,7 +106,7 @@ describe("submit", () => {
   });
 
   it("submits get form with values from checkboxes", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("checkboxes-get-form");
     const button = form.getElementsByTagName("button")[0];
@@ -118,7 +120,7 @@ describe("submit", () => {
   });
 
   it("submits post form with values from checkboxes", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("checkboxes-post-form");
     const button = form.getElementsByTagName("button")[0];
@@ -132,7 +134,7 @@ describe("submit", () => {
   });
 
   it("submits post form with values from select inputs", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("select-form");
     const button = form.getElementsByTagName("button")[0];
@@ -154,7 +156,7 @@ describe("submit", () => {
   });
 
   it("submits inner text if select input value is empty", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("select-form");
     const button = form.getElementsByTagName("button")[0];
@@ -172,7 +174,7 @@ describe("submit", () => {
   });
 
   it("follows redirect on get", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("get-form-redirect");
     const button = form.getElementsByTagName("button")[0];
@@ -187,7 +189,7 @@ describe("submit", () => {
   });
 
   it("follows redirect on post", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-redirect");
     const button = form.getElementsByTagName("button")[0];
@@ -205,13 +207,9 @@ describe("submit", () => {
     nock("https://www.example.com")
       .get("/")
       .matchHeader("host", "www.example.com")
-      .reply(200, "<html><body></body></html>", {
-        "content-type": "text/html"
-      });
+      .reply(200, "<html><body></body></html>", { "content-type": "text/html" });
 
-    const browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-external-redirect");
     const button = form.getElementsByTagName("button")[0];
@@ -226,15 +224,11 @@ describe("submit", () => {
   });
 
   it("follows external redirect on post that redirects back to app", async () => {
-    const browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/", );
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     nock("https://www.example.com")
       .get("/")
-      .reply(302, undefined, {
-        location: browser.window.location.href
-      });
+      .reply(302, undefined, { location: browser.window.location.href });
 
     const form = browser.document.getElementById("post-form-external-redirect");
     const button = form.getElementsByTagName("button")[0];
@@ -253,13 +247,9 @@ describe("submit", () => {
     nock("https://www.example.com")
       .post("/blahonga/", "a=b")
       .matchHeader("host", "www.example.com")
-      .reply(200, "<html><body></body></html>", {
-        "content-type": "text/html"
-      });
+      .reply(200, "<html><body></body></html>", { "content-type": "text/html" });
 
-    const browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-external-direct");
     const button = form.getElementsByTagName("button")[0];
@@ -277,13 +267,9 @@ describe("submit", () => {
     nock("https://www.example.com")
       .post("/blahonga/", "a=b")
       .matchHeader("host", "www.example.com")
-      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
-        "content-type": "text/html"
-      });
+      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", { "content-type": "text/html" });
 
-    let browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    let browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-external-direct");
     const button = form.getElementsByTagName("button")[0];
@@ -310,13 +296,9 @@ describe("submit", () => {
     nock("https://www.example.com")
       .get("/")
       .matchHeader("host", "www.example.com")
-      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
-        "content-type": "text/html"
-      });
+      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", { "content-type": "text/html" });
 
-    let browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    let browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("multi-submit-form");
     const button = form.getElementsByTagName("button")[1];
@@ -336,13 +318,9 @@ describe("submit", () => {
         return true;
       })
       .matchHeader("host", "www.example.com")
-      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
-        "content-type": "text/html"
-      });
+      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", { "content-type": "text/html" });
 
-    let browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    let browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("multi-submit-form");
     const button = form.getElementsByTagName("button")[2];
@@ -362,13 +340,9 @@ describe("submit", () => {
         return true;
       })
       .matchHeader("host", "www.example.com")
-      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", {
-        "content-type": "text/html"
-      });
+      .reply(200, "<html><body><form method='POST' action='http://www.expressen.se'><button type='submit'></button></form></body></html>", { "content-type": "text/html" });
 
-    let browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    let browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("multi-submit-form");
     const button = form.getElementsByTagName("button")[3];
@@ -381,9 +355,7 @@ describe("submit", () => {
   });
 
   it("submits to local app if absolute form action matches host header", async () => {
-    let browser = await Browser(app, {
-      headers: {host: "www.expressen.se"}
-    }).navigateTo("/");
+    let browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-absolute-url");
     const button = form.getElementsByTagName("button")[0];
@@ -398,11 +370,11 @@ describe("submit", () => {
   });
 
   it("submits to local app if absolute form action matches x-forwarded-host header", async () => {
-    let browser = await Browser(app, {
+    let browser = await new Browser(app, {
       headers: {
         host: "some-other-host.com",
-        "x-forwarded-host": "www.expressen.se"
-      }
+        "x-forwarded-host": "www.expressen.se",
+      },
     }).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-absolute-url");
@@ -418,7 +390,7 @@ describe("submit", () => {
   });
 
   it("submits input as array if more than 1 input with same name", async () => {
-    const browser = await Browser(port).navigateTo("/");
+    const browser = await new Browser(port).navigateTo("/");
 
     const form = browser.document.getElementById("post-form-same-name");
     const button = form.getElementsByTagName("button")[0];
@@ -429,7 +401,61 @@ describe("submit", () => {
 
     const newNavigation = await browser._pending;
 
-    const body = JSON.stringify({ test: ["1", "2", "3"], c: "d" });
+    const body = JSON.stringify({ test: [ "1", "2", "3" ], c: "d" });
     expect(newNavigation.document.body.innerHTML).to.contain(body);
+  });
+
+  it("supports submitting form by clicking on elements outside the form with form attribute", async () => {
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+
+    let submitEvents = 0;
+    browser.document.addEventListener("submit", () => submitEvents++);
+    const button = browser.document.getElementById("outside-form-button");
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+    expect(submitEvents).to.eql(1);
+  });
+
+  it("submitting form with multipart/form-data", async () => {
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+
+    const form = browser.document.getElementById("multipart-formdata-form");
+    const input = form.getElementsByTagName("input")[0];
+    const button = form.getElementsByTagName("button")[0];
+
+    const fakeFiles = [ new Blob([]), new Blob([]) ];
+    fakeFiles[0].name = "filename";
+    browser.document.addEventListener("submit", (e) => {
+      const data = new browser.window.FormData(e.target);
+      expect(data.a).to.be.undefined;
+      const files = data.getAll("a");
+      expect(files[0]).to.have.property("name", fakeFiles[0].name);
+      expect(files[1]).to.have.property("name", "blob");
+    });
+
+    input._uploadFile(fakeFiles[0]);
+    input._uploadFile(fakeFiles[1]);
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+    await browser._pending;
+  });
+
+  it("preventing default on buttons with form attribute", async () => {
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+
+    const button = browser.document.getElementById("outside-form-button");
+    button.addEventListener("click", (e) => {
+      e.preventDefault();
+    });
+    let submitEvent = false;
+    browser.document.addEventListener("submit", () => (submitEvent = true));
+    button.click();
+
+    expect(browser._pending).to.not.be.ok;
+    expect(submitEvent).to.be.false;
   });
 });

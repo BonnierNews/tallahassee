@@ -1,13 +1,13 @@
 {
   "name": "@expressen/tallahassee",
-  "version": "13.3.0",
+  "version": "14.10.2",
   "description": "Lightweight client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
     "test": "mocha",
     "posttest": "eslint . --cache && npm run test-md && npm run toc",
-    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md ./README.md,./docs/API.md,./docs/Examples.md",
+    "test-md": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" node ./scripts/test-md.js ./README.md,./docs/API.md,./docs/Examples.md",
     "toc": "node ./scripts/generate-api-toc ./docs/API.md,./docs/Examples.md"
   },
   "engines": {
@@ -30,12 +30,13 @@
   "dependencies": {
     "domexception": "^4.0.0",
     "jsdom": "^21.0.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch-commonjs": "^3.2.4"
   },
   "devDependencies": {
     "@bonniernews/wichita": "^1.1.0",
     "chai": "^4.3.7",
-    "eslint": "^8.28.0",
+    "eslint": "^8.34.0",
+    "eslint-config-exp": "^0.5.0",
     "express": "^4.18.2",
     "markdown-toc": "^1.2.0",
     "mocha": "^10.1.0",

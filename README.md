@@ -20,19 +20,19 @@ Supports just about everything.
 ```javascript
 "use strict";
 
-const app = require("../app/app");
 const Browser = require("@expressen/tallahassee");
 const Script = require("@bonniernews/wichita");
+const { app } = require("../app/app.js");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
     it("navigates to url", async () => {
-      await Browser(app).navigateTo("/");
+      await new Browser(app).navigateTo("/");
     });
 
     it("throws if not 200", async () => {
       try {
-        await Browser(app).navigateTo("/404");
+        await new Browser(app).navigateTo("/404");
       } catch (e) {
         var err = e; // eslint-disable-line no-var
       }
@@ -40,27 +40,25 @@ describe("Tallahassee", () => {
     });
 
     it("unless you override status code", async () => {
-      const browser = await Browser(app).navigateTo("/404", null, 404);
+      const browser = await new Browser(app).navigateTo("/404", null, 404);
       expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
     });
   });
 
   describe("run script", () => {
     it("run es6 script sources with @bonniernews/wichita", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        Cookie: "_ga=1"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
 
-      await Script("./app/assets/scripts/main.js").run(browser.window);
+      await new Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
     });
 
     it("again", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
-      await Script("./app/assets/scripts/main.js").run(browser.window);
+      await new Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);

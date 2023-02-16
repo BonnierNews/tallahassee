@@ -1,26 +1,27 @@
 "use strict";
 
-const app = require("../app/app");
-const Browser = require("../");
 const nock = require("nock");
-// const Path = require("path");
+const path = require("path");
 const Script = require("@bonniernews/wichita");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
     it("navigates to url", async () => {
-      await Browser(app).navigateTo("/");
+      await new Browser(app).navigateTo("/");
     });
 
     it("returns browser window", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       expect(browser.window).to.be.ok;
     });
 
     it("sets browser window location", async () => {
-      const browser = await Browser(app).navigateTo("/", {
+      const browser = await new Browser(app).navigateTo("/", {
         Host: "www.expressen.se",
-        "x-forwarded-proto": "https"
+        "x-forwarded-proto": "https",
       });
       expect(browser.window).to.be.ok;
       expect(browser.window.location.protocol).to.equal("https:");
@@ -28,7 +29,7 @@ describe("Tallahassee", () => {
     });
 
     it("exposes http response", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       expect(browser.response).to.be.ok;
       expect(browser.response).to.have.property("status", 200);
       expect(browser.response).to.have.property("headers");
@@ -37,7 +38,7 @@ describe("Tallahassee", () => {
 
     it("throws if not 200", async () => {
       try {
-        await Browser(app).navigateTo("/404");
+        await new Browser(app).navigateTo("/404");
       } catch (e) {
         var err = e; // eslint-disable-line no-var
       }
@@ -45,12 +46,12 @@ describe("Tallahassee", () => {
     });
 
     it("passes along cookies", async () => {
-      const browser = await Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla; mySecondCookie=chocolateChip" });
+      const browser = await new Browser(app).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
       expect(browser.window.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("returns browser with navigateTo capability that returns new browser with preserved cookie", async () => {
-      const browser = await Browser(app).navigateTo("/", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
 
       const newBrowser = await browser.navigateTo("/reply-with-cookies");
 
@@ -58,16 +59,16 @@ describe("Tallahassee", () => {
     });
 
     it("follows redirects", async () => {
-      const browser = await Browser(app).navigateTo("/redirect");
+      const browser = await new Browser(app).navigateTo("/redirect");
       expect(browser.response).to.be.ok;
       expect(browser.response).to.have.property("status", 200);
       expect(browser.window.location.pathname).to.equal("/req-info-html");
     });
 
     it("keeps original request headers when it follows local redirects", async () => {
-      const browser = await Browser(app).navigateTo("/redirect", {
+      const browser = await new Browser(app).navigateTo("/redirect", {
         host: "www.expressen.se",
-        "x-forwarded-proto": "https"
+        "x-forwarded-proto": "https",
       });
       expect(browser.response).to.be.ok;
       const reqInfo = JSON.parse(browser.document.body.textContent);
@@ -78,12 +79,10 @@ describe("Tallahassee", () => {
     it("only sends specified headers when following local redirects", async () => {
       nock("https://www.example.com")
         .get("/")
-        .reply(302, "", {
-          location: "https://www.expressen.se/req-info-html"
-        });
-      const browser = await Browser(app).navigateTo("/external-redirect", {
+        .reply(302, "", { location: "https://www.expressen.se/req-info-html" });
+      const browser = await new Browser(app).navigateTo("/external-redirect", {
         host: "www.expressen.se",
-        "x-forwarded-proto": "https"
+        "x-forwarded-proto": "https",
       });
       expect(browser.response).to.be.ok;
       const reqInfo = JSON.parse(browser.document.body.textContent);
@@ -92,53 +91,53 @@ describe("Tallahassee", () => {
     });
 
     it("handles redirect loops by throwing", (done) => {
-      Browser(app).navigateTo("/redirect-loop")
+      new Browser(app).navigateTo("/redirect-loop")
         .catch(() => {
           done();
         });
     });
 
     it("makes request to local app when the requested host matches host header from browser creation", async () => {
-      let browser = await Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+      let browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
       browser = await browser.navigateTo("http://www.expressen.se/");
       expect(browser.response).to.be.ok;
     });
 
     it("makes request to local app when the requested host matches x-forwarded-host from browser creation", async () => {
-      let browser = await Browser(app, {
+      let browser = await new Browser(app, {
         headers: {
           host: "some-other-host.com",
-          "x-forwarded-host": "www.expressen.se"
-        }
+          "x-forwarded-host": "www.expressen.se",
+        },
       }).navigateTo("/");
       browser = await browser.navigateTo("http://www.expressen.se/");
       expect(browser.response).to.be.ok;
     });
 
     it("makes request to local app when the requested host matches x-forwarded-host and protocol matches x-forwarded-proto from browser creation", async () => {
-      let browser = await Browser(app, {
+      let browser = await new Browser(app, {
         headers: {
           host: "some-other-host.com",
           "x-forwarded-host": "www.expressen.se",
-          "x-forwarded-proto": "https"
-        }
+          "x-forwarded-proto": "https",
+        },
       }).navigateTo("/");
       browser = await browser.navigateTo("https://www.expressen.se/");
       expect(browser.response).to.be.ok;
     });
 
     it("makes request to local app when the requested host matches x-forwarded-host and protocol matches x-forwarded-proto from navigation", async () => {
-      let browser = await Browser(app).navigateTo("/", {
+      let browser = await new Browser(app).navigateTo("/", {
         host: "some-other-host.com",
         "x-forwarded-host": "www.expressen.se",
-        "x-forwarded-proto": "https"
+        "x-forwarded-proto": "https",
       });
       browser = await browser.navigateTo("https://www.expressen.se/");
       expect(browser.response).to.be.ok;
     });
 
     it("passes cookie if host is specified", async () => {
-      const browser = await Browser(app).navigateTo("/reply-with-cookies", {
+      const browser = await new Browser(app).navigateTo("/reply-with-cookies", {
         host: "www.expressen.se",
         cookie: "myCookie=singoalla;mySecondCookie=chocolateChip",
       });
@@ -146,31 +145,27 @@ describe("Tallahassee", () => {
     });
 
     it("passes cookie if options.host is specified", async () => {
-      const browser = await Browser(app, {
-        headers: {
-          host: "www.expressen.se",
-        }
-      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
+      const browser = await new Browser(app, { headers: { host: "www.expressen.se", } }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
       expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.x-forwarded-host is specified", async () => {
-      const browser = await Browser(app, {
+      const browser = await new Browser(app, {
         headers: {
           host: "some-other-host.com",
           "x-forwarded-host": "www.expressen.se",
-        }
-      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla; mySecondCookie=chocolateChip"});
+        },
+      }).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla; mySecondCookie=chocolateChip" });
       expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 
     it("passes cookie if options.x-forwarded-host is specified", async () => {
-      const browser = await Browser(app, {
+      const browser = await new Browser(app, {
         headers: {
           host: "some-other-host.com",
           "x-forwarded-host": "www.expressen.se",
-        }
-      }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla; mySecondCookie=chocolateChip"});
+        },
+      }).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla; mySecondCookie=chocolateChip" });
       expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
   });
@@ -179,7 +174,7 @@ describe("Tallahassee", () => {
     let browser;
 
     beforeEach(async () => {
-      browser = await Browser(app).navigateTo("/");
+      browser = await new Browser(app).navigateTo("/");
     });
 
     it("runs supplied script element", () => {
@@ -238,7 +233,7 @@ describe("Tallahassee", () => {
     let browser;
 
     beforeEach(async () => {
-      browser = await Browser(app).navigateTo("/");
+      browser = await new Browser(app).navigateTo("/");
     });
 
     it("runs all scripts without scope element", () => {
@@ -263,47 +258,42 @@ describe("Tallahassee", () => {
   });
 
   describe("document", () => {
+    it("expose current window on document", async () => {
+      const browser = await new Browser(app).navigateTo("/");
+      expect(browser.document).to.have.property("defaultView").that.equal(browser.window);
+    });
+
     it("doesn't expose classList on document", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
       expect(browser.document.classList, "classList on document").to.be.undefined;
     });
 
     it("sets cookie on document", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        cookie: "_ga=12"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=12" });
 
       expect(browser.document).to.have.property("cookie", "_ga=12");
     });
 
     it("sets cookie on document disregarding casing", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        CookIe: "_ga=13"
-      });
+      const browser = await new Browser(app).navigateTo("/", { CookIe: "_ga=13" });
 
       expect(browser.document).to.have.property("cookie", "_ga=13");
     });
 
     it("sets multiple cookies on document", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        cookie: "cookie1=abc;cookie2=def"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "cookie1=abc;cookie2=def" });
 
       expect(browser.document).to.have.property("cookie", "cookie1=abc; cookie2=def");
     });
 
     it("sets multiple cookies on document disregarding whitespace and empty values", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        cookie: " cookie1=abc; cookie2=def; ;   ;\tcookie3=ghi;; ;   ;"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: " cookie1=abc; cookie2=def; ;   ;\tcookie3=ghi;; ;   ;" });
 
       expect(browser.document).to.have.property("cookie", "cookie1=abc; cookie2=def; cookie3=ghi");
     });
 
     it("sets referer from navigation headers", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        referer: "https://www.example.com"
-      });
+      const browser = await new Browser(app).navigateTo("/", { referer: "https://www.example.com" });
 
       expect(browser.document.referrer).to.equal("https://www.example.com/");
     });
@@ -311,26 +301,20 @@ describe("Tallahassee", () => {
 
   describe("window", () => {
     it("exposes a document property", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
       expect(browser.window.document === browser.document).to.be.true;
     });
 
     it("exposes navigator property with userAgent from options", async () => {
-      const browser = await Browser(app, {
-        headers: {
-          "User-Agent": "Mozilla 5.0"
-        }
-      }).navigateTo("/");
+      const browser = await new Browser(app, { headers: { "User-Agent": "Mozilla 5.0" } }).navigateTo("/");
 
       expect(browser.window.navigator).to.be.ok;
       expect(browser.window.navigator).to.have.property("userAgent", "Mozilla 5.0");
     });
 
     it("exposes navigator property with userAgent from navigateTo headers", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        "User-Agent": "Mozilla 5.0"
-      });
+      const browser = await new Browser(app).navigateTo("/", { "User-Agent": "Mozilla 5.0" });
 
       expect(browser.window.navigator).to.be.ok;
       expect(browser.window.navigator).to.have.property("userAgent", "Mozilla 5.0");
@@ -339,24 +323,18 @@ describe("Tallahassee", () => {
 
   describe("run script", () => {
     it("runs es6 script with browser window as global", async () => {
-      const browser = await Browser(app).navigateTo("/", {
-        Cookie: "_ga=1"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
       expect(browser.document.cookie).to.equal("_ga=1");
 
-      const script = Script("../app/assets/scripts/main");
-
-      await script.run(browser.window);
+      await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
       expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(1);
     });
 
     it("again", async () => {
-      const browser = await Browser(app).navigateTo("/");
+      const browser = await new Browser(app).navigateTo("/");
 
-      const script = Script("../app/assets/scripts/main");
-
-      await script.run(browser.window);
+      await new Script(path.resolve("app/assets/scripts/main.js")).run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js").length).to.equal(0);
@@ -365,7 +343,7 @@ describe("Tallahassee", () => {
 
   describe("focusIframe()", () => {
     it("iframe from same host scopes window and document and sets frameElement and inherits cookie", async () => {
-      const browser = await Browser(app).navigateTo("/", {cookie: "_ga=2"});
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=2" });
 
       const element = browser.window.document.createElement("iframe");
       element.id = "friendly-frame";
@@ -383,15 +361,11 @@ describe("Tallahassee", () => {
     });
 
     it("iframe from other host scopes window and document", async () => {
-      // nock("http://example.com")
-      //   .get("/framed-content")
-      //   .replyWithFile(200, Path.join(__dirname, "../app/assets/public/index.html"), {
-      //     "Content-Type": "text/html"
-      //   });
+      nock("http://example.com")
+        .get("/framed-content")
+        .replyWithFile(200, path.resolve("app/assets/public", "index.html"), { "Content-Type": "text/html" });
 
-      const browser = await Browser(app).navigateTo("/", {
-        cookie: "_ga=2"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=2" });
 
       const element = browser.document.createElement("iframe");
       element.id = "iframe";
@@ -415,9 +389,8 @@ describe("Tallahassee", () => {
 
   describe("non 200 response", () => {
     it("can override expected status code", async () => {
-      const browser = await Browser(app).navigateTo("/404", null, 404);
+      const browser = await new Browser(app).navigateTo("/404", null, 404);
       expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
     });
-
   });
 });

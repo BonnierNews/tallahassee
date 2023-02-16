@@ -21,9 +21,7 @@ export default function lazyLoad() {
   function setupObserver(display) {
     if (!useObserver) return;
 
-    return new window.IntersectionObserver(viewPortUpdate, {
-      rootMargin: "200px 0px"
-    });
+    return new window.IntersectionObserver(viewPortUpdate, { rootMargin: "200px 0px" });
 
     function viewPortUpdate(entries) {
       entries.forEach((entry) => {

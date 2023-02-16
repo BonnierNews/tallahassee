@@ -1,8 +1,9 @@
 "use strict";
 
-const app = require("../app/app");
-const Browser = require("..");
 const DOMException = require("domexception");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("Custom elements", () => {
   let browser;
