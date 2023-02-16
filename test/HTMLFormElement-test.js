@@ -1,4 +1,6 @@
-import { Document } from "../lib/index.js";
+"use strict";
+
+const { Document } = require("../lib/index.js");
 
 describe("HTMLFormElement", () => {
   describe("form elements", () => {
@@ -56,6 +58,14 @@ describe("HTMLFormElement", () => {
 
     it("toString includes class name", () => {
       expect(document.forms[0].toString()).to.equal("[object HTMLFormElement]");
+    });
+
+    it("returns enctype, default if none specified", () => {
+      const form = document.forms[0];
+      expect(form.enctype).to.equal("application/x-www-form-urlencoded");
+
+      form.setAttribute("enctype", "multipart/form-data");
+      expect(form.enctype).to.equal("multipart/form-data");
     });
   });
 

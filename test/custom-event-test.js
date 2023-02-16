@@ -1,9 +1,11 @@
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+"use strict";
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("CustomEvent", () => {
   it("creates an object with the expected properties", async () => {
-    const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
 
     const daEvent = new browser.window.CustomEvent("myEvent", { detail: "Blahonga!" });
 
@@ -18,7 +20,7 @@ describe("CustomEvent", () => {
   });
 
   it("supports old school initCustomEvent (so that it's possible to test code that polyfills IE)", async () => {
-    const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
 
     let dispatchedEvent;
     browser.window.addEventListener("myEvent", (arg) => {

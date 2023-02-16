@@ -1,4 +1,6 @@
-import { Window, Document } from "../lib/index.js";
+"use strict";
+
+const { Window, Document } = require("../lib/index.js");
 
 describe("Window", () => {
   let window, document;

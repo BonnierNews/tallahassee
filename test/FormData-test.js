@@ -1,5 +1,7 @@
-import Document from "../lib/Document.js";
-import FormData from "../lib/FormData.js";
+"use strict";
+
+const Document = require("../lib/Document.js");
+const FormData = require("../lib/FormData.js");
 
 describe("FormData", () => {
   let form;
@@ -25,6 +27,12 @@ describe("FormData", () => {
     const entries = data.entries();
     expect(data).to.not.have.property("length");
     expect(entries).to.not.have.property("length");
+  });
+
+  it("can not get value of entry with index but by method", () => {
+    const data = new FormData(form);
+    expect(data.myinput).to.be.undefined;
+    expect(data.get("myinput")).to.equal("Foo");
   });
 
   it("can get input entries", () => {

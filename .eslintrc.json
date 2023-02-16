@@ -1,9 +1,5 @@
 {
   "root": true,
-  "parserOptions": {
-    "ecmaVersion": 2023,
-    "sourceType": "module"
-  },
   "extends": [
     "exp/all"
   ],

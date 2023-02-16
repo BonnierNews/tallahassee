@@ -1,4 +1,6 @@
-import { Storage, Window } from "../lib/index.js";
+"use strict";
+
+const { Storage, Window } = require("../lib/index.js");
 
 describe("Storage", () => {
   let window;

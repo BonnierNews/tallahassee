@@ -1,7 +1,10 @@
-import nock from "nock";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const nock = require("nock");
+const { Blob } = require("buffer");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("submit", () => {
   let server, port;
@@ -427,6 +430,32 @@ describe("submit", () => {
 
     expect(browser._pending).to.be.ok;
     expect(submitEvents).to.eql(1);
+  });
+
+  it("submitting form with multipart/form-data", async () => {
+    const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/");
+
+    const form = browser.document.getElementById("multipart-formdata-form");
+    const input = form.getElementsByTagName("input")[0];
+    const button = form.getElementsByTagName("button")[0];
+
+    const fakeFiles = [ new Blob([]), new Blob([]) ];
+    fakeFiles[0].name = "filename";
+    browser.document.addEventListener("submit", (e) => {
+      const data = new browser.window.FormData(e.target);
+      expect(data.a).to.be.undefined;
+      const files = data.getAll("a");
+      expect(files[0]).to.have.property("name", fakeFiles[0].name);
+      expect(files[1]).to.have.property("name", "blob");
+    });
+
+    input._uploadFile(fakeFiles[0]);
+    input._uploadFile(fakeFiles[1]);
+
+    button.click();
+
+    expect(browser._pending).to.be.ok;
+    await browser._pending;
   });
 
   it("preventing default on buttons with form attribute", async () => {
