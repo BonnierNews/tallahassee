@@ -18,9 +18,11 @@ Supports just about everything.
 # Example:
 
 ```javascript
-import Browser from "@expressen/tallahassee";
-import Script from "@bonniernews/wichita";
-import {app} from "../../app/app.js";
+"use strict";
+
+const Browser = require("@expressen/tallahassee");
+const Script = require("@bonniernews/wichita");
+const { app } = require("../app/app.js");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
@@ -45,11 +47,9 @@ describe("Tallahassee", () => {
 
   describe("run script", () => {
     it("run es6 script sources with @bonniernews/wichita", async () => {
-      const browser = await new Browser(app).navigateTo("/", {
-        Cookie: "_ga=1"
-      });
+      const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
 
-      await Script("./app/assets/scripts/main.js").run(browser.window);
+      await new Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("_ga=1");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(1);
@@ -58,7 +58,7 @@ describe("Tallahassee", () => {
     it("again", async () => {
       const browser = await new Browser(app).navigateTo("/");
 
-      await Script("./app/assets/scripts/main.js").run(browser.window);
+      await new Script("./app/assets/scripts/main.js").run(browser.window);
 
       expect(browser.document.cookie).to.equal("");
       expect(browser.document.getElementsByClassName("set-by-js")).to.have.length(0);

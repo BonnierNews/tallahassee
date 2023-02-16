@@ -1,12 +1,14 @@
-import Script from "@bonniernews/wichita";
-import path from "path";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const Script = require("@bonniernews/wichita");
+const path = require("path");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("MutationObserver", () => {
   it("triggers when element has been inserted into the observed node using appendChild", async () => {
-    const browser = await new Browser(app).navigateTo("/", { Cookie: "_ga=1" });
+    const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
     const config = { attributes: true, childList: true };

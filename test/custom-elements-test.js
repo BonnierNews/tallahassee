@@ -1,7 +1,9 @@
-import DOMException from "domexception";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
+const DOMException = require("domexception");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 
 describe("Custom elements", () => {
   let browser;

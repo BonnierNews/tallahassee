@@ -1,4 +1,6 @@
-import { getRootMargin, getIntersectionRatio, getIsIntersecting } from "../lib/intersectionCalc.js";
+"use strict";
+
+const { getRootMargin, getIntersectionRatio, getIsIntersecting } = require("../lib/intersectionCalc.js");
 
 describe("Intersection Calc", () => {
   describe("getRootMargin", () => {

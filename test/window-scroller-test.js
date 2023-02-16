@@ -1,9 +1,11 @@
-import Script from "@bonniernews/wichita";
-import path from "path";
+"use strict";
 
-import { app } from "../app/app.js";
-import Browser from "../index.js";
-import { IntersectionObserver as fakeIntersectionObserver } from "../lib/index.js";
+const Script = require("@bonniernews/wichita");
+const path = require("path");
+
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
+const { IntersectionObserver: fakeIntersectionObserver } = require("../lib/index.js");
 
 describe("Window scroller", () => {
   it("observes and sets top of elements passed to stacked elements function", async () => {

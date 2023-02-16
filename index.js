@@ -1,11 +1,13 @@
-import { CookieJar, Cookie } from "cookiejar";
+"use strict";
 
-import { normalizeHeaders } from "./lib/getHeaders.js";
-import WebPage from "./lib/WebPage.js";
+const { CookieJar, Cookie } = require("cookiejar");
+
+const { normalizeHeaders } = require("./lib/getHeaders.js");
+const WebPage = require("./lib/WebPage.js");
 
 const kOrigin = Symbol.for("origin");
 
-export default class Tallahassee {
+module.exports = class Tallahassee {
   constructor(...args) {
     let origin, options;
     if (typeof args[0] === "object") {
@@ -51,4 +53,4 @@ export default class Tallahassee {
 
     return new WebPage(this[kOrigin], this.jar, requestHeaders, this.options);
   }
-}
+};
