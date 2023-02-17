@@ -85,7 +85,6 @@ describe("elements", () => {
 
     it("element should have property attributes", () => {
       const elm = document.getElementsByTagName("h1")[0];
-
       expect(elm.attributes.length).to.equal(0);
     });
 
@@ -115,6 +114,12 @@ describe("elements", () => {
 
       elm.attributes.id.value = "test";
       expect(elm.attributes.id.value).to.equal("test");
+    });
+
+    it("element id should be the empty string when not set", () => {
+      const elm = document.getElementsByTagName("h1")[0];
+      expect(elm.id).to.eql("");
+      expect(elm.getAttribute("id")).to.eql(null);
     });
 
     elementProperties.forEach((name) => {
