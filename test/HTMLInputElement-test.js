@@ -102,6 +102,25 @@ describe("HTMLInputElement", () => {
       expect(el.reportValidity()).to.equal(false);
     });
 
+    it("should get validity on number element with decimal step", () => {
+      const el = document.forms[0].elements.step;
+      el.setAttribute("step", 0.1);
+
+      expect(el.reportValidity()).to.equal(true);
+
+      el.value = 10.0;
+      expect(el.reportValidity()).to.equal(true);
+
+      el.value = 0.01;
+      expect(el.reportValidity()).to.equal(false);
+
+      el.value = 4.2;
+      expect(el.reportValidity()).to.equal(true);
+
+      el.value = 5.213;
+      expect(el.reportValidity()).to.equal(false);
+    });
+
     it("should get validity on optional element with pattern", () => {
       const el = document.forms[0].elements.pattern;
       expect(el.reportValidity()).to.equal(true);
