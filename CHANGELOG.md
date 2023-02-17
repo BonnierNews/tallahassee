@@ -4,6 +4,7 @@ Changelog
 ## Unreleased
 
 - the `id` field of an element is `""` when not set (not `null`)
+- now correctly handles step validation for `input[type=number]` with decimals
 
 ## 14.10.2
 
