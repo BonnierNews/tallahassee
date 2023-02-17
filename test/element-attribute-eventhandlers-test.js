@@ -1,7 +1,7 @@
 "use strict";
 
 const Browser = require("../index.js");
-const app = require("../app/app.js");
+const { app } = require("../app/app.js");
 
 describe("element attribute eventhandler", () => {
   let browser;
