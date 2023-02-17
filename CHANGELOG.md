@@ -3,6 +3,8 @@ Changelog
 
 ## Unreleased
 
+- the `id` field of an element is `""` when not set (not `null`)
+
 ## 14.10.2
 
 - reverted ESM
