@@ -232,6 +232,13 @@ describe("forms", () => {
     expect(fieldset.form).to.equal(document.forms[0]);
   });
 
+  it("fieldset can be disabled", () => {
+    const fieldset = document.getElementsByTagName("fieldset")[0];
+    expect(fieldset.disabled).to.equal(false);
+    fieldset.setAttribute("disabled", "disabled");
+    expect(fieldset.disabled).to.equal(true);
+  });
+
   it("legend returns closest form", () => {
     const legend = document.getElementsByTagName("legend")[0];
     expect(legend.form).to.equal(document.forms[0]);
