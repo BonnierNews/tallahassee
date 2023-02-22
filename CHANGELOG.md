@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+
+- `HTMLFieldSetElement` now has `disabled` property
+
 ## 14.10.3
 
 - the `id` field of an element is `""` when not set (not `null`)
