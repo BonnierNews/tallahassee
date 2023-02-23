@@ -1768,6 +1768,7 @@ describe("elements", () => {
       });
       buttons[0].focus();
       expect(focusCount).to.equal(1);
+      expect(document.activeElement).to.equal(buttons[0]);
     });
 
     it("listens to blur event", () => {
@@ -1776,6 +1777,18 @@ describe("elements", () => {
         ++blurCount;
       });
       buttons[0].blur();
+      expect(blurCount).to.equal(1);
+      expect(document.activeElement).to.equal(document.body);
+    });
+
+    it("when blurred receives relatedTarget", () => {
+      let blurCount = 0;
+      buttons[0].addEventListener("blur", (e) => {
+        expect(e.relatedTarget === buttons[1]);
+        ++blurCount;
+      });
+      buttons[0].focus();
+      buttons[1].click();
       expect(blurCount).to.equal(1);
     });
 
