@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 14.11.0
 
 - `HTMLFieldSetElement` now has `disabled` property
 - `blur` and `focus` events are now treated as `FocusEvent`
