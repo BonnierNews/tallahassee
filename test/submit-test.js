@@ -291,8 +291,7 @@ describe("submit", () => {
     expect(browser.window.location.href).to.equal("http://www.expressen.se/");
   });
 
-  // todo: fix inc, missing submitter in event
-  it.skip("respects submit formaction", async () => {
+  it("respects submit formaction", async () => {
     nock("https://www.example.com")
       .get("/")
       .matchHeader("host", "www.example.com")
@@ -310,8 +309,7 @@ describe("submit", () => {
     expect(browser.window.location.href).to.equal("https://www.example.com/");
   });
 
-  // todo: fix inc, missing submitter in event
-  it.skip("named submit element appear in payload empty value", async () => {
+  it("named submit element appear in payload empty value", async () => {
     nock("https://www.example.com")
       .post("/1", (body) => {
         expect(body).to.have.property("named-button").that.is.empty;
@@ -332,8 +330,7 @@ describe("submit", () => {
     expect(browser.window.location.href).to.equal("https://www.example.com/1");
   });
 
-  // todo: fix inc, missing submitter in event
-  it.skip("named submit element with value send payload with value", async () => {
+  it("named submit element with value send payload with value", async () => {
     nock("https://www.example.com")
       .post("/2", (body) => {
         expect(body).to.have.property("named-button-with-value").that.equal("1");

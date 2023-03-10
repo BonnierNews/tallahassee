@@ -145,7 +145,7 @@ describe("Tallahassee", () => {
     });
 
     it("passes cookie if options.host is specified", async () => {
-      const browser = await new Browser(app, { headers: { host: "www.expressen.se", } }).navigateTo("/reply-with-cookies", {cookie: "myCookie=singoalla;mySecondCookie=chocolateChip"});
+      const browser = await new Browser(app, { headers: { host: "www.expressen.se" } }).navigateTo("/reply-with-cookies", { cookie: "myCookie=singoalla;mySecondCookie=chocolateChip" });
       expect(browser.document.body.textContent).to.equal("myCookie=singoalla; mySecondCookie=chocolateChip");
     });
 

@@ -41,7 +41,7 @@ describe("Tallahassee", () => {
 
     it("unless you override status code", async () => {
       const browser = await new Browser(app).navigateTo("/404", null, 404);
-      expect(browser.document.getElementsByTagName("h1")[0].innerText).to.equal("Apocalyptic");
+      expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
     });
   });
 

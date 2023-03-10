@@ -210,10 +210,10 @@ describe("Iframe", () => {
     const iframeScope = await browser.focusIframe(iframe);
     expect(iframeScope.window === browser.window, "scoped window").to.be.false;
     expect(iframeScope.window.top, "window.top").to.be.ok;
-    expect(() => iframeScope.window.top.location.pathname).to.throw("Blocked a frame with origin \"http://example.com\" from accessing a cross-origin frame.");
+    expect(iframeScope.window.top.location.pathname).to.equal("/");
     expect(iframeScope.document === browser.document, "scoped document").to.be.false;
     expect(iframeScope.document.cookie, "scoped document cookie").to.equal("");
-    expect(iframeScope.window.frameElement, "window.frameElement property").to.be.undefined;
+    expect(iframeScope.window.frameElement, "window.frameElement property").to.equal(element);
   });
 });
 ```
