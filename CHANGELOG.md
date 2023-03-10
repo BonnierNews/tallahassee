@@ -1,7 +1,16 @@
 Changelog
 =========
 
-## Unreleased
+## 14.11.0
+
+- `HTMLFieldSetElement` now has `disabled` property
+- `blur` and `focus` events are now treated as `FocusEvent`
+- add `activeElement` to `document`
+
+## 14.10.3
+
+- the `id` field of an element is `""` when not set (not `null`)
+- now correctly handles step validation for `input[type=number]` with decimals
 
 ## 14.10.2
 
