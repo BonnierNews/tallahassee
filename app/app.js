@@ -63,21 +63,6 @@ app.post("/external-redirect", (req, res) => {
   res.redirect("https://www.example.com");
 });
 
-app.get("/inline-scripts", (req, res) => {
-  res.set("Content-Security-Policy", "default-src 'unsafe-inline'");
-  res.send(`
-    <html>
-      <body>
-        <form>
-          <input name="foo" required oninvalid="window.invalidForm = true" oninput="document.getElementsByName('btn')[0].innerText = 'Save changes'">
-          <input name="bar" minlength="2" oninvalid="this.classList.add('error')">
-          <button name="btn">Button</button>
-        </form>
-      </body>
-    </html>
-  `);
-});
-
 app.get("/404", (req, res) => res.status(404).sendFile(errorPage));
 app.get("(*)?", (req, res) => res.sendFile(index));
 
