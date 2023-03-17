@@ -5,6 +5,7 @@ const path = require("path");
 
 const app = express();
 const index = path.join(__dirname, "assets/public/index.html");
+const linkPage = path.join(__dirname, "assets/public/links.html");
 const errorPage = path.join(__dirname, "assets/public/error.html");
 
 app.set("trust proxy", true);
@@ -15,6 +16,9 @@ app.use("/", express.static(path.join(__dirname, "assets/images")));
 app.post("/", express.urlencoded({ extended: true }), (req, res) => {
   res.send(`<html><body>Post body ${JSON.stringify(req.body)}</body></html>`);
 });
+
+app.get("/link-1", (req, res) => res.sendFile(linkPage));
+app.get("/link-2", (req, res) => res.sendFile(linkPage));
 
 app.post("/post", (req, res) => res.send({ data: 1 }));
 app.delete("/delete", (req, res) => res.send({ data: 1 }));
