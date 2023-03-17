@@ -187,16 +187,18 @@ describe("Anchor", () => {
       browser = await anchors[1].click();
 
       expect(browser.window.location.pathname).to.equal("/link-2");
+      expect(browser.window.location.search).to.equal("?q=a");
     });
 
     it("clicking absolute link navigates to that url", async () => {
       nock("http://test123.com")
         .get("/")
+        .query({ q: "a" })
         .reply(200, "<html><body>Welcome to test123.com</body></html>", { "Content-Type": "text/html" });
 
       browser = await anchors[2].click();
 
-      expect(browser.window.location.href).to.equal("http://test123.com/");
+      expect(browser.window.location.href).to.equal("http://test123.com/?q=a");
       expect(browser.document.body.textContent).to.equal("Welcome to test123.com");
     });
 
