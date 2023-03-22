@@ -51,9 +51,10 @@ describe("load", () => {
     return browser.window.fetch("/api").then((res) => res.json());
   });
 
-  it("browser and window location match", async () => {
+  it("location should match window and document", async () => {
     const browser = await new Browser("https://www.expressen.se").load("");
     expect(browser.location).to.equal(browser.window.location);
+    expect(browser.location).to.equal(browser.document.location);
   });
 
   it("window has location from implicit host", async () => {
