@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 14.12.0
+
+- global `Location` now correctly matches both `window` and `document` properties
+- now possible to navigate by clicking on anchor tags
+
 ## 14.11.0
 
 - `HTMLFieldSetElement` now has `disabled` property
