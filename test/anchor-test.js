@@ -1,5 +1,8 @@
 "use strict";
 
+const nock = require("nock");
+const { app } = require("../app/app.js");
+const Browser = require("../index.js");
 const { Document } = require("../lib/index.js");
 
 describe("Anchor", () => {
@@ -169,6 +172,72 @@ describe("Anchor", () => {
       expect(a).to.have.property("pathname", "padded@expressen.se");
       expect(a).to.have.property("search", "");
       expect(a).to.have.property("href", "mailto:padded@expressen.se");
+    });
+  });
+
+  describe("navigates", () => {
+    let browser, anchors;
+    beforeEach("a DOM with anchors", async () => {
+      browser = await new Browser(app).navigateTo("/link-1");
+
+      anchors = browser.document.getElementsByTagName("a");
+    });
+
+    it("clicking relative link navigates to that url", async () => {
+      browser = await anchors[1].click();
+
+      expect(browser.window.location.pathname).to.equal("/link-2");
+      expect(browser.window.location.search).to.equal("?q=a");
+    });
+
+    it("clicking absolute link navigates to that url", async () => {
+      nock("http://test123.com")
+        .get("/")
+        .query({ q: "a" })
+        .reply(200, "<html><body>Welcome to test123.com</body></html>", { "Content-Type": "text/html" });
+
+      browser = await anchors[2].click();
+
+      expect(browser.window.location.href).to.equal("http://test123.com/?q=a");
+      expect(browser.document.body.textContent).to.equal("Welcome to test123.com");
+    });
+
+    it("still bubbles click handlers when clicked", async () => {
+      let fired = 0;
+      browser.document.body.addEventListener("click", (e) => {
+        fired++;
+        expect(e.target).to.equal(anchors[0]);
+      });
+      await anchors[0].click();
+
+      expect(fired).to.equal(1);
+    });
+
+    it("preventing default prevents navigation", async () => {
+      anchors[1].addEventListener("click", (e) => {
+        e.preventDefault();
+      });
+      browser = await anchors[1].click();
+
+      expect(browser.window.location.pathname).to.equal("/link-1");
+    });
+
+    it("preventing default still fires off anything async", async () => {
+      nock("http://test123.com")
+        .get("/")
+        .reply(200);
+
+      let fired = 0;
+      anchors[1].addEventListener("click", (e) => {
+        e.preventDefault();
+        browser.window.fetch("http://test123.com")
+          .then(() => {
+            fired++;
+          });
+      });
+      await anchors[1].click();
+
+      expect(fired).to.equal(1);
     });
   });
 });
