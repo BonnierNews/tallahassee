@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## Unreleased
+
+- add `show` to `HTMLDialogElement`
+- `showModal` now throws if `open` is already `true`
+
 ## 14.12.0
 
 - global `Location` now correctly matches both `window` and `document` properties
