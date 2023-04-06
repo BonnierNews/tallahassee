@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 14.13.0
 
 - add `show` to `HTMLDialogElement`
 - `showModal` now throws if `open` is already `true`
