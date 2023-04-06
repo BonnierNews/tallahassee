@@ -2,6 +2,7 @@
 
 const { Document } = require("../lib/index.js");
 const { Event } = require("../lib/Events.js");
+const DOMException = require("domexception");
 
 describe("HTMLDialogElement", () => {
   let document;
@@ -34,6 +35,24 @@ describe("HTMLDialogElement", () => {
       expect(dialog.open).to.be.false;
 
       dialog.showModal();
+      expect(dialog.open).to.be.true;
+    });
+
+    it("showModal() throws if already open", () => {
+      const [ dialog ] = document.getElementsByTagName("dialog");
+      dialog.open = true;
+      expect(dialog.open).to.be.true;
+
+      expect(() => {
+        dialog.showModal();
+      }).to.throw(DOMException, "Failed to execute 'showModal' on 'HTMLDialogElement': The element already has an 'open' attribute, and therefore cannot be opened modally.");
+    });
+
+    it("show() sets open", () => {
+      const [ dialog ] = document.getElementsByTagName("dialog");
+      expect(dialog.open).to.be.false;
+
+      dialog.show();
       expect(dialog.open).to.be.true;
     });
 
