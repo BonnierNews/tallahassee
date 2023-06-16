@@ -50,6 +50,14 @@ describe("cookies", () => {
       expect(browser.jar.getCookie("myOtherCookie", { domain: "127.0.0.1", path: "/" })).to.be.ok;
     });
 
+    it("sets correct expire date on cookies", async () => {
+      const browser = await new Browser(app);
+      await browser.navigateTo("/setexpirycookie");
+      const cookie = browser.jar.getCookie("expiry_cookie", { domain: "127.0.0.1", path: "/" });
+      expect(cookie).to.be.ok;
+      expect(cookie.expiration_date).to.eql(new Date("2099-01-01T12:00:00Z").getTime());
+    });
+
     it("navigating with set-cookie forwards cookie to backend", async () => {
       const browser = await new Browser(app);
 
@@ -172,7 +180,6 @@ describe("cookies", () => {
 
       const browser = new Browser("https://www.example.com");
       await browser.navigateTo("/slug");
-
       expect(browser.jar.getCookie("explicit", { domain: "www.example.com", path: "/slug" })).to.be.ok;
       expect(browser.jar.getCookie("explicit", { domain: "www.example.com", path: "/" })).to.not.be.ok;
       expect(browser.jar.getCookie("domain", { domain: "www.example.com", path: "/slug" })).to.be.ok;
