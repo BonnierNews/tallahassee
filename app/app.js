@@ -36,7 +36,6 @@ app.get("/setcookie", (req, res) => {
   res
     .cookie("regular_cookie", "regular_cookie_value")
     .cookie("http_only_cookie", "http_only_cookie_value", { httpOnly: true })
-    // .cookie("expiry_cookie", "expiry_cookie_value", { expires: new Date(Date.now() + 900000) })
     .sendFile(index);
 });
 
