@@ -202,6 +202,26 @@ describe("Anchor", () => {
       expect(browser.document.body.textContent).to.equal("Welcome to test123.com");
     });
 
+    it("includes Referer header when clicking relative link", async () => {
+      const originalLocation = browser.window.location.href;
+      browser = await anchors[3].click();
+
+      expect(browser.window.location.pathname).to.equal("/req-info-html");
+      expect(browser.document.body.innerHTML).to.include(`"referer":"${originalLocation}"`);
+    });
+
+    it("does not include Referer header when navigating to external link", async () => {
+      nock("http://test123.com", { badheaders: [ "Referer" ] })
+        .get("/")
+        .query({ q: "a" })
+        .reply(200, "<html><body>Welcome to test123.com</body></html>", { "Content-Type": "text/html" });
+
+      browser = await anchors[2].click();
+
+      expect(browser.window.location.href).to.equal("http://test123.com/?q=a");
+      expect(browser.document.body.textContent).to.equal("Welcome to test123.com");
+    });
+
     it("still bubbles click handlers when clicked", async () => {
       let fired = 0;
       browser.document.body.addEventListener("click", (e) => {
