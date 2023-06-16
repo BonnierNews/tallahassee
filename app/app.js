@@ -31,12 +31,20 @@ app.get("/req", (req, res) => {
 app.get("/err", (req, res) => {
   res.sendStatus(500);
 });
+
 app.get("/setcookie", (req, res) => {
   res
     .cookie("regular_cookie", "regular_cookie_value")
     .cookie("http_only_cookie", "http_only_cookie_value", { httpOnly: true })
     .sendFile(index);
 });
+
+app.get("/setexpirycookie", (req, res) => {
+  res
+    .cookie("expiry_cookie", "expiry_cookie_value", { expires: new Date("2099-01-01T12:00:00Z") })
+    .sendFile(index);
+});
+
 app.get("/reply-with-cookies", (req, res) => {
   res.send(`<html><body>${req.headers.cookie || ""}</body></html>`);
 });
