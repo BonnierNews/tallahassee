@@ -4,6 +4,8 @@ const { CookieJar, Cookie } = require("cookiejar");
 
 const { normalizeHeaders } = require("./lib/getHeaders.js");
 const WebPage = require("./lib/WebPage.js");
+const BrowserTab = require("./lib/BrowserTab.js");
+const DOM = require("./lib/index.js");
 
 const kOrigin = Symbol.for("origin");
 
@@ -54,3 +56,7 @@ module.exports = class Tallahassee {
     return new WebPage(this[kOrigin], this.jar, requestHeaders, this.options);
   }
 };
+
+module.exports.WebPage = WebPage;
+module.exports.BrowserTab = BrowserTab;
+module.exports.DOM = { ...DOM };

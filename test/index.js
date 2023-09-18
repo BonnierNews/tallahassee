@@ -6,6 +6,14 @@ const Script = require("@bonniernews/wichita");
 
 const { app } = require("../app/app.js");
 const Browser = require("../index.js");
+const BrowserTab = require("../lib/BrowserTab.js");
+const WebPage = require("../lib/WebPage.js");
+const Window = require("../lib/Window.js");
+const Document = require("../lib/Document.js");
+const Storage = require("../lib/Storage");
+const MutationObserver = require("../lib/MutationObserver.js");
+const IntersectionObserver = require("../lib/IntersectionObserver.js");
+const HTMLCollection = require("../lib/HTMLCollection");
 
 describe("Tallahassee", () => {
   describe("navigateTo()", () => {
@@ -390,6 +398,20 @@ describe("Tallahassee", () => {
     it("can override expected status code", async () => {
       const browser = await new Browser(app).navigateTo("/404", null, 404);
       expect(browser.document.getElementsByTagName("h1")[0].textContent).to.equal("Apocalyptic");
+    });
+  });
+
+  describe("exports", () => {
+    it("expected interface", () => {
+      expect(Browser.BrowserTab).to.equal(BrowserTab);
+      expect(Browser.WebPage).to.equal(WebPage);
+      expect(Browser.DOM, "DOM").to.be.an("object");
+      expect(Browser.DOM.Window).to.equal(Window);
+      expect(Browser.DOM.Document).to.equal(Document);
+      expect(Browser.DOM.Storage).to.equal(Storage);
+      expect(Browser.DOM.HTMLCollection).to.equal(HTMLCollection);
+      expect(Browser.DOM.IntersectionObserver).to.equal(IntersectionObserver);
+      expect(Browser.DOM.MutationObserver).to.equal(MutationObserver);
     });
   });
 });
