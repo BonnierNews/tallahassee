@@ -4,6 +4,7 @@
   "description": "Lightweight client testing framework",
   "main": "index.js",
   "license": "BSD-3-Clause",
+  "types": "index.d.ts",
   "scripts": {
     "test": "mocha",
     "posttest": "eslint . --cache && npm run test-md && npm run toc",
@@ -45,7 +46,8 @@
   },
   "files": [
     "lib/",
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "bugs": {
     "url": "https://github.com/BonnierNews/tallahassee/issues"
