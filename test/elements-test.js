@@ -659,7 +659,7 @@ describe("elements", () => {
       expect(elm.checked).to.be.true;
     });
 
-    it("does emit change when checked", () => {
+    it("does not emit change when checked", () => {
       const elm = document.getElementsByTagName("input")[1];
       let eventFired = false;
       elm.addEventListener("change", () => {
@@ -676,14 +676,14 @@ describe("elements", () => {
       elm.click();
     });
 
-    it("does emit change if clicked again", () => {
+    it("does NOT emit change if clicked again", () => {
       const elm = document.getElementsByTagName("input")[1];
       let changed = 0;
       elm.addEventListener("change", () => changed++);
       elm.click();
       elm.click();
 
-      expect(changed).to.equal(2);
+      expect(changed).to.equal(1);
     });
 
     it("emits change on form if clicked", (done) => {
