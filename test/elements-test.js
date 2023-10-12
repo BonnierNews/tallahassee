@@ -659,7 +659,7 @@ describe("elements", () => {
       expect(elm.checked).to.be.true;
     });
 
-    it("does NOT emit change when checked", () => {
+    it("does not emit change when checked", () => {
       const elm = document.getElementsByTagName("input")[1];
       let eventFired = false;
       elm.addEventListener("change", () => {

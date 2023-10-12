@@ -416,6 +416,13 @@ describe("forms", () => {
 
         el.value = "1";
       });
+
+      it(`should fire 'change' event on ${tagName} when value is changed`, (done) => {
+        const el = document.querySelector(tagName);
+        el.addEventListener("change", () => done());
+
+        el.value = "1";
+      });
     });
   });
 });
