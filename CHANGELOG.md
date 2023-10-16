@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 15.0.0
+
+- added bubbling change events on form inputs
+
 ## 14.16.0
 
 - added type definitions
