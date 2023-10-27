@@ -3,7 +3,7 @@
 const { Document } = require("../lib/index.js");
 
 describe("HTMLTextAreaElement", () => {
-  describe("innertText", () => {
+  describe("innerText", () => {
     let document;
     beforeEach(() => {
       document = new Document({
