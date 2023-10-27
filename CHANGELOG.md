@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 15.1.0
+
+- HTMLTextAreaElement works with form validation
+
 ## 15.0.0
 
 - added bubbling change events on form inputs
