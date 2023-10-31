@@ -29,7 +29,7 @@
 		"jsdom": "^22.1.0",
 		"nock": "^13.3.7",
 		"specificity": "^1.0.0",
-		"supertest": "^6.0.1",
+		"supertest": "^6.3.3",
 		"whatwg-fetch": "^3.5.0"
 	},
 	"devDependencies": {
