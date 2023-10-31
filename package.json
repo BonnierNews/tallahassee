@@ -33,9 +33,7 @@
 		"whatwg-fetch": "^3.5.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.15.8",
-		"@babel/eslint-parser": "^7.15.8",
-		"eslint": "^7.32.0",
+		"eslint": "^8.52.0",
 		"mocha": "^10.2.0",
 		"mocha-cakes-2": "^3.3.0"
 	},

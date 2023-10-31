@@ -1,14 +1,12 @@
 'use strict';
 
 module.exports = {
-	parser: '@babel/eslint-parser',
 	parserOptions: {
-		requireConfigFile: false,
-		sourceType: 'script',
+		ecmaVersion: 'latest',
 	},
 	env: {
 		node: true,
-		es2021: true
+		es6: true,
 	},
 	extends: 'eslint:recommended',
 	rules: {
