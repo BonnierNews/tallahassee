@@ -28,7 +28,7 @@
 	"dependencies": {
 		"jsdom": "^22.1.0",
 		"nock": "^13.0.5",
-		"specificity": "^0.4.1",
+		"specificity": "^1.0.0",
 		"supertest": "^6.0.1",
 		"whatwg-fetch": "^3.5.0"
 	},
