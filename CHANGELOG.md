@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 15.2.0
+
+- Make type declaration a module
+
 ## 15.1.0
 
 - HTMLTextAreaElement works with form validation
