@@ -12,8 +12,10 @@
 
 	function loadIfInView () {
 		const loadedImages = [];
+		const viewportBottom = window.innerHeight;
 		for (const image of lazyImages) {
-			const inView = image.getBoundingClientRect().top < window.innerHeight;
+			const { top } = image.getBoundingClientRect();
+			const inView = top < viewportBottom;
 			if (!inView) continue;
 
 			image.src = image.dataset.src;

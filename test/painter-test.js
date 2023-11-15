@@ -6,15 +6,16 @@ const { strict: assert } = require('assert');
 
 describe('Painter', () => {
 	describe('Web APIs', () => {
-		let dom, element;
+		let dom, window, element;
 		beforeEach('load DOM', () => {
-			dom = new JSDOM('<div>HTMLElement</div>');
-			element = dom.window.document.querySelector('div');
+			dom = new JSDOM('<div>HTMLElement</div>', { runScripts: 'outside-only' });
+			window = dom.window;
+			element = window.document.querySelector('div');
 		});
 
 		let painter;
 		beforeEach('initialize painter', () => {
-			painter = Painter().init(dom.window);
+			painter = Painter().init(window);
 		});
 
 		beforeEach('paint non-default layout', () => {
@@ -50,6 +51,14 @@ describe('Painter', () => {
 				assert.equal(element instanceof dom.window.HTMLElement, true, 'expected instance of HTMLElement');
 			});
 
+			it('.offsetWidth', () => {
+				assert.equal(element.offsetWidth, 150);
+			});
+
+			it('.offsetHeight', () => {
+				assert.equal(element.offsetHeight, 250);
+			});
+
 			it('.offsetLeft', () => {
 				assert.equal(element.offsetLeft, 50);
 			});
@@ -57,13 +66,108 @@ describe('Painter', () => {
 			it('.offsetTop', () => {
 				assert.equal(element.offsetTop, 20);
 			});
+		});
 
-			it('.offsetWidth', () => {
-				assert.equal(element.offsetWidth, 150);
+		describe('Window', () => {
+			beforeEach('paint non-default layout', () => {
+				painter.paint(window, {
+					width: 900,
+					height: 1600,
+					scrollX: 20,
+					scrollY: 50,
+				});
 			});
 
-			it('.offsetHeight', () => {
-				assert.equal(element.offsetHeight, 250);
+			it('.innerWidth', () => {
+				assert.equal(window.innerWidth, 900);
+			});
+
+			it('.innerHeight', () => {
+				assert.equal(window.innerHeight, 1600);
+			});
+
+			it('.scrollX', () => {
+				assert.equal(window.scrollX, 20);
+			});
+
+			it('.scrollY', () => {
+				assert.equal(window.scrollY, 50);
+			});
+
+			it('.pageXOffset', () => {
+				assert.equal(window.pageXOffset, 20);
+			});
+
+			it('.pageYOffset', () => {
+				assert.equal(window.pageYOffset, 50);
+			});
+
+			it('.scroll(x-coord, y-coord)', () => {
+				window.scroll(30, 60);
+				assert.equal(window.scrollX, 30);
+				assert.equal(window.scrollY, 60);
+				assert.equal(window.pageXOffset, 30);
+				assert.equal(window.pageYOffset, 60);
+			});
+
+			it.skip('.scroll(options)', () => {
+				window.scroll({ left: 30, top: 60 });
+			});
+
+			it('.scrollTo(x-coord, y-coord)', () => {
+				window.scrollTo(30, 60);
+				assert.equal(window.scrollX, 30);
+				assert.equal(window.scrollY, 60);
+				assert.equal(window.pageXOffset, 30);
+				assert.equal(window.pageYOffset, 60);
+			});
+
+			it.skip('.scrollTo(options)', () => {
+				window.scrollTo({ left: 30, top: 60 });
+			});
+
+			it('.scrollBy(x-coord, y-coord)', () => {
+				window.scrollBy(10, 10);
+				assert.equal(window.scrollX, 30);
+				assert.equal(window.scrollY, 60);
+				assert.equal(window.pageXOffset, 30);
+				assert.equal(window.pageYOffset, 60);
+			});
+
+			it.skip('.scrollBy(options)', () => {
+				window.scrollBy({ left: 30, top: 60 });
+			});
+		});
+
+		describe('scrolling', () => {
+			it('paints child', () => {
+				assert.equal(element.offsetLeft, 50);
+				assert.equal(element.offsetTop, 20);
+				assert.deepEqual(element.getBoundingClientRect(), {
+					width: 150,
+					height: 250,
+					x: 50,
+					y: 20,
+					left: 50,
+					right: 200,
+					top: 20,
+					bottom: 270,
+				});
+
+				dom.window.scroll(20, 50);
+
+				assert.equal(element.offsetLeft, 30);
+				assert.equal(element.offsetTop, -30);
+				assert.deepEqual(element.getBoundingClientRect(), {
+					width: 150,
+					height: 250,
+					x: 30,
+					y: -30,
+					left: 30,
+					right: 180,
+					top: -30,
+					bottom: 220,
+				});
 			});
 		});
 	});
