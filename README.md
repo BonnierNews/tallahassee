@@ -57,6 +57,8 @@ Useful but feels wrong. [The VM source text module is experimental](https://node
 
 ## TODO
 
+The APIs could use some work.
+
 ### Tallahassee
 Containing requests to the app is currently done by setting up a `nock` scope around app origin which intercepts all reqs and proxies them through `supertest`. Not ideal for a bunch of reasons:
 
@@ -64,14 +66,17 @@ Containing requests to the app is currently done by setting up a `nock` scope ar
 - Clearing an interceptor would need to be done in an after hook
 
 ### Little Rock
-Paint method behaves different when used on an element and a selector. Maybe it should. Styles applied to element will overwrite previous styles. Styles applied to selector will be appended to stylesheet.
 
-Scrolling behavior is **very** bare bones.
+Convert to classes like JSDOM and the rest of the modules.
 
-Painting with both "stylesheets" and "elements" might not cause expected behavior. When scrolling an initial paint will read from all style sources: first stylesheet then element. Then compiled diff will be applied to element giving it the "importance" of inline styles.
+Means to emulate fixed / sticky / hidden layout.
+
+Further implement web APIs such as `Element.scrollLeft` / `.scrollTop` setters, `scrollWidth` and `scrollHeight` properties with limitations to scroll coordinates.
+
+Nice to have: automatic dimensions / coordinates. Maybe just paint method could take a list of elements with like `{ y: 'auto' }` and it could stack them along the supplied axis, optionally updating supplied parent. Would be nice if it could work with dynamically injected elements / stylesheets as well. 
+Emulating margins would be a hassle.
 
 ### Whichita
 Not using the ES module feature mustn't require the `--experimental-vm-modules` flag.
 
 Have not been able to make a working example using `fetch` along with [the community recommended polyfill](https://github.com/jsdom/jsdom/issues/1724#issuecomment-720727999). Did make it with another polyfill though :fingers_crossed:
-
