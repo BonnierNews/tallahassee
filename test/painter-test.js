@@ -1,6 +1,7 @@
 'use strict';
 
 const Painter = require('../lib/painter.js');
+const pick = require('lodash.pick');
 const { JSDOM } = require('jsdom');
 const { strict: assert } = require('assert');
 
@@ -273,33 +274,78 @@ describe('Painter', () => {
 				return pendingScroll;
 			});
 		});
+	});
 
-		describe('scrolling', () => {
-			it('paints child', () => {
-				assert.deepEqual(element.getBoundingClientRect(), {
-					width: 150,
-					height: 250,
-					x: 30,
-					y: 10,
-					left: 30,
-					right: 180,
-					top: 10,
-					bottom: 260,
-				});
+	describe('scrolling', () => {
+		let dom, window, ancestorElement, parentElement, childElements;
+		beforeEach('load DOM', () => {
+			dom = new JSDOM(`
+				<article>
+					<div>
+						<img>
+						<img>
+					</div>
+				</article>
+			`, { runScripts: 'outside-only' });
+			window = dom.window;
+			ancestorElement = window.document.querySelector('article');
+			parentElement = ancestorElement.firstElementChild;
+			childElements = parentElement.children;
+		});
 
-				dom.window.scrollBy(30, 50);
+		let painter;
+		beforeEach('initialize painter', () => {
+			painter = Painter().init(window);
+		});
 
-				assert.deepEqual(element.getBoundingClientRect(), {
-					width: 150,
-					height: 250,
-					x: 0,
-					y: -40,
-					left: 0,
-					right: 150,
-					top: -40,
-					bottom: 210,
-				});
-			});
+		beforeEach('paint layout', () => {
+			painter.paint(ancestorElement, { width: 400, y: 50 });
+			painter.paint(parentElement, { width: 400, y: 70 }, ancestorElement);
+			painter.paint(childElements[0], { x: 0, width: 400, y: 70 }, parentElement);
+			painter.paint(childElements[1], { x: 400, width: 400, y: 70 }, parentElement);
+		});
+
+		it('scrolling window paints descendants', () => {
+			dom.window.scrollTo(0, 50);
+
+			assert.deepEqual(
+				pick(ancestorElement.getBoundingClientRect(), 'x', 'y'),
+				{ x: 0, y: 0 }
+			);
+			assert.deepEqual(
+				pick(parentElement.getBoundingClientRect(), 'x', 'y'),
+				{ x: 0, y: 20 }
+			);
+			assert.deepEqual(
+				pick(childElements[0].getBoundingClientRect(), 'x', 'y'),
+				{ x: 0, y: 20 }
+			);
+			assert.deepEqual(
+				pick(childElements[1].getBoundingClientRect(), 'x', 'y'),
+				{ x: 400, y: 20 }
+			);
+		});
+
+		it('scrolling ancestor paints descendants', () => {
+			ancestorElement.scrollTo(0, 50);
+			parentElement.scrollTo(400, 0);
+
+			assert.deepEqual(
+				pick(ancestorElement.getBoundingClientRect(), 'x', 'y'),
+				{ x: 0, y: 50 }
+			);
+			assert.deepEqual(
+				pick(parentElement.getBoundingClientRect(), 'x', 'y'),
+				{ x: 0, y: 20 }
+			);
+			assert.deepEqual(
+				pick(childElements[0].getBoundingClientRect(), 'x', 'y'),
+				{ x: -400, y: 20 }
+			);
+			assert.deepEqual(
+				pick(childElements[1].getBoundingClientRect(), 'x', 'y'),
+				{ x: 0, y: 20 }
+			);
 		});
 	});
 
