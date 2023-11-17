@@ -71,7 +71,7 @@ Convert to classes like JSDOM and the rest of the modules.
 
 Means to emulate fixed / sticky / hidden layout.
 
-Further implement web APIs such as `Element.scrollLeft` / `.scrollTop` setters, `scrollWidth` and `scrollHeight` properties with limitations to scroll coordinates.
+Further implement web APIs such as `Element.scrollLeft` / `.scrollTop` setters, limitations on scroll coordinates.
 
 Nice to have: automatic dimensions / coordinates. Maybe just paint method could take a list of elements with like `{ y: 'auto' }` and it could stack them along the supplied axis, optionally updating supplied parent. Would be nice if it could work with dynamically injected elements / stylesheets as well. 
 Emulating margins would be a hassle.

@@ -32,6 +32,8 @@ describe('Painter', () => {
 				y: 20,
 				width: 150,
 				height: 250,
+				scrollWidth: 140,
+				scrollHeight: 300,
 				scrollX: 20,
 				scrollY: 10,
 			});
@@ -40,6 +42,22 @@ describe('Painter', () => {
 		describe('Element', () => {
 			beforeEach('is instance of Element', () => {
 				assert.equal(element instanceof dom.window.Element, true, 'expected instance of Element');
+			});
+
+			it('.scrollWidth', () => {
+				assert.equal(element.scrollWidth, 150);
+			});
+
+			it('.scrollHeight', () => {
+				assert.equal(element.scrollHeight, 300);
+			});
+
+			it('.scrollLeft', () => {
+				assert.equal(element.scrollLeft, 20);
+			});
+
+			it('.scrollTop', () => {
+				assert.equal(element.scrollTop, 10);
 			});
 
 			it('.getBoundingClientRect()', () => {
@@ -53,14 +71,6 @@ describe('Painter', () => {
 					top: 10,
 					bottom: 260,
 				});
-			});
-
-			it('.scrollLeft', () => {
-				assert.equal(element.scrollLeft, 20);
-			});
-
-			it('.scrollTop', () => {
-				assert.equal(element.scrollTop, 10);
 			});
 
 			it('.scroll(x-coord, y-coord)', () => {
