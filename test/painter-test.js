@@ -18,6 +18,13 @@ describe('Painter', () => {
 			painter = Painter().init(window);
 		});
 
+		beforeEach('paint non-default scroll position', () => {
+			painter.paint(window, {
+				scrollX: 20,
+				scrollY: 10,
+			});
+		});
+
 		beforeEach('paint non-default layout', () => {
 			painter.paint(element, {
 				x: 50,
@@ -36,12 +43,12 @@ describe('Painter', () => {
 				assert.deepEqual(element.getBoundingClientRect(), {
 					width: 150,
 					height: 250,
-					x: 50,
-					y: 20,
-					left: 50,
-					right: 200,
-					top: 20,
-					bottom: 270,
+					x: 30,
+					y: 10,
+					left: 30,
+					right: 180,
+					top: 10,
+					bottom: 260,
 				});
 			});
 		});
@@ -69,12 +76,10 @@ describe('Painter', () => {
 		});
 
 		describe('Window', () => {
-			beforeEach('paint non-default layout', () => {
+			beforeEach('paint non-default viewport', () => {
 				painter.paint(window, {
 					width: 900,
 					height: 1600,
-					scrollX: 20,
-					scrollY: 50,
 				});
 			});
 
@@ -91,7 +96,7 @@ describe('Painter', () => {
 			});
 
 			it('.scrollY', () => {
-				assert.equal(window.scrollY, 50);
+				assert.equal(window.scrollY, 10);
 			});
 
 			it('.pageXOffset', () => {
@@ -99,7 +104,7 @@ describe('Painter', () => {
 			});
 
 			it('.pageYOffset', () => {
-				assert.equal(window.pageYOffset, 50);
+				assert.equal(window.pageYOffset, 10);
 			});
 
 			it('.scroll(x-coord, y-coord)', () => {
@@ -157,9 +162,9 @@ describe('Painter', () => {
 
 				window.scrollBy(10, 10);
 				assert.equal(window.scrollX, 30);
-				assert.equal(window.scrollY, 60);
+				assert.equal(window.scrollY, 20);
 				assert.equal(window.pageXOffset, 30);
-				assert.equal(window.pageYOffset, 60);
+				assert.equal(window.pageYOffset, 20);
 
 				return pendingScroll;
 			});
@@ -177,32 +182,28 @@ describe('Painter', () => {
 
 		describe('scrolling', () => {
 			it('paints child', () => {
-				assert.equal(element.offsetLeft, 50);
-				assert.equal(element.offsetTop, 20);
-				assert.deepEqual(element.getBoundingClientRect(), {
-					width: 150,
-					height: 250,
-					x: 50,
-					y: 20,
-					left: 50,
-					right: 200,
-					top: 20,
-					bottom: 270,
-				});
-
-				dom.window.scroll(20, 50);
-
-				assert.equal(element.offsetLeft, 30);
-				assert.equal(element.offsetTop, -30);
 				assert.deepEqual(element.getBoundingClientRect(), {
 					width: 150,
 					height: 250,
 					x: 30,
-					y: -30,
+					y: 10,
 					left: 30,
 					right: 180,
-					top: -30,
-					bottom: 220,
+					top: 10,
+					bottom: 260,
+				});
+
+				dom.window.scrollBy(30, 50);
+
+				assert.deepEqual(element.getBoundingClientRect(), {
+					width: 150,
+					height: 250,
+					x: 0,
+					y: -40,
+					left: 0,
+					right: 150,
+					top: -40,
+					bottom: 210,
 				});
 			});
 		});
