@@ -31,6 +31,8 @@ describe('Painter', () => {
 				y: 20,
 				width: 150,
 				height: 250,
+				scrollX: 20,
+				scrollY: 10,
 			});
 		});
 
@@ -50,6 +52,86 @@ describe('Painter', () => {
 					top: 10,
 					bottom: 260,
 				});
+			});
+
+			it('.scrollLeft', () => {
+				assert.equal(element.scrollLeft, 20);
+			});
+
+			it('.scrollTop', () => {
+				assert.equal(element.scrollTop, 10);
+			});
+
+			it('.scroll(x-coord, y-coord)', () => {
+				const pendingScroll = new Promise(r =>
+					element.addEventListener('scroll', r, { once: true })
+				);
+
+				element.scroll(30, 60);
+				assert.equal(element.scrollLeft, 30);
+				assert.equal(element.scrollTop, 60);
+
+				return pendingScroll;
+			});
+
+			it('.scroll(options)', () => {
+				const pendingScroll = new Promise(r =>
+					element.addEventListener('scroll', r, { once: true })
+				);
+
+				element.scroll({ left: 30, top: 60 });
+				assert.equal(element.scrollLeft, 30);
+				assert.equal(element.scrollTop, 60);
+
+				return pendingScroll;
+			});
+
+			it('.scrollTo(x-coord, y-coord)', () => {
+				const pendingScroll = new Promise(r =>
+					element.addEventListener('scroll', r, { once: true })
+				);
+
+				element.scrollTo(30, 60);
+				assert.equal(element.scrollLeft, 30);
+				assert.equal(element.scrollTop, 60);
+
+				return pendingScroll;
+			});
+
+			it('.scrollTo(options)', () => {
+				const pendingScroll = new Promise(r =>
+					element.addEventListener('scroll', r, { once: true })
+				);
+
+				element.scrollTo({ left: 30, top: 60 });
+				assert.equal(element.scrollLeft, 30);
+				assert.equal(element.scrollTop, 60);
+
+				return pendingScroll;
+			});
+
+			it('.scrollBy(x-coord, y-coord)', () => {
+				const pendingScroll = new Promise(r =>
+					element.addEventListener('scroll', r, { once: true })
+				);
+
+				element.scrollBy(10, 10);
+				assert.equal(element.scrollLeft, 30);
+				assert.equal(element.scrollTop, 20);
+
+				return pendingScroll;
+			});
+
+			it('.scrollBy(options)', () => {
+				const pendingScroll = new Promise(r =>
+					element.addEventListener('scroll', r, { once: true })
+				);
+
+				element.scrollBy({ left: 10, top: 10 });
+				assert.equal(element.scrollLeft, 30);
+				assert.equal(element.scrollTop, 20);
+
+				return pendingScroll;
 			});
 		});
 
@@ -121,12 +203,16 @@ describe('Painter', () => {
 				return pendingScroll;
 			});
 
-			it.skip('.scroll(options)', () => {
+			it('.scroll(options)', () => {
 				const pendingScroll = new Promise(r =>
 					window.addEventListener('scroll', r, { once: true })
 				);
 
 				window.scroll({ left: 30, top: 60 });
+				assert.equal(window.scrollX, 30);
+				assert.equal(window.scrollY, 60);
+				assert.equal(window.pageXOffset, 30);
+				assert.equal(window.pageYOffset, 60);
 
 				return pendingScroll;
 			});
@@ -145,12 +231,16 @@ describe('Painter', () => {
 				return pendingScroll;
 			});
 
-			it.skip('.scrollTo(options)', () => {
+			it('.scrollTo(options)', () => {
 				const pendingScroll = new Promise(r =>
 					window.addEventListener('scroll', r, { once: true })
 				);
 
 				window.scrollTo({ left: 30, top: 60 });
+				assert.equal(window.scrollX, 30);
+				assert.equal(window.scrollY, 60);
+				assert.equal(window.pageXOffset, 30);
+				assert.equal(window.pageYOffset, 60);
 
 				return pendingScroll;
 			});
@@ -169,12 +259,16 @@ describe('Painter', () => {
 				return pendingScroll;
 			});
 
-			it.skip('.scrollBy(options)', () => {
+			it('.scrollBy(options)', () => {
 				const pendingScroll = new Promise(r =>
 					window.addEventListener('scroll', r, { once: true })
 				);
 
-				window.scrollBy({ left: 30, top: 60 });
+				window.scrollBy({ left: 10, top: 10 });
+				assert.equal(window.scrollX, 30);
+				assert.equal(window.scrollY, 20);
+				assert.equal(window.pageXOffset, 30);
+				assert.equal(window.pageYOffset, 20);
 
 				return pendingScroll;
 			});
