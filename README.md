@@ -60,10 +60,14 @@ Useful but feels wrong. [The VM source text module is experimental](https://node
 The APIs could use some work.
 
 ### Tallahassee
-Containing requests to the app is currently done by setting up a `nock` scope around app origin which intercepts all reqs and proxies them through `supertest`. Not ideal for a bunch of reasons:
+Often when testing a web app you want to emulate it being accessed on a public web address to ensure cookies and relative URLs work as expected. JSDOM has the `url` option for this. However this will cause subsequent resource and client side requests to be sent relative to this URL. To contain these requests to the test application Nock is used to intercept and proxy them through SuperTest. This is not ideal for a bunch of reasons:
 
-- There is no built in way to clear a specific scope - [creative workaround](https://github.com/nock/nock/issues/1495#issuecomment-499594455)
-- Clearing an interceptor would need to be done in an after hook
+- A simple persistent interceptor would work but Nock does not work on scopes independently*. Interceptors set up by the tool may interfere with use of  interceptors in the client test suite.
+- The tool cannot clean up after itself without interfering with the client test suite.
+- A less simple approach – the current one – sets up a a new interceptor on the fly for each request. This requires messy interception of each requesting interface inside JSDOM – the `jsdom.ResourceLoader`, `XMLHttpRequest`.
+- Using another HTTP interception lib might help but may result in the same issues if the client test suite uses the same lib.
+
+*[Creative workaround ?](https://github.com/nock/nock/issues/1495#issuecomment-499594455)
 
 ### Little Rock
 
