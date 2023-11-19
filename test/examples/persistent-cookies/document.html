@@ -1,10 +1,21 @@
 <!doctype html>
+
+<button>Increment cookie</button>
+
 <script>
-	var cookie = document.cookie || "";
-	var match = cookie.match(/incremental=(\d)/);
-	var value = 0;
-	if (match) {
-		value = Number(match[1]) + 1;
+	const cookie = document.cookie || '';
+	document.cookie = `incremental=${getCookieValue() + 1}`;
+
+	const button = document.querySelector("button");
+	button.addEventListener("click", () => fetch("/").then(exposeResponse));
+
+	function exposeResponse (res) {
+		const { status } = res;
+		const detail = { status, cookie: getCookieValue() };
+		window.dispatchEvent(new CustomEvent("fetchresponse", { detail }));
 	}
-	document.cookie = `incremental=${value}`;
+
+	function getCookieValue () {
+		return Number(document.cookie.match(/incremental=(\d)/)?.[1] || -1);
+	}
 </script>

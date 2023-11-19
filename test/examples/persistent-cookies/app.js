@@ -26,11 +26,7 @@ module.exports = http.createServer(async (req, res) => {
 });
 
 function incrementValue (cookie, name) {
-	const match = cookie.match(new RegExp(`${name}=(\\d)`));
-	let value = 0;
-	if (match) {
-		value = Number(match[1]) + 1;
-	}
-
-	return `${name}=${value}`;
+	const pattern = new RegExp(`${name}=(\\d)`);
+	const value = cookie.match(pattern)?.[1];
+	return `${name}=${Number(value || -1) + 1}`;
 }
