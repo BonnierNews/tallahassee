@@ -28,6 +28,6 @@ module.exports = http.createServer(async (req, res) => {
 			.end(document);
 	}
 	catch (err) {
-		res.writeHead(500, err.stack).end();
+		res.writeHead(500).end(err.stack);
 	}
 });
