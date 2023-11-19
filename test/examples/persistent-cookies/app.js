@@ -11,7 +11,7 @@ module.exports = http.createServer(async (req, res) => {
 			return res.writeHead(401).end();
 		}
 
-		const documentPath = path.resolve('./test/examples/persistant-cookies/document.html');
+		const documentPath = path.resolve('./test/examples/persistent-cookies/document.html');
 		const document = await fs.readFile(documentPath, 'utf8');
 		res
 			.writeHead(200, {
