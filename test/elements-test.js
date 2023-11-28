@@ -8,7 +8,6 @@ const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");
 const HTMLFormElement = require("../lib/HTMLFormElement.js");
 const { Document } = require("../lib/index.js");
 const { Event } = require("../lib/Events.js");
-const { expect } = require("chai");
 
 const elementProperties = [
   "children",
