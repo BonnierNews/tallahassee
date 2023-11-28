@@ -8,6 +8,7 @@ const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");
 const HTMLFormElement = require("../lib/HTMLFormElement.js");
 const { Document } = require("../lib/index.js");
 const { Event } = require("../lib/Events.js");
+const { expect } = require("chai");
 
 const elementProperties = [
   "children",
@@ -1389,6 +1390,68 @@ describe("elements", () => {
     it("canPlayType function returns maybe", () => {
       const videoElement = document.getElementById("video-element");
       expect(videoElement.canPlayType("application/mp4")).to.be.equal("maybe");
+    });
+  });
+
+  describe("audio element", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <h2>Test <b>title</b></h2>
+              <audio id="audio-element"></audio>
+            </body>
+          </html>`,
+      });
+    });
+
+    it("has the expected properties", () => {
+      const audioElement = document.getElementById("audio-element");
+      expect(audioElement).to.have.property("paused", true);
+      expect(audioElement).to.have.property("duration", 0);
+      expect(audioElement).to.have.property("currentTime", 0);
+      expect(audioElement).to.have.property("volume", 1);
+    });
+
+    it("has a play method", () => {
+      const audioElement = document.getElementById("audio-element");
+      expect(typeof audioElement.play === "function").to.be.true;
+    });
+
+    it("the play method sets paused to false and returns a resolved promise", (done) => {
+      const audioElement = document.getElementById("audio-element");
+      const returnValue = audioElement.play();
+      expect(audioElement).to.have.property("paused", false);
+      expect(returnValue instanceof Promise).to.be.true;
+      returnValue.then((value) => {
+        expect(value).to.be.undefined;
+        done();
+      });
+    });
+
+    it("has a pause method", () => {
+      const audioElement = document.getElementById("audio-element");
+      expect(typeof audioElement.pause === "function").to.be.true;
+    });
+
+    it("the pause method sets paused to true and returns undefined", () => {
+      const audioElement = document.getElementById("audio-element");
+      const returnValue = audioElement.pause();
+      expect(audioElement).to.have.property("paused", true);
+      expect(returnValue).to.be.undefined;
+    });
+
+    it("has a _setDuration method", () => {
+      const audioElement = document.getElementById("audio-element");
+      expect(typeof audioElement._setDuration === "function").to.be.true;
+    });
+
+    it("the _setDuration method sets the duration in seconds", () => {
+      const audioElement = document.getElementById("audio-element");
+      audioElement._setDuration(50);
+      expect(audioElement).to.have.property("duration", 50);
     });
   });
 
