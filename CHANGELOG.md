@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 15.3.0
+
+- Support audio element
+
+## 15.2.1
+
+- Bugfix in IntersectionObserver
+
 ## 15.2.0
 
 - Make type declaration a module
