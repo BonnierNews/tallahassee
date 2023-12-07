@@ -1442,6 +1442,17 @@ describe("elements", () => {
       expect(returnValue).to.be.undefined;
     });
 
+    it("has a load method", () => {
+      const audioElement = document.getElementById("audio-element");
+      expect(typeof audioElement.load === "function").to.be.true;
+    });
+
+    it("the load method returns undefined", () => {
+      const videoElement = document.getElementById("audio-element");
+      const returnValue = videoElement.load();
+      expect(returnValue).to.be.undefined;
+    });
+
     it("has a _setDuration method", () => {
       const audioElement = document.getElementById("audio-element");
       expect(typeof audioElement._setDuration === "function").to.be.true;
@@ -1452,6 +1463,7 @@ describe("elements", () => {
       audioElement._setDuration(50);
       expect(audioElement).to.have.property("duration", 50);
     });
+
   });
 
   describe("template element", () => {
