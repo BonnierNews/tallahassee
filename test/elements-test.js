@@ -1448,8 +1448,8 @@ describe("elements", () => {
     });
 
     it("the load method returns undefined", () => {
-      const videoElement = document.getElementById("audio-element");
-      const returnValue = videoElement.load();
+      const audioElement = document.getElementById("audio-element");
+      const returnValue = audioElement.load();
       expect(returnValue).to.be.undefined;
     });
 
