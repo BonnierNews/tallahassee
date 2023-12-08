@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 15.4.0
+
+- Add load() method to audio element
+
 ## 15.3.0
 
 - Support audio element
