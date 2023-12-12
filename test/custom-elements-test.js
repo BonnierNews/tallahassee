@@ -33,4 +33,17 @@ describe("Custom elements", () => {
       page.window.customElements.define("me-button", class Me {});
     }).to.throw(DOMException, "Failed to execute 'define' on 'CustomElementRegistry': the name \"me-button\" has already been used with this registry");
   });
+
+  it("allows custom element to set innerHTML on child", async () => {
+    const page = await browser.navigateTo("/custom-element.html");
+    page.runScripts();
+
+    const greeting = page.document.getElementsByClassName("greeting")[0];
+    expect(greeting.innerHTML).to.equal("<p>No greeting yet</p>");
+
+    const btn = page.document.getElementsByClassName("greet")[0];
+    btn.click();
+
+    expect(greeting.innerHTML).to.equal("<p>Hello</p>");
+  });
 });
