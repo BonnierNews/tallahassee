@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 15.5.0
+
+- Bugfix for custom elements where modifications to child elements in connectedCallback would trigger a new instance of the custom element being created and that ones connectedCallback being invoked
+
 ## 15.4.0
 
 - Add load() method to audio element
