@@ -1,0 +1,17 @@
+<!doctype>
+
+<article>
+	<h1>Article</h1>
+	...
+</article>
+
+<aside>
+	(Loading…)
+</aside>
+
+<script>
+	const aside = document.querySelector('aside');
+	fetch('/secondary-content')
+		.then(response => response.text())
+		.then(html => aside.innerHTML = html);
+</script>

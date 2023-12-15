@@ -14,6 +14,7 @@ Feature('infinite scroll', () => {
 		resources = new Resources();
 		dom = await new Browser(app)
 			.navigateTo('/', {}, {
+				resources,
 				beforeParse (window) {
 					painter.init(window);
 				}

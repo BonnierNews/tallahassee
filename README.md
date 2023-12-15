@@ -83,4 +83,8 @@ Emulating margins would be a hassle.
 ### Whichita
 Not using the ES module feature mustn't require the `--experimental-vm-modules` flag.
 
-Have not been able to make a working example using `fetch` along with [the community recommended polyfill](https://github.com/jsdom/jsdom/issues/1724#issuecomment-720727999). Did make it with another polyfill though :fingers_crossed:
+VM evaluation based on script `type` attribute.
+
+Respecting `nomodule` like modern / legacy browser.
+
+Cache for FS operations.
