@@ -10,9 +10,11 @@ Proposed solution is to delegete all the DOM stuff to [jsdom](https://github.com
 
 A browser module for loading pages, containing subsequent requests, persisting cookies etc.
 
-More or less a convenient wrapper around [SuperTest](https://github.com/visionmedia/supertest), [Tough Cookie](https://github.com/salesforce/tough-cookie) and jsdom. The browser scope will also make it easy to test a session, or multiple parallell sessions, as opposed to a single page load.
+More or less a convenient wrapper around *[SuperTest](https://github.com/visionmedia/supertest), [Tough Cookie](https://github.com/salesforce/tough-cookie) and jsdom. The browser scope will also make it easy to test a session, or multiple parallell sessions, as opposed to a single page load.
 
 SuperTest also enables passing along HTTP headers with a request which doesn't seem to be supported by the [jsdom `fromURL`](https://github.com/jsdom/jsdom#fromurl).
+
+*See [TODO](#TODO) for notes on the use of SuperTest
 
 > I really want the name Tallahassee to remain, although Columbus sounds more _browsery_.
 
@@ -59,15 +61,13 @@ Useful but feels wrong. [The VM source text module is experimental](https://node
 
 The APIs could use some work.
 
+Update JSDOM and Node accordingly.
+
 ### Tallahassee
-Often when testing a web app you want to emulate it being accessed on a public web address to ensure cookies and relative URLs work as expected. JSDOM has the `url` option for this. However this will cause subsequent resource and client side requests to be sent relative to this URL. To contain these requests to the test application Nock is used to intercept and proxy them through SuperTest. This is not ideal for a bunch of reasons:
 
-- A simple persistent interceptor would work but Nock does not work on scopes independently*. Interceptors set up by the tool may interfere with use of  interceptors in the client test suite.
-- The tool cannot clean up after itself without interfering with the client test suite.
-- A less simple approach – the current one – sets up a a new interceptor on the fly for each request. This requires messy interception of each requesting interface inside JSDOM – the `jsdom.ResourceLoader`, `XMLHttpRequest`.
-- Using another HTTP interception lib might help but may result in the same issues if the client test suite uses the same lib.
+Scrap use of SuperTest. It's incorrectly used as an HTTP lib because of its ability to _make requests to a server_. Not having a listening server makes handling of client side requests messy. Calls to `XMLHttpRequest` needs to be intercepted and cookies will need to be handled manually.
 
-*[Creative workaround ?](https://github.com/nock/nock/issues/1495#issuecomment-499594455)
+Also having the consumer starting / stopping their server once per test process would be more performant than doing it adhoc for each request.
 
 ### Little Rock
 
@@ -81,6 +81,7 @@ Nice to have: automatic dimensions / coordinates. Maybe just paint method could 
 Emulating margins would be a hassle.
 
 ### Whichita
+
 Not using the ES module feature mustn't require the `--experimental-vm-modules` flag.
 
 VM evaluation based on script `type` attribute.
