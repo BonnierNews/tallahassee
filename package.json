@@ -33,7 +33,7 @@
 		"whatwg-fetch": "^3.6.19"
 	},
 	"devDependencies": {
-		"eslint": "^8.52.0",
+		"eslint": "^8.56.0",
 		"lodash.pick": "^4.4.0",
 		"mocha": "^10.2.0",
 		"mocha-cakes-2": "^3.3.0"
