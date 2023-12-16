@@ -61,8 +61,6 @@ Useful but feels wrong. [The VM source text module is experimental](https://node
 
 The APIs could use some work.
 
-Update JSDOM and Node accordingly.
-
 ### Tallahassee
 
 Scrap use of SuperTest. It's incorrectly used as an HTTP lib because of its ability to _make requests to a server_. Not having a listening server makes handling of client side requests messy. Calls to `XMLHttpRequest` needs to be intercepted and cookies will need to be handled manually.
@@ -89,3 +87,5 @@ VM evaluation based on script `type` attribute.
 Respecting `nomodule` like modern / legacy browser.
 
 Cache for FS operations.
+
+Remove dependency to `whatwg-fetch` while maintaining functionality of the `ReverseProxy` interface.

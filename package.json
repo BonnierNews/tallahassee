@@ -30,7 +30,7 @@
 		"nock": "^13.4.0",
 		"specificity": "^1.0.0",
 		"supertest": "^6.3.3",
-		"whatwg-fetch": "^3.6.19"
+		"whatwg-fetch": "^3.6.20"
 	},
 	"devDependencies": {
 		"eslint": "^8.56.0",
