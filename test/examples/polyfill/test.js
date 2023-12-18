@@ -2,15 +2,16 @@
 
 const { Browser, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
-const app = require('./app.js');
-const reset = require('../helpers/reset.js');
+const server = require('./app.js');
+const setup = require('../helpers/setup.js');
 
 Feature('polyfill', () => {
-	before(reset);
+	const pendingServerOrigin = setup(server);
 
 	let pendingDOM;
-	When('page loads in browser with polyfill', () => {
-		pendingDOM = new Browser(app)
+	When('page loads in browser with polyfill', async () => {
+		const origin = await pendingServerOrigin;
+		pendingDOM = new Browser(origin)
 			.navigateTo('/', {}, {
 				runScripts: 'dangerously',
 				beforeParse: window => {
