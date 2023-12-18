@@ -2,17 +2,18 @@
 
 const app = require('./app.js');
 const jsdom = require('jsdom');
-const reset = require('../helpers/reset.js');
+const setup = require('../helpers/setup.js');
 const { Browser, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
 
 Feature('persistent cookies', () => {
-	before(reset);
+	const pendingServerOrigin = setup(app);
 
 	const url = new URL('https://tallahassee.io/');
 	let reverseProxy;
-	before('set up reverse proxy', () => {
-		reverseProxy = new Browser.ReverseProxy(url.origin, app, {
+	before('set up reverse proxy', async () => {
+		const origin = await pendingServerOrigin;
+		reverseProxy = new Browser.ReverseProxy(url.origin, origin, {
 			'x-forwarded-proto': url.protocol.slice(0, -1),
 			'x-forwarded-host': url.hostname,
 		});

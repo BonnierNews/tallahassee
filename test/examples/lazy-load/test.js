@@ -3,16 +3,18 @@
 const { Browser, Painter, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
 const app = require('./app.js');
-const reset = require('../helpers/reset.js');
+const setup = require('../helpers/setup.js');
 
 Feature('lazy load', () => {
-	before(reset);
+	const pendingServerOrigin = setup(app);
 
 	let painter, resources, dom;
 	before('load page', async () => {
 		painter = Painter();
 		resources = new Resources();
-		dom = await new Browser(app)
+
+		const origin = await pendingServerOrigin;
+		dom = await new Browser(origin)
 			.navigateTo('/', {}, {
 				beforeParse (window) {
 					painter.init(window);

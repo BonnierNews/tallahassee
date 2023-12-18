@@ -4,10 +4,10 @@ const { Browser, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
 const app = require('./app.js');
 const path = require('path');
-const reset = require('../helpers/reset.js');
+const setup = require('../helpers/setup.js');
 
 Feature('source code resource', () => {
-	before(reset);
+	const pendingServerOrigin = setup(app);
 
 	let resources;
 	Given('a source document', () => {
@@ -21,9 +21,10 @@ Feature('source code resource', () => {
 		});
 	});
 
-	let dom;
+	let serverOrigin, dom;
 	When('load page', async () => {
-		dom = await new Browser(app)
+		serverOrigin = await pendingServerOrigin;
+		dom = await new Browser(serverOrigin)
 			.navigateTo('/', {}, {
 				resources,
 			});
@@ -32,7 +33,7 @@ Feature('source code resource', () => {
 	And('a script referencing a bundle', () => {
 		const script = dom.window.document.querySelector('script[src]');
 		assert.ok(script);
-		assert.equal(script.src, 'http://localhost:7411/dist-bundle.js');
+		assert.equal(script.src, new URL('/dist-bundle.js', serverOrigin).href);
 	});
 
 	And('an inline script marked: sourced from a file', () => {

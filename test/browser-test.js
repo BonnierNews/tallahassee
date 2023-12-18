@@ -8,7 +8,8 @@ const request = Browser.request;
 
 describe('browser/request', () => {
 	before(() => nock.disableNetConnect());
-	after(() => nock.restore());
+	after(() => nock.enableNetConnect());
+	after(() => nock.cleanAll());
 
 	const url = new URL('http://example.com/path?query=string');
 
