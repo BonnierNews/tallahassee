@@ -63,9 +63,7 @@ The APIs could use some work.
 
 ### Tallahassee
 
-Scrap use of SuperTest. It's incorrectly used as an HTTP lib because of its ability to _make requests to a server_. Not having a listening server makes handling of client side requests messy. Calls to `XMLHttpRequest` needs to be intercepted and cookies will need to be handled manually.
-
-Also having the consumer starting / stopping their server once per test process would be more performant than doing it adhoc for each request.
+Request function may be too primitive. Would be easy to use node fetch but won't work with ReverseProxy which uses nock.
 
 ### Little Rock
 
