@@ -2,7 +2,7 @@
 
 const { Browser, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
-const server = require('./app.js');
+const server = require('./server.js');
 const setup = require('../helpers/setup.js');
 
 Feature('polyfill', () => {

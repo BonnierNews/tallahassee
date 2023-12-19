@@ -1,13 +1,13 @@
 'use strict';
 
-const app = require('./app.js');
+const server = require('./server.js');
 const jsdom = require('jsdom');
 const setup = require('../helpers/setup.js');
 const { Browser, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
 
 Feature('persistent cookies', () => {
-	const pendingServerOrigin = setup(app);
+	const pendingServerOrigin = setup(server);
 
 	const url = new URL('https://tallahassee.io/');
 	let reverseProxy;

@@ -2,11 +2,11 @@
 
 const { Browser, Painter, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
-const app = require('./app.js');
+const server = require('./server.js');
 const setup = require('../helpers/setup.js');
 
 Feature('infinite scroll', () => {
-	const pendingServerOrigin = setup(app);
+	const pendingServerOrigin = setup(server);
 
 	let painter, resources, dom;
 	before('load page', async () => {

@@ -2,12 +2,12 @@
 
 const { Browser, Resources } = require('../../../index.js');
 const { strict: assert } = require('assert');
-const app = require('./app.js');
+const server = require('./server.js');
 const path = require('path');
 const setup = require('../helpers/setup.js');
 
 Feature('source code resource', () => {
-	const pendingServerOrigin = setup(app);
+	const pendingServerOrigin = setup(server);
 
 	let resources;
 	Given('a source document', () => {
