@@ -47,18 +47,18 @@ describe('browser/request', () => {
 	});
 
 	it('follows redirects', async () => {
-		nock(url.origin)
-			.get(url.pathname + url.search)
-			.reply(307, undefined, { location: '/second-path' })
-			.get('/second-path')
-			.reply(307, undefined, { location: '/third-path' })
-			.get('/third-path')
+		nock(url.origin).get(url.pathname + url.search)
+			.reply(307, undefined, { location: '/temporary-redirect' })
+			.get('/temporary-redirect')
+			.reply(308, undefined, { location: '/permanent-redirect' })
+			.get('/permanent-redirect')
+			.reply(302, undefined, { location: '/found' })
+			.get('/found')
+			.reply(301, undefined, { location: '/moved-permanently' })
+			.get('/moved-permanently')
 			.reply(200, 'OK');
 
-		const response = await request(url, {
-			method: 'get',
-			headers: { 'req-header': 'stick?' } },
-		);
+		const response = await request(url);
 		assert.equal(response.statusCode, 200);
 		assert.equal(response.body, 'OK');
 	});

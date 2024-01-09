@@ -63,7 +63,7 @@ The APIs could use some work.
 
 ### Tallahassee
 
-Request function may be too primitive. Would be easy to use node fetch but won't work with ReverseProxy which uses nock.
+Request function may be too primitive. Would be easy to use node fetch but won't work with ReverseProxy which uses nock. 
 
 ### Little Rock
 
