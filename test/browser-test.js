@@ -32,14 +32,14 @@ describe('browser/request', () => {
 
 	it('makes a post request', async () => {
 		nock(url.origin)
-			.get(url.pathname + url.search)
+			.post(url.pathname + url.search)
 			.reply((path, body) => {
 				assert.equal(body, 'stick?');
 				return [ 200, 'OK' ];
 			});
 
 		const response = await request(url, {
-			method: 'get',
+			method: 'post',
 			body: 'stick?',
 		});
 		assert.equal(response.statusCode, 200);
