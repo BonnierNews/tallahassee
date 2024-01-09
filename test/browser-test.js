@@ -54,13 +54,18 @@ describe('browser/request', () => {
 			.post('/temporary-redirect')
 			.reply(308, undefined, { location: '/permanent-redirect' })
 			.post('/permanent-redirect')
-			.reply(302, undefined, { location: '/found' })
-			.post('/found')
 			.reply(301, undefined, { location: '/moved-permanently' })
 			.post('/moved-permanently')
+			.reply(302, undefined, { location: '/found' })
+			.post('/found')
 			.reply((path, body) => {
 				assert.equal(body, 'stick?');
-				return [ 200, 'OK' ];
+				return [ 303, undefined, { location: '/see-other' } ];
+			})
+			.get('/see-other')
+			.reply((path, body) => {
+				if (body) assert.fail('unexpected body');
+				return [ 200 ];
 			});
 
 		const response = await browser.request(url, {
@@ -68,29 +73,30 @@ describe('browser/request', () => {
 			body: 'stick?',
 		});
 		assert.equal(response.statusCode, 200);
-		assert.equal(response.body, 'OK');
 	});
 
 	it('cookies are sent', async () => {
 		nock(url.origin)
-			.get(url.pathname + url.search)
+			.post(url.pathname + url.search)
 			.reply(308, undefined, {
 				'location': '/secure-location',
 				'set-cookie': 'logged-in=1; path=/; httponly',
 			})
-			.get('/secure-location')
+			.post('/secure-location')
+			.reply(303, undefined, { location: '/final-location' })
+			.get('/final-location')
 			.reply(function () {
 				const headers = { ...this.req.headers };
 				delete headers.host;
 				assert.deepEqual(headers, { cookie: 'logged-in=1' });
-				return [ 200, 'OK' ];
+				return [ 200 ];
 			});
 
 		const response = await browser.request(url, {
+			method: 'post',
 			headers: { irrelevant: 'header' },
 		});
 		assert.equal(response.statusCode, 200);
-		assert.equal(response.body, 'OK');
 	});
 });
 
