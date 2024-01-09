@@ -4,12 +4,13 @@ const assert = require('assert/strict');
 const Browser = require('../lib/browser.js');
 const nock = require('nock');
 
-const request = Browser.request;
-
 describe('browser/request', () => {
 	before(() => nock.disableNetConnect());
 	after(() => nock.enableNetConnect());
 	after(() => nock.cleanAll());
+
+	let browser;
+	beforeEach(() => browser = new Browser());
 
 	const url = new URL('http://example.com/path?query=string');
 
@@ -21,7 +22,7 @@ describe('browser/request', () => {
 				return [ 200, 'OK', { 'res-header': 'nu!' } ];
 			});
 
-		const response = await request(url, {
+		const response = await browser.request(url, {
 			method: 'get',
 			headers: { 'req-header': 'stick?' } },
 		);
@@ -38,7 +39,7 @@ describe('browser/request', () => {
 				return [ 200, 'OK' ];
 			});
 
-		const response = await request(url, {
+		const response = await browser.request(url, {
 			method: 'post',
 			body: 'stick?',
 		});
@@ -47,7 +48,8 @@ describe('browser/request', () => {
 	});
 
 	it('follows redirects', async () => {
-		nock(url.origin).get(url.pathname + url.search)
+		nock(url.origin)
+			.get(url.pathname + url.search)
 			.reply(307, undefined, { location: '/temporary-redirect' })
 			.get('/temporary-redirect')
 			.reply(308, undefined, { location: '/permanent-redirect' })
@@ -58,7 +60,29 @@ describe('browser/request', () => {
 			.get('/moved-permanently')
 			.reply(200, 'OK');
 
-		const response = await request(url);
+		const response = await browser.request(url);
+		assert.equal(response.statusCode, 200);
+		assert.equal(response.body, 'OK');
+	});
+
+	it('cookies are sent', async () => {
+		nock(url.origin)
+			.get(url.pathname + url.search)
+			.reply(308, undefined, {
+				'location': '/secure-location',
+				'set-cookie': 'logged-in=1; path=/; httponly',
+			})
+			.get('/secure-location')
+			.reply(function () {
+				const headers = { ...this.req.headers };
+				delete headers.host;
+				assert.deepEqual(headers, { cookie: 'logged-in=1' });
+				return [ 200, 'OK' ];
+			});
+
+		const response = await browser.request(url, {
+			headers: { irrelevant: 'header' },
+		});
 		assert.equal(response.statusCode, 200);
 		assert.equal(response.body, 'OK');
 	});
