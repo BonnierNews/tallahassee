@@ -49,18 +49,24 @@ describe('browser/request', () => {
 
 	it('follows redirects', async () => {
 		nock(url.origin)
-			.get(url.pathname + url.search)
+			.post(url.pathname + url.search)
 			.reply(307, undefined, { location: '/temporary-redirect' })
-			.get('/temporary-redirect')
+			.post('/temporary-redirect')
 			.reply(308, undefined, { location: '/permanent-redirect' })
-			.get('/permanent-redirect')
+			.post('/permanent-redirect')
 			.reply(302, undefined, { location: '/found' })
-			.get('/found')
+			.post('/found')
 			.reply(301, undefined, { location: '/moved-permanently' })
-			.get('/moved-permanently')
-			.reply(200, 'OK');
+			.post('/moved-permanently')
+			.reply((path, body) => {
+				assert.equal(body, 'stick?');
+				return [ 200, 'OK' ];
+			});
 
-		const response = await browser.request(url);
+		const response = await browser.request(url, {
+			method: 'post',
+			body: 'stick?',
+		});
 		assert.equal(response.statusCode, 200);
 		assert.equal(response.body, 'OK');
 	});
