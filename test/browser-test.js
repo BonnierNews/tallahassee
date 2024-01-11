@@ -5,14 +5,49 @@ const Browser = require('../lib/browser.js');
 const nock = require('nock');
 
 describe('Browser', () => {
+	before(() => nock.disableNetConnect());
+	beforeEach(() => nock.cleanAll());
+	after(() => nock.enableNetConnect());
+
+	describe('browsing', () => {
+		const origin = 'http://example.com';
+		const browser = new Browser(origin);
+
+		it('loads document string', async () => {
+			const dom = await browser.load('<title>Document from string');
+			assert(dom.window.document.title, 'Document from string');
+		});
+
+		it('loads document from URL', async () => {
+			nock(origin)
+				.get('/')
+				.reply(200, '<title>Document from URL');
+			const dom = await browser.navigateTo('/');
+			assert(dom.window.document.title, 'Document from URL');
+		});
+
+		it('loads document from response', async () => {
+			nock(origin)
+				.post('/secure')
+				.reply((path, body) => {
+					return body === 'password' ?
+						[ 200, '<title>Welcome' ] :
+						[ 401, '<title>Get out' ];
+				});
+			const pendingResponse = browser.request('/secure', {
+				method: 'post',
+				body: 'password'
+			});
+			const { statusCode } = await pendingResponse;
+			assert.equal(statusCode, 200);
+
+			const dom = await browser.load(pendingResponse);
+			assert(dom.window.document.title, 'Welcome');
+		});
+	});
+
 	describe('.request()', () => {
-		before(() => nock.disableNetConnect());
-		after(() => nock.enableNetConnect());
-		after(() => nock.cleanAll());
-
-		let browser;
-		beforeEach(() => browser = new Browser());
-
+		const browser = new Browser();
 		const url = new URL('http://example.com/path?query=string');
 
 		it('makes a get request', async () => {
