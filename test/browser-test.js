@@ -34,15 +34,30 @@ describe('Browser', () => {
 						[ 200, '<title>Welcome' ] :
 						[ 401, '<title>Get out' ];
 				});
-			const pendingResponse = browser.request('/secure', {
+			const response = await browser.request('/secure', {
 				method: 'post',
 				body: 'password'
 			});
-			const { statusCode } = await pendingResponse;
-			assert.equal(statusCode, 200);
+			assert.equal(response.statusCode, 200);
 
-			const dom = await browser.load(pendingResponse);
+			const dom = await browser.load(response);
 			assert(dom.window.document.title, 'Welcome');
+		});
+
+		it('document details from response', async () => {
+			nock(origin)
+				.get('/not-here')
+				.reply(307, undefined, { location: '/here' })
+				.get('/here')
+				.reply(
+					200,
+					'<xml><land><zombie /></land></xml>',
+					{ 'content-type': 'application/xml' }
+				);
+			const pendingResponse = browser.request('/not-here');
+			const dom = await browser.load(pendingResponse);
+			assert.equal(dom.window.location.href, origin + '/here');
+			assert.equal(dom.window.document.contentType, 'application/xml');
 		});
 	});
 
