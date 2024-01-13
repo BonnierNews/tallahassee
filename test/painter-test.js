@@ -16,7 +16,7 @@ describe('Painter', () => {
 
 		let painter;
 		beforeEach('initialize painter', () => {
-			painter = Painter().init(window);
+			painter = new Painter().init(window);
 		});
 
 		beforeEach('paint non-default scroll position', () => {
@@ -305,7 +305,7 @@ describe('Painter', () => {
 
 		let painter;
 		beforeEach('initialize painter', () => {
-			painter = Painter().init(window);
+			painter = new Painter().init(window);
 		});
 
 		beforeEach('paint layout', () => {
@@ -362,7 +362,7 @@ describe('Painter', () => {
 	describe('options.stylesheet', () => {
 		before('defaults bounding box values to 0', async () => {
 			const dom = new JSDOM('<div>HTMLElement</div>');
-			Painter().init(dom.window);
+			new Painter().init(dom.window);
 
 			const element = dom.window.document.querySelector('div');
 			assert.deepEqual(element.getBoundingClientRect(), {
@@ -385,7 +385,7 @@ describe('Painter', () => {
 			const stylesheet = {
 				'*': { x: 50, y: 20, width: 150, height: 250 },
 			};
-			Painter({ stylesheet }).init(dom.window);
+			new Painter({ stylesheet }).init(dom.window);
 
 			const matchingElements = dom.window.document.querySelectorAll('*');
 			for (const element of matchingElements) {
@@ -412,7 +412,7 @@ describe('Painter', () => {
 				'h1': { height: 36 },
 				'p': { height: 160, y: 36 },
 			};
-			Painter({ stylesheet }).init(dom.window);
+			new Painter({ stylesheet }).init(dom.window);
 
 			const [ h1, p ] = dom.window.document.body.children;
 			assert.deepEqual(h1.getBoundingClientRect(), {
@@ -449,7 +449,7 @@ describe('Painter', () => {
 				'.heading': { height: 20 },
 				'*': { height: 0 },
 			};
-			Painter({ stylesheet }).init(dom.window);
+			new Painter({ stylesheet }).init(dom.window);
 
 			const h1 = dom.window.document.body.querySelector('h1');
 			assert.deepEqual(h1.offsetHeight, 30);
@@ -462,7 +462,7 @@ describe('Painter', () => {
 			const stylesheet = {
 				'#element': { width: 100, height: 100 },
 			};
-			const painter = Painter({ stylesheet }).init(dom.window);
+			const painter = new Painter({ stylesheet }).init(dom.window);
 
 			const element = dom.window.document.getElementById('element');
 			painter.paint(element, { width: 200 });
@@ -477,7 +477,7 @@ describe('Painter', () => {
 			const dom = new JSDOM(`
         <div>HTMLElement</div>
       `);
-			painter = Painter().init(dom.window);
+			painter = new Painter().init(dom.window);
 			elements = dom.window.document.querySelectorAll('div');
 		});
 
