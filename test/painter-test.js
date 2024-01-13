@@ -28,12 +28,12 @@ describe('Painter', () => {
 
 		beforeEach('paint non-default layout', () => {
 			painter.paint(element, {
-				x: 50,
-				y: 20,
 				width: 150,
 				height: 250,
-				scrollWidth: 140,
+				scrollWidth: 450,
 				scrollHeight: 300,
+				x: 50,
+				y: 20,
 				scrollX: 20,
 				scrollY: 10,
 			});
@@ -45,7 +45,7 @@ describe('Painter', () => {
 			});
 
 			it('.scrollWidth', () => {
-				assert.equal(element.scrollWidth, 150);
+				assert.equal(element.scrollWidth, 450);
 			});
 
 			it('.scrollHeight', () => {
@@ -78,9 +78,9 @@ describe('Painter', () => {
 					element.addEventListener('scroll', r, { once: true })
 				);
 
-				element.scroll(30, 60);
+				element.scroll(30, 50);
 				assert.equal(element.scrollLeft, 30);
-				assert.equal(element.scrollTop, 60);
+				assert.equal(element.scrollTop, 50);
 
 				return pendingScroll;
 			});
@@ -90,9 +90,9 @@ describe('Painter', () => {
 					element.addEventListener('scroll', r, { once: true })
 				);
 
-				element.scroll({ left: 30, top: 60 });
+				element.scroll({ left: 30, top: 50 });
 				assert.equal(element.scrollLeft, 30);
-				assert.equal(element.scrollTop, 60);
+				assert.equal(element.scrollTop, 50);
 
 				return pendingScroll;
 			});
@@ -102,9 +102,9 @@ describe('Painter', () => {
 					element.addEventListener('scroll', r, { once: true })
 				);
 
-				element.scrollTo(30, 60);
+				element.scrollTo(30, 50);
 				assert.equal(element.scrollLeft, 30);
-				assert.equal(element.scrollTop, 60);
+				assert.equal(element.scrollTop, 50);
 
 				return pendingScroll;
 			});
@@ -114,9 +114,9 @@ describe('Painter', () => {
 					element.addEventListener('scroll', r, { once: true })
 				);
 
-				element.scrollTo({ left: 30, top: 60 });
+				element.scrollTo({ left: 30, top: 50 });
 				assert.equal(element.scrollLeft, 30);
-				assert.equal(element.scrollTop, 60);
+				assert.equal(element.scrollTop, 50);
 
 				return pendingScroll;
 			});
@@ -173,6 +173,8 @@ describe('Painter', () => {
 				painter.paint(window, {
 					width: 900,
 					height: 1600,
+					scrollWidth: 1000,
+					scrollHeight: 2000,
 				});
 			});
 
