@@ -381,9 +381,9 @@ describe('Painter', () => {
 
 		it('styles multiple elements', async () => {
 			const dom = new JSDOM(`
-        <div>HTMLElement</div>
-        <div>HTMLElement</div>
-      `);
+				<div>HTMLElement</div>
+				<div>HTMLElement</div>
+			`);
 			const stylesheet = {
 				'*': { x: 50, y: 20, width: 150, height: 250 },
 			};
@@ -406,9 +406,9 @@ describe('Painter', () => {
 
 		it('compounds multiple matching styles', async () => {
 			const dom = new JSDOM(`
-        <h1>A heading</h1>
-        <p>A paragraph…</p>
-      `);
+				<h1>A heading</h1>
+				<p>A paragraph…</p>
+			`);
 			const stylesheet = {
 				'*': { width: 375 },
 				'h1': { height: 36 },
@@ -441,10 +441,10 @@ describe('Painter', () => {
 
 		it('uses selector specificity to resolve conflicting styles', async () => {
 			const dom = new JSDOM(`
-        <h1 id="the-heading" class="heading">
-          A heading
-        </h1>
-      `);
+				<h1 id="the-heading" class="heading">
+					A heading
+				</h1>
+			`);
 			const stylesheet = {
 				'#the-heading': { height: 30 },
 				'h1, h2': { height: 10 },
@@ -459,8 +459,8 @@ describe('Painter', () => {
 
 		it('element styles trump stylesheet styles', async () => {
 			const dom = new JSDOM(`
-        <div id="element">HTMLElement</div>
-      `);
+				<div id="element">HTMLElement</div>
+			`);
 			const stylesheet = {
 				'#element': { width: 100, height: 100 },
 			};
@@ -474,52 +474,74 @@ describe('Painter', () => {
 	});
 
 	describe('.paint', () => {
-		let painter, elements;
+		let painter, divs, spans, elements;
 		beforeEach(() => {
 			const dom = new JSDOM(`
-        <div>HTMLElement</div>
-      `);
+				<div>HTMLElement</div>
+				<span>HTMLSpanElement</span>
+			`);
 			painter = new Painter().init(dom.window);
-			elements = dom.window.document.querySelectorAll('div');
+			divs = dom.window.document.querySelectorAll('div');
+			spans = dom.window.document.querySelectorAll('span');
+			elements = dom.window.document.querySelectorAll('*');
 		});
 
 		it('paints element', () => {
 			const [ element ] = elements;
 			painter.paint(element, { height: 16, y: 10 });
+
 			assert.equal(element.offsetHeight, 16);
 			assert.equal(element.offsetTop, 10);
 		});
 
 		it('paints elements with selector', () => {
 			painter.paint('div', { height: 16, y: 10 });
-			for (const element of elements) {
-				assert.equal(element.offsetHeight, 16);
-				assert.equal(element.offsetTop, 10);
+
+			for (const div of divs) {
+				assert.equal(div.offsetHeight, 16);
+				assert.equal(div.offsetTop, 10);
+			}
+			for (const span of spans) {
+				assert.equal(span.offsetHeight, 0);
+				assert.equal(span.offsetTop, 0);
 			}
 		});
 
 		it('repaints element, updating element styles', () => {
 			const [ element ] = elements;
 			painter.paint(element, { height: 16, y: 10 });
+
 			assert.equal(element.offsetHeight, 16);
 			assert.equal(element.offsetTop, 10);
 
 			painter.paint(element, { height: 32 });
+
 			assert.equal(element.offsetHeight, 32);
 			assert.equal(element.offsetTop, 10);
 		});
 
 		it('repaints elements with selector, replacing stylesheet entry', () => {
 			painter.paint('div', { height: 16, y: 10 });
-			for (const element of elements) {
-				assert.equal(element.offsetHeight, 16);
-				assert.equal(element.offsetTop, 10);
+			painter.paint('span', { height: 6, y: 1 });
+
+			for (const div of divs) {
+				assert.equal(div.offsetHeight, 16);
+				assert.equal(div.offsetTop, 10);
+			}
+			for (const span of spans) {
+				assert.equal(span.offsetHeight, 6);
+				assert.equal(span.offsetTop, 1);
 			}
 
 			painter.paint('div', { height: 32 });
-			for (const element of elements) {
-				assert.equal(element.offsetHeight, 32);
-				assert.equal(element.offsetTop, 0);
+
+			for (const div of divs) {
+				assert.equal(div.offsetHeight, 32);
+				assert.equal(div.offsetTop, 0);
+			}
+			for (const span of spans) {
+				assert.equal(span.offsetHeight, 6);
+				assert.equal(span.offsetTop, 1);
 			}
 		});
 	});
