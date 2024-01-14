@@ -10,7 +10,7 @@ Feature('lazy load', () => {
 
 	let painter, resources, dom;
 	before('load page', async () => {
-		painter = Painter();
+		painter = new Painter();
 		resources = new Resources();
 
 		const origin = await pendingServerOrigin;
