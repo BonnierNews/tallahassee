@@ -545,6 +545,31 @@ describe('Painter', () => {
 			}
 		});
 	});
+
+	describe('automatic layout', () => {
+		it('enables automatic height', () => {
+			const dom = new JSDOM(`
+				<main>
+					<article id="a1"></article>
+				</main>
+			`);
+			const painter = new Painter().init(dom.window);
+
+			const main = dom.window.document.querySelector('main');
+			painter.paint(main, { height: 'auto' });
+			painter.paint('article', { height: 100, y: 'auto' }, main);
+
+			console.log('pre');
+			assert.equal(main.offsetHeight, 100);
+
+			const a2 = dom.window.document.createElement('article');
+			a2.id = 'a2';
+			main.appendChild(a2);
+
+			console.log('post');
+			assert.equal(main.offsetHeight, 200);
+		});
+	});
 });
 
 describe('Painter/Layout', () => {
