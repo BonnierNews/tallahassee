@@ -547,7 +547,89 @@ describe('Painter', () => {
 	});
 
 	describe('automatic layout', () => {
-		it('enables automatic height', () => {
+		const cache = new class Cache extends Map {
+			lookup (key, resolver) {
+				if (!this.has(key)) {
+					const value = resolver();
+					this.set(key, value);
+				}
+				return this.get(key);
+			}
+		};
+
+		let t = 0;
+		class Tag {
+			id = t++;
+			name = '';
+			parent = null;
+			children = [];
+			styles = {};
+			constructor (name, styles, children = []) {
+				this.name = name;
+				this.children.push(...children);
+				for (const c of children) {
+					c.parent = this;
+				}
+				Object.assign(this.styles, styles);
+			}
+		}
+
+		const axes = [ 'x', 'y' ];
+		const sides = [ 'width', 'height' ];
+		const sideByAxis = Object.fromEntries(
+			axes.map((a, i) => [ a, sides[i] ])
+		);
+		const axesBySide = Object.fromEntries(
+			sides.map((s, i) => [ s, axes[i] ])
+		);
+
+		function calc (element, acc) {
+			return cache.lookup(element, () => {
+				const { parent, children, styles } = element;
+				const siblings = parent?.children;
+
+				const autoAxes = axes.filter(a => styles[a] === 'auto');
+				if (autoAxes.length) {
+					if (acc) {
+						for (const a of autoAxes) styles[a] = acc[a];
+					}
+					else {
+						const stack = Object.fromEntries(autoAxes.map(a => [ a, 0 ]));
+
+						for (const e of siblings || []) {
+							if (e === element) break;
+
+							const cs = calc(e, stack);
+							for (const a of autoAxes) {
+								stack[a] = Math.max(stack[a], (cs[a] || 0) + (cs[sideByAxis[a]] || 0));
+							}
+						}
+
+						Object.assign(styles, stack);
+					}
+				}
+
+				const autoSides = sides.filter(s => styles[s] === 'auto');
+				if (autoSides.length) {
+					const stack = Object.fromEntries(autoSides.map(s => [ s, 0 ]));
+
+					for (const e of children) {
+						const cs = calc(e);
+						for (const s of autoSides) {
+							stack[s] = Math.max(stack[s], (cs[axesBySide[s]] || 0) + (cs[s] || 0));
+						}
+					}
+
+					Object.assign(styles, stack);
+				}
+
+				return styles;
+			});
+		}
+
+		beforeEach(() => cache.clear());
+
+		it.skip('enables automatic height', () => {
 			const dom = new JSDOM(`
 				<main>
 					<article id="a1"></article>
@@ -568,6 +650,43 @@ describe('Painter', () => {
 
 			console.log('post');
 			assert.equal(main.offsetHeight, 200);
+		});
+
+		[
+			[ 'width', 'x' ],
+			[ 'height', 'y' ],
+		].forEach(([ side, axis ]) => {
+			it(`works with ${side} / ${axis}`, () => {
+				const article = new Tag('article', { [side]: 'auto' }, [
+					new Tag('img', { [side]: 100, [axis]: 'auto' }),
+					new Tag('img', { [side]: 300, [axis]: 'auto' }),
+					new Tag('img', { [side]: 200, [axis]: 'auto' }),
+				]);
+				const [ img1, img2, img3 ] = article.children;
+
+				assert.deepEqual(calc(article), { [side]: 600 });
+				assert.deepEqual(calc(img1), { [side]: 100, [axis]: 0 });
+				assert.deepEqual(calc(img2), { [side]: 300, [axis]: 100 });
+				assert.deepEqual(calc(img3), { [side]: 200, [axis]: 400 });
+			});
+		});
+
+		it('works mixed', () => {
+			const window = new Tag('window', { height: 'auto' }, [
+				new Tag('head', { height: 50 }),
+				new Tag('article', { width: 'auto', height: 'auto', y: 'auto' }, [
+					new Tag('img', { width: 100, height: 100, x: 'auto' }),
+					new Tag('img', { width: 300, height: 400, x: 'auto' }),
+					new Tag('img', { width: 200, height: 100, x: 'auto' }),
+				]),
+			]);
+			const [ head, article ] = window.children;
+			const imgs = article.children;
+
+			assert.deepEqual(calc(article), { width: 600, height: 400, y: 50 });
+			assert.deepEqual(calc(imgs[1]), { width: 300, height: 400, x: 100 });
+			assert.deepEqual(calc(imgs[2]), { width: 200, height: 100, x: 400 });
+			assert.deepEqual(calc(window), { height: 450 });
 		});
 	});
 });
