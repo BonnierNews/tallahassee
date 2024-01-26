@@ -576,11 +576,16 @@ describe('Painter', () => {
 
 		const axes = [ 'x', 'y' ];
 		const sides = [ 'width', 'height' ];
+		const scrollSides = [ 'scrollWidth', 'scrollHeight' ];
+		const allSides = [].concat(sides, scrollSides);
 		const sideByAxis = Object.fromEntries(
 			axes.map((a, i) => [ a, sides[i] ])
 		);
 		const axesBySide = Object.fromEntries(
 			sides.map((s, i) => [ s, axes[i] ])
+		);
+		const sideByScrollSide = Object.fromEntries(
+			scrollSides.map((s, i) => [ s, sides[i] ])
 		);
 
 		function calc (element, acc) {
@@ -609,14 +614,17 @@ describe('Painter', () => {
 					}
 				}
 
-				const autoSides = sides.filter(s => styles[s] === 'auto');
+				const autoSides = allSides.filter(s => styles[s] === 'auto');
 				if (autoSides.length) {
 					const stack = Object.fromEntries(autoSides.map(s => [ s, 0 ]));
+					if (Object.hasOwn(stack, 'width')) delete stack.scrollWidth;
+					if (Object.hasOwn(stack, 'height')) delete stack.scrollHeight;
 
 					for (const e of children) {
 						const cs = calc(e);
-						for (const s of autoSides) {
-							stack[s] = Math.max(stack[s], (cs[axesBySide[s]] || 0) + (cs[s] || 0));
+						for (const s of Object.keys(stack)) {
+							const cside = sideByScrollSide[s] || s;
+							stack[s] = Math.max(stack[s], (cs[axesBySide[cside]] || 0) + (cs[cside] || 0));
 						}
 					}
 
@@ -629,10 +637,11 @@ describe('Painter', () => {
 
 		beforeEach(() => cache.clear());
 
-		it.skip('enables automatic height', () => {
+		it('enables automatic height', () => {
 			const dom = new JSDOM(`
 				<main>
 					<article id="a1"></article>
+					<article id="a2"></article>
 				</main>
 			`);
 			const painter = new Painter().init(dom.window);
@@ -642,14 +651,14 @@ describe('Painter', () => {
 			painter.paint('article', { height: 100, y: 'auto' }, main);
 
 			console.log('pre');
-			assert.equal(main.offsetHeight, 100);
+			assert.equal(main.offsetHeight, 200);
 
-			const a2 = dom.window.document.createElement('article');
-			a2.id = 'a2';
-			main.appendChild(a2);
+			const a3 = dom.window.document.createElement('article');
+			a3.id = 'a3';
+			main.appendChild(a3);
 
 			console.log('post');
-			assert.equal(main.offsetHeight, 200);
+			assert.equal(main.offsetHeight, 300);
 		});
 
 		[
@@ -671,6 +680,21 @@ describe('Painter', () => {
 			});
 		});
 
+		[
+			[ 'scrollWidth', 'width', 'x' ],
+			[ 'scrollHeight', 'height', 'y' ],
+		].forEach(([ scrollSide, side, axis ]) => {
+			it(`works with ${scrollSide} / ${side}`, () => {
+				const article = new Tag('article', { [side]: 400, [scrollSide]: 'auto' }, [
+					new Tag('img', { [side]: 100, [axis]: 'auto' }),
+					new Tag('img', { [side]: 300, [axis]: 'auto' }),
+					new Tag('img', { [side]: 200, [axis]: 'auto' }),
+				]);
+
+				assert.deepEqual(calc(article), { [side]: 400, [scrollSide]: 600 });
+			});
+		});
+
 		it('works mixed', () => {
 			const window = new Tag('window', { height: 'auto' }, [
 				new Tag('head', { height: 50 }),
@@ -680,7 +704,7 @@ describe('Painter', () => {
 					new Tag('img', { width: 200, height: 100, x: 'auto' }),
 				]),
 			]);
-			const [ head, article ] = window.children;
+			const [ , article ] = window.children;
 			const imgs = article.children;
 
 			assert.deepEqual(calc(article), { width: 600, height: 400, y: 50 });
