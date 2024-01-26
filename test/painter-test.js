@@ -547,158 +547,76 @@ describe('Painter', () => {
 	});
 
 	describe('automatic layout', () => {
-		let t = 0;
-		class Tag {
-			id = t++;
-			name = '';
-			parent = null;
-			children = [];
-			styles = {};
-			constructor (name, styles, children = []) {
-				this.name = name;
-				this.children.push(...children);
-				for (const c of children) {
-					c.parent = this;
-				}
-				Object.assign(this.styles, styles);
-			}
-		}
-
-		const axes = [ 'x', 'y' ];
-		const sides = [ 'width', 'height' ];
-		const scrollSides = [ 'scrollWidth', 'scrollHeight' ];
-		const allSides = [].concat(sides, scrollSides);
-		const sideByAxis = Object.fromEntries(
-			axes.map((a, i) => [ a, sides[i] ])
-		);
-		const axesBySide = Object.fromEntries(
-			sides.map((s, i) => [ s, axes[i] ])
-		);
-		const sideByScrollSide = Object.fromEntries(
-			scrollSides.map((s, i) => [ s, sides[i] ])
-		);
-
-		function calc (element, cache, acc) {
-			cache = cache || new Map();
-			if (cache.has(element)) return cache.get(element);
-
-			const { parent, children, styles } = element;
-			const siblings = parent?.children;
-
-			const autoAxes = axes.filter(a => styles[a] === 'auto');
-			if (autoAxes.length) {
-				if (acc) {
-					for (const a of autoAxes) styles[a] = acc[a];
-				}
-				else {
-					const stack = Object.fromEntries(autoAxes.map(a => [ a, 0 ]));
-
-					for (const e of siblings || []) {
-						if (e === element) break;
-
-						const cs = calc(e, cache, stack);
-						for (const a of autoAxes) {
-							stack[a] = Math.max(stack[a], (cs[a] || 0) + (cs[sideByAxis[a]] || 0));
-						}
-					}
-
-					Object.assign(styles, stack);
-				}
-			}
-
-			const autoSides = allSides.filter(s => styles[s] === 'auto');
-			if (autoSides.length) {
-				const stack = Object.fromEntries(autoSides.map(s => [ s, 0 ]));
-				if (Object.hasOwn(stack, 'width')) delete stack.scrollWidth;
-				if (Object.hasOwn(stack, 'height')) delete stack.scrollHeight;
-
-				for (const e of children) {
-					const cs = calc(e, cache);
-					for (const s of Object.keys(stack)) {
-						const cside = sideByScrollSide[s] || s;
-						stack[s] = Math.max(stack[s], (cs[axesBySide[cside]] || 0) + (cs[cside] || 0));
-					}
-				}
-
-				Object.assign(styles, stack);
-			}
-
-			cache.set(element, styles);
-			return styles;
-		}
-
-		it('enables automatic height', () => {
-			const dom = new JSDOM(`
-				<main>
-					<article id="a1"></article>
-					<article id="a2"></article>
-				</main>
+		let dom, painter;
+		beforeEach(() => {
+			dom = new JSDOM(`
+				<header></header>
+				<article>
+					<img />
+					<img />
+					<img />
+				</article>
 			`);
-			const painter = new Painter().init(dom.window);
-
-			const main = dom.window.document.querySelector('main');
-			painter.paint(main, { height: 'auto' });
-			painter.paint('article', { height: 100, y: 'auto' }, main);
-
-			assert.equal(main.offsetHeight, 200);
-
-			const a3 = dom.window.document.createElement('article');
-			a3.id = 'a3';
-			main.appendChild(a3);
-
-			assert.equal(main.offsetHeight, 300);
+			painter = new Painter().init(dom.window);
 		});
 
 		[
-			[ 'width', 'x' ],
-			[ 'height', 'y' ],
-		].forEach(([ side, axis ]) => {
+			[ 'width', 'x', 'offsetWidth', 'offsetLeft' ],
+			[ 'height', 'y', 'offsetHeight', 'offsetTop' ],
+		].forEach(([ side, axis, sideProperty, axisProperty ]) => {
 			it(`works with ${side} / ${axis}`, () => {
-				const article = new Tag('article', { [side]: 'auto' }, [
-					new Tag('img', { [side]: 100, [axis]: 'auto' }),
-					new Tag('img', { [side]: 300, [axis]: 'auto' }),
-					new Tag('img', { [side]: 200, [axis]: 'auto' }),
-				]);
+				const article = dom.window.document.querySelector('article');
 				const [ img1, img2, img3 ] = article.children;
 
-				assert.deepEqual(calc(article), { [side]: 600 });
-				assert.deepEqual(calc(img1), { [side]: 100, [axis]: 0 });
-				assert.deepEqual(calc(img2), { [side]: 300, [axis]: 100 });
-				assert.deepEqual(calc(img3), { [side]: 200, [axis]: 400 });
+				painter.paint(article, { [side]: 'auto' });
+				painter.paint(img1, { [side]: 100, [axis]: 'auto' }, article);
+				painter.paint(img2, { [side]: 300, [axis]: 'auto' }, article);
+				painter.paint(img3, { [side]: 200, [axis]: 'auto' }, article);
+
+				assert.equal(article[sideProperty], 600);
+				assert.equal(img1[axisProperty], 0);
+				assert.equal(img2[axisProperty], 100);
+				assert.equal(img3[axisProperty], 400);
 			});
 		});
 
 		[
-			[ 'scrollWidth', 'width', 'x' ],
-			[ 'scrollHeight', 'height', 'y' ],
-		].forEach(([ scrollSide, side, axis ]) => {
+			[ 'scrollWidth', 'width', 'x', 'offsetWidth' ],
+			[ 'scrollHeight', 'height', 'y', 'offsetHeight' ],
+		].forEach(([ scrollSide, side, axis, sideProperty, scrollSideProperty = scrollSide ]) => {
 			it(`works with ${scrollSide} / ${side}`, () => {
-				const article = new Tag('article', { [side]: 400, [scrollSide]: 'auto' }, [
-					new Tag('img', { [side]: 100, [axis]: 'auto' }),
-					new Tag('img', { [side]: 300, [axis]: 'auto' }),
-					new Tag('img', { [side]: 200, [axis]: 'auto' }),
-				]);
+				const article = dom.window.document.querySelector('article');
+				const [ img1, img2, img3 ] = article.children;
 
-				assert.deepEqual(calc(article), { [side]: 400, [scrollSide]: 600 });
+				painter.paint(article, { [side]: 400, [scrollSide]: 'auto' });
+				painter.paint(img1, { [side]: 100, [axis]: 'auto' }, article);
+				painter.paint(img2, { [side]: 300, [axis]: 'auto' }, article);
+				painter.paint(img3, { [side]: 200, [axis]: 'auto' }, article);
+
+				assert.equal(article[sideProperty], 400);
+				assert.equal(article[scrollSideProperty], 600);
 			});
 		});
 
-		it('works mixed', () => {
-			const window = new Tag('window', { height: 'auto' }, [
-				new Tag('head', { height: 50 }),
-				new Tag('article', { width: 'auto', height: 'auto', y: 'auto' }, [
-					new Tag('img', { width: 100, height: 100, x: 'auto' }),
-					new Tag('img', { width: 300, height: 400, x: 'auto' }),
-					new Tag('img', { width: 200, height: 100, x: 'auto' }),
-				]),
-			]);
-			const [ , article ] = window.children;
-			const imgs = article.children;
+		it('works with dynamic content', () => {
+			const article = dom.window.document.querySelector('article');
+			const imgs = article.getElementsByTagName('img');
 
-			assert.deepEqual(calc(article), { width: 600, height: 400, y: 50 });
-			assert.deepEqual(calc(imgs[1]), { width: 300, height: 400, x: 100 });
-			assert.deepEqual(calc(imgs[2]), { width: 200, height: 100, x: 400 });
-			assert.deepEqual(calc(window), { height: 450 });
+			painter.paint(article, { height: 'auto' });
+			painter.paint('img', { height: 100, y: 'auto' }, article);
+
+			assert.equal(article.offsetHeight, 300);
+			assert.equal(imgs[2].offsetTop, 200);
+
+			article.appendChild(dom.window.document.createElement('img'));
+
+			assert.equal(article.offsetHeight, 400);
+			assert.equal(imgs[3].offsetTop, 300);
+
+			imgs[0].remove();
+
+			assert.equal(article.offsetHeight, 300);
+			assert.equal(imgs[2].offsetTop, 200);
 		});
 	});
 });
