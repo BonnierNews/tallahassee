@@ -27,7 +27,6 @@ Feature('infinite scroll', () => {
 	Given('one article', () => {
 		articles = dom.window.document.getElementsByTagName('article');
 		assert.equal(articles.length, 1);
-		painter.paint(dom.window, { scrollHeight: 'auto' });
 		painter.paint('article', { height: dom.window.innerHeight * 2, y: 'auto' }, dom.window);
 	});
 
