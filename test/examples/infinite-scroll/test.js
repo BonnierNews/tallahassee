@@ -27,8 +27,8 @@ Feature('infinite scroll', () => {
 	Given('one article', () => {
 		articles = dom.window.document.getElementsByTagName('article');
 		assert.equal(articles.length, 1);
-		painter.paint(dom.window, { scrollHeight: Infinity });
-		painter.paint('article', { height: dom.window.innerHeight * 2 });
+		painter.paint(dom.window, { scrollHeight: 'auto' });
+		painter.paint('article', { height: dom.window.innerHeight * 2, y: 'auto' }, dom.window);
 	});
 
 	When('scripts are executed', async () => {
@@ -51,8 +51,6 @@ Feature('infinite scroll', () => {
 	Then('a second article is appended', async () => {
 		await pendingInsertion;
 		assert.equal(articles.length, 2);
-		const { bottom: previousArticleBottom } = articles[0].getBoundingClientRect();
-		painter.paint(articles[1], { y: previousArticleBottom });
 	});
 
 	When('document is scrolled towards the end of the second article', () => {
