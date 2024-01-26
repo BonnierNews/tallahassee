@@ -640,14 +640,12 @@ describe('Painter', () => {
 			painter.paint(main, { height: 'auto' });
 			painter.paint('article', { height: 100, y: 'auto' }, main);
 
-			console.log('pre');
 			assert.equal(main.offsetHeight, 200);
 
 			const a3 = dom.window.document.createElement('article');
 			a3.id = 'a3';
 			main.appendChild(a3);
 
-			console.log('post');
 			assert.equal(main.offsetHeight, 300);
 		});
 
