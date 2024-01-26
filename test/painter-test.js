@@ -547,16 +547,6 @@ describe('Painter', () => {
 	});
 
 	describe('automatic layout', () => {
-		const cache = new class Cache extends Map {
-			lookup (key, resolver) {
-				if (!this.has(key)) {
-					const value = resolver();
-					this.set(key, value);
-				}
-				return this.get(key);
-			}
-		};
-
 		let t = 0;
 		class Tag {
 			id = t++;
@@ -588,54 +578,54 @@ describe('Painter', () => {
 			scrollSides.map((s, i) => [ s, sides[i] ])
 		);
 
-		function calc (element, acc) {
-			return cache.lookup(element, () => {
-				const { parent, children, styles } = element;
-				const siblings = parent?.children;
+		function calc (element, cache, acc) {
+			cache = cache || new Map();
+			if (cache.has(element)) return cache.get(element);
 
-				const autoAxes = axes.filter(a => styles[a] === 'auto');
-				if (autoAxes.length) {
-					if (acc) {
-						for (const a of autoAxes) styles[a] = acc[a];
-					}
-					else {
-						const stack = Object.fromEntries(autoAxes.map(a => [ a, 0 ]));
+			const { parent, children, styles } = element;
+			const siblings = parent?.children;
 
-						for (const e of siblings || []) {
-							if (e === element) break;
-
-							const cs = calc(e, stack);
-							for (const a of autoAxes) {
-								stack[a] = Math.max(stack[a], (cs[a] || 0) + (cs[sideByAxis[a]] || 0));
-							}
-						}
-
-						Object.assign(styles, stack);
-					}
+			const autoAxes = axes.filter(a => styles[a] === 'auto');
+			if (autoAxes.length) {
+				if (acc) {
+					for (const a of autoAxes) styles[a] = acc[a];
 				}
+				else {
+					const stack = Object.fromEntries(autoAxes.map(a => [ a, 0 ]));
 
-				const autoSides = allSides.filter(s => styles[s] === 'auto');
-				if (autoSides.length) {
-					const stack = Object.fromEntries(autoSides.map(s => [ s, 0 ]));
-					if (Object.hasOwn(stack, 'width')) delete stack.scrollWidth;
-					if (Object.hasOwn(stack, 'height')) delete stack.scrollHeight;
+					for (const e of siblings || []) {
+						if (e === element) break;
 
-					for (const e of children) {
-						const cs = calc(e);
-						for (const s of Object.keys(stack)) {
-							const cside = sideByScrollSide[s] || s;
-							stack[s] = Math.max(stack[s], (cs[axesBySide[cside]] || 0) + (cs[cside] || 0));
+						const cs = calc(e, cache, stack);
+						for (const a of autoAxes) {
+							stack[a] = Math.max(stack[a], (cs[a] || 0) + (cs[sideByAxis[a]] || 0));
 						}
 					}
 
 					Object.assign(styles, stack);
 				}
+			}
 
-				return styles;
-			});
+			const autoSides = allSides.filter(s => styles[s] === 'auto');
+			if (autoSides.length) {
+				const stack = Object.fromEntries(autoSides.map(s => [ s, 0 ]));
+				if (Object.hasOwn(stack, 'width')) delete stack.scrollWidth;
+				if (Object.hasOwn(stack, 'height')) delete stack.scrollHeight;
+
+				for (const e of children) {
+					const cs = calc(e, cache);
+					for (const s of Object.keys(stack)) {
+						const cside = sideByScrollSide[s] || s;
+						stack[s] = Math.max(stack[s], (cs[axesBySide[cside]] || 0) + (cs[cside] || 0));
+					}
+				}
+
+				Object.assign(styles, stack);
+			}
+
+			cache.set(element, styles);
+			return styles;
 		}
-
-		beforeEach(() => cache.clear());
 
 		it('enables automatic height', () => {
 			const dom = new JSDOM(`
