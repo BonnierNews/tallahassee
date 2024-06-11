@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 16.0.0
+
+- Breaking: Drop support for node <18
+- Bugfix: Assertion message on failed fetches now include error code and fetch uri
+
 ## 15.5.0
 
 - Bugfix for custom elements where modifications to child elements in connectedCallback would trigger a new instance of the custom element being created and that ones connectedCallback being invoked

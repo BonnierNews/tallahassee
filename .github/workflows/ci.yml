@@ -1,23 +1,25 @@
-name: Built latest
+name: CI
 
 on:
+  pull_request:
+    branches: [ master ]
   push:
     branches: [ master ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
-
+        node-version: [18.x, 20.x, 22.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+
       - run: npm i
+
       - run: npm test

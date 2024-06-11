@@ -2,7 +2,6 @@
 
 const { Document } = require("../lib/index.js");
 const { Event } = require("../lib/Events.js");
-const DOMException = require("domexception");
 
 describe("HTMLDialogElement", () => {
   let document;

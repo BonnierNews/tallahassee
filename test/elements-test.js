@@ -1,7 +1,5 @@
 "use strict";
 
-const DOMException = require("domexception");
-
 const DocumentFragment = require("../lib/DocumentFragment.js");
 const Element = require("../lib/Element.js");
 const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");

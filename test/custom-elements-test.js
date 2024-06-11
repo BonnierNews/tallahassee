@@ -1,7 +1,5 @@
 "use strict";
 
-const DOMException = require("domexception");
-
 const { app } = require("../app/app.js");
 const Browser = require("../index.js");
 
