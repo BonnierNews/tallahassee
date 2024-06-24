@@ -3,7 +3,7 @@ Tallahassee
 
 ![Utilities](https://raw.github.com/ExpressenAB/tallahassee/master/app/assets/images/tallahassee-1.png)
 
-[![Built latest](https://github.com/ExpressenAB/tallahassee/actions/workflows/build-latest.yaml/badge.svg)](https://github.com/ExpressenAB/tallahassee/actions/workflows/build-latest.yaml)
+[![Built latest](https://github.com/ExpressenAB/tallahassee/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ExpressenAB/tallahassee/actions/workflows/ci.yml)
 
 Test your client scripts in a headless browser.
 

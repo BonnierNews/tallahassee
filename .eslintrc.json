@@ -1,9 +1,10 @@
 {
   "root": true,
   "extends": [
-    "exp/all"
+    "@bonniernews/eslint-config/all"
   ],
   "rules": {
-    "no-setter-return": 0
+    "no-setter-return": 0,
+    "@bonniernews/typescript-rules/disallow-class-extends": 0
   }
 }

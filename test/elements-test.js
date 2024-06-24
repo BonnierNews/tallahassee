@@ -1,7 +1,5 @@
 "use strict";
 
-const DOMException = require("domexception");
-
 const DocumentFragment = require("../lib/DocumentFragment.js");
 const Element = require("../lib/Element.js");
 const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");
@@ -511,6 +509,92 @@ describe("elements", () => {
           parent.removeChild(removed);
         }).to.throw(DOMException, "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
       });
+    });
+  });
+
+  describe("replaceChild(newChild, oldChild)", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body id="grandparent">
+              <div id="parent-1">
+                <span class="child">åäö</span>
+              </div>
+              <div id="parent-2"></div>
+            </body>
+          </html>`,
+      });
+    });
+
+    it("removes child element and replaces it with the new one", () => {
+      const parent = document.getElementById("parent-1");
+      const child = document.getElementsByClassName("child")[0];
+
+      expect(parent.children.length).to.equal(1);
+
+      const newChild = document.createElement("p");
+      newChild.textContent = "I will replace you";
+      const removed = parent.replaceChild(newChild, child);
+      expect(parent.children.length).to.equal(1);
+      expect(parent.textContent.trim()).to.equal("I will replace you");
+
+      expect(removed === child).to.be.true;
+    });
+
+    it("replace child text node", () => {
+      const parent = document.getElementsByClassName("child")[0];
+      const child = parent.firstChild;
+      expect(child.nodeType).to.equal(3);
+
+      expect(parent.childNodes.length).to.equal(1);
+
+      const newChild = document.createElement("p");
+      newChild.textContent = "I will replace you";
+      const removed = parent.replaceChild(newChild, child);
+      expect(parent.childNodes.length).to.equal(1);
+
+      expect(removed === child).to.be.true;
+    });
+  });
+
+  describe("replaceChildren(newChild)", () => {
+    let document;
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body id="grandparent">
+              <div id="parent-1">
+                <span class="child">åäö</span>
+              </div>
+              <div id="parent-2"></div>
+            </body>
+          </html>`,
+      });
+    });
+
+    it("removes all children if no arguments supplied", () => {
+      const parent = document.getElementById("parent-1");
+
+      expect(parent.children.length).to.equal(1);
+
+      parent.replaceChildren();
+      expect(parent.children.length).to.equal(0);
+    });
+
+    it("replaces all children with new child", () => {
+      const parent = document.getElementById("grandparent");
+
+      expect(parent.children.length).to.equal(2);
+
+      const newChild = document.createElement("p");
+      newChild.textContent = "I will replace you";
+
+      parent.replaceChildren(newChild);
+      expect(parent.childNodes.length).to.equal(1);
+      expect(parent.textContent.trim()).to.equal("I will replace you");
     });
   });
 
