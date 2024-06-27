@@ -1,6 +1,8 @@
 Changelog
 =========
 
+## Unreleased
+
 ## 16.0.0
 
 - Breaking: Drop support for node <18
