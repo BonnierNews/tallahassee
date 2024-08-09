@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 16.0.1
+
+- Bugfix: Fix for scroll listener warnings
+
 ## 16.0.0
 
 - Breaking: Drop support for node <18
