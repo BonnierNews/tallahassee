@@ -304,17 +304,61 @@ describe("window.fetch", () => {
   });
 
   it("exposes pendingRequests promise list", async () => {
+    let resolveFastRequest;
+    const pendingFastResponse = new Promise((resolve) => {
+      resolveFastRequest = resolve;
+    });
+    let resolveSlowRequest;
+    const pendingSlowResponse = new Promise((resolve) => {
+      resolveSlowRequest = resolve;
+    });
+    nock("https://blahonga.expressen.se")
+      .get("/fast-request")
+      .reply(async () => {
+        await pendingFastResponse;
+        return [ 200 ];
+      })
+      .get("/slow-request")
+      .reply(async () => {
+        await pendingSlowResponse;
+        return [ 200 ];
+      });
+
     const browser = await new Browser(app).navigateTo("/");
+    expect(browser.window.fetch._pendingRequests.length).to.equal(0);
 
-    let completed = 0;
-    browser.window.fetch("/req?q=1").then(() => ++completed);
-    browser.window.fetch("/req?q=2").then(() => ++completed);
+    browser.window.fetch("https://blahonga.expressen.se/fast-request");
+    browser.window.fetch("https://blahonga.expressen.se/slow-request", { priority: "low" });
+    browser.window.fetch("https://blahonga.expressen.se/error-request");
 
-    expect(browser.window.fetch._pendingRequests).to.have.length(2);
+    const pendingRequests = browser.window.fetch._pendingRequests;
+    expect(pendingRequests.length).to.equal(3);
 
-    await Promise.all(browser.window.fetch._pendingRequests);
+    const done = [];
+    const pendingAllDone = Promise.all(pendingRequests)
+      .then(() => done.push("all"));
+    const results = [];
+    for (const pendingRequest of pendingRequests) {
+      pendingRequest
+        .then((r) => results.push(r));
+    }
 
-    expect(completed).to.equal(2);
+    resolveFastRequest();
+    await pendingRequests[0];
+
+    Promise.all(browser.window.fetch._pendingRequests)
+      .then(() => done.push("all, mid process"));
+
+    resolveSlowRequest();
+    await pendingAllDone;
+
+    expect(done).to.deep.equal([ "all", "all, mid process" ]);
+
+    expect(results[0]).to.include.members([ "https://blahonga.expressen.se/error-request" ]);
+    expect(results[0][0]).to.be.an.instanceof(Error);
+    expect(results[1]).to.deep.equal([ null, "https://blahonga.expressen.se/fast-request" ]);
+    expect(results[2]).to.include.members([ null, "https://blahonga.expressen.se/slow-request" ]);
+    expect(results[2][2]).to.include({ priority: "low" });
   });
 
   describe("redirect", () => {
