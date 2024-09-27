@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 16.0.2
+
+- Fix: Ensure that `fetch._pendingRequests` doesn't resolve prematurely
+
 ## 16.0.1
 
 - Bugfix: Fix for scroll listener warnings
