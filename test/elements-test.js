@@ -6,6 +6,7 @@ const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");
 const HTMLFormElement = require("../lib/HTMLFormElement.js");
 const { Document } = require("../lib/index.js");
 const { Event } = require("../lib/Events.js");
+const { expect } = require("chai");
 
 const elementProperties = [
   "children",
@@ -586,7 +587,6 @@ describe("elements", () => {
 
     it("replaces all children with new child", () => {
       const parent = document.getElementById("grandparent");
-
       expect(parent.children.length).to.equal(2);
 
       const newChild = document.createElement("p");
@@ -595,6 +595,23 @@ describe("elements", () => {
       parent.replaceChildren(newChild);
       expect(parent.childNodes.length).to.equal(1);
       expect(parent.textContent.trim()).to.equal("I will replace you");
+      expect(parent.innerHTML).to.equal("<p>I will replace you</p>");
+    });
+
+    it("replaces all children with new children", () => {
+      const parent = document.getElementById("grandparent");
+      expect(parent.children.length).to.equal(2);
+
+      const newChild = document.createElement("p");
+      newChild.textContent = "First";
+      const newChild2 = document.createElement("p");
+      newChild2.textContent = "Second";
+      const newChild3 = document.createElement("p");
+      newChild3.textContent = "Third";
+
+      parent.replaceChildren(...[ newChild, newChild2, newChild3 ]);
+      expect(parent.childNodes.length).to.equal(3);
+      expect(parent.innerHTML).to.equal("<p>First</p><p>Second</p><p>Third</p>");
     });
   });
 
