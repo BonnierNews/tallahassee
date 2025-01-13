@@ -615,6 +615,60 @@ describe("elements", () => {
     });
   });
 
+  describe("replaceWith()", () => {
+    let document;
+    let parent;
+    let span;
+
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <div id="parent">
+                <span class="child">åäö</span>
+              </div>
+            </body>
+          </html>`,
+      });
+      parent = document.getElementById("parent");
+      span = parent.getElementsByTagName("span")[0];
+    });
+
+    it("replaces element in the children list of its parent with the supplied element", () => {
+      const p = document.createElement("p");
+      p.textContent = "New text";
+      span.replaceWith(p);
+      expect(parent.innerHTML.trim()).to.equal("<p>New text</p>");
+    });
+
+    it("replaces element in the children list of its parent with the supplied elements", () => {
+      const p = document.createElement("p");
+      p.textContent = "New text";
+      const p2 = document.createElement("p");
+      p2.textContent = "A new row";
+      span.replaceWith(p, p2);
+      expect(parent.innerHTML.trim()).to.equal("<p>New text</p><p>A new row</p>");
+    });
+
+    it("removes the element from the parent if no new element is supplied", () => {
+      span.replaceWith();
+      expect(parent.innerHTML.trim()).to.equal("");
+    });
+
+    [ "a new value", undefined, null ].forEach((value) => {
+      it(`replaces the element in the parent with the string ${value} if ${value} is passed to the function`, () => {
+        span.replaceWith(value);
+        expect(parent.innerHTML.trim()).to.equal(`${value}`);
+      });
+    });
+
+    it("replaces element in the children list of its parent with the supplied strings", () => {
+      span.replaceWith("1 ", "2");
+      expect(parent.innerHTML.trim()).to.equal("1 2");
+    });
+  });
+
   describe(".style", () => {
     let document;
     beforeEach(() => {
