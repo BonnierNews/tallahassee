@@ -6,7 +6,6 @@ const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");
 const HTMLFormElement = require("../lib/HTMLFormElement.js");
 const { Document } = require("../lib/index.js");
 const { Event } = require("../lib/Events.js");
-const { expect } = require("chai");
 
 const elementProperties = [
   "children",
@@ -1488,6 +1487,15 @@ describe("elements", () => {
       expect(elmCloneChild).to.be.ok;
 
       expect(elmCloneChild === elmChild).to.be.false;
+    });
+
+    it("returns a clone without event listerners", () => {
+      const elm = document.getElementsByClassName("block")[0];
+      let clicked = false;
+      elm.addEventListener("click", () => (clicked = true));
+      const elmClone = elm.cloneNode(true);
+      elmClone.click();
+      expect(clicked).to.be.false;
     });
   });
 
