@@ -586,7 +586,6 @@ describe("elements", () => {
 
     it("replaces all children with new child", () => {
       const parent = document.getElementById("grandparent");
-
       expect(parent.children.length).to.equal(2);
 
       const newChild = document.createElement("p");
@@ -595,6 +594,77 @@ describe("elements", () => {
       parent.replaceChildren(newChild);
       expect(parent.childNodes.length).to.equal(1);
       expect(parent.textContent.trim()).to.equal("I will replace you");
+      expect(parent.innerHTML).to.equal("<p>I will replace you</p>");
+    });
+
+    it("replaces all children with new children", () => {
+      const parent = document.getElementById("grandparent");
+      expect(parent.children.length).to.equal(2);
+
+      const newChild = document.createElement("p");
+      newChild.textContent = "First";
+      const newChild2 = document.createElement("p");
+      newChild2.textContent = "Second";
+      const newChild3 = document.createElement("p");
+      newChild3.textContent = "Third";
+
+      parent.replaceChildren(newChild, newChild2, newChild3);
+      expect(parent.childNodes.length).to.equal(3);
+      expect(parent.innerHTML).to.equal("<p>First</p><p>Second</p><p>Third</p>");
+    });
+  });
+
+  describe("replaceWith()", () => {
+    let document;
+    let parent;
+    let span;
+
+    beforeEach(() => {
+      document = new Document({
+        text: `
+          <html>
+            <body>
+              <div id="parent">
+                <span class="child">åäö</span>
+              </div>
+            </body>
+          </html>`,
+      });
+      parent = document.getElementById("parent");
+      span = parent.getElementsByTagName("span")[0];
+    });
+
+    it("replaces element in the children list of its parent with the supplied element", () => {
+      const p = document.createElement("p");
+      p.textContent = "New text";
+      span.replaceWith(p);
+      expect(parent.innerHTML.trim()).to.equal("<p>New text</p>");
+    });
+
+    it("replaces element in the children list of its parent with the supplied elements", () => {
+      const p = document.createElement("p");
+      p.textContent = "New text";
+      const p2 = document.createElement("p");
+      p2.textContent = "A new row";
+      span.replaceWith(p, p2);
+      expect(parent.innerHTML.trim()).to.equal("<p>New text</p><p>A new row</p>");
+    });
+
+    it("removes the element from the parent if no new element is supplied", () => {
+      span.replaceWith();
+      expect(parent.innerHTML.trim()).to.equal("");
+    });
+
+    [ "a new value", undefined, null ].forEach((value) => {
+      it(`replaces the element in the parent with the string ${value} if ${value} is passed to the function`, () => {
+        span.replaceWith(value);
+        expect(parent.innerHTML.trim()).to.equal(String(value));
+      });
+    });
+
+    it("replaces element in the children list of its parent with the supplied strings", () => {
+      span.replaceWith("1 ", "2");
+      expect(parent.innerHTML.trim()).to.equal("1 2");
     });
   });
 
@@ -1417,6 +1487,15 @@ describe("elements", () => {
       expect(elmCloneChild).to.be.ok;
 
       expect(elmCloneChild === elmChild).to.be.false;
+    });
+
+    it("returns a clone without event listerners", () => {
+      const elm = document.getElementsByClassName("block")[0];
+      let clicked = false;
+      elm.addEventListener("click", () => (clicked = true));
+      const elmClone = elm.cloneNode(true);
+      elmClone.click();
+      expect(clicked).to.be.false;
     });
   });
 

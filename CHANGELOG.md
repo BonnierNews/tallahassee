@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 16.0.3
+
+- Add replaceWith() method to element
+- Removed the clone() method from DocumentFragment because it's not part of the specification.
+- Bugfix: replaceChildren() adds all supplied elements instead of only the first one.
+
 ## 16.0.2
 
 - Fix: Ensure that `fetch._pendingRequests` doesn't resolve prematurely
