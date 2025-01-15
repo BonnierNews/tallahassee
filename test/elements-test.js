@@ -608,7 +608,7 @@ describe("elements", () => {
       const newChild3 = document.createElement("p");
       newChild3.textContent = "Third";
 
-      parent.replaceChildren(...[ newChild, newChild2, newChild3 ]);
+      parent.replaceChildren(newChild, newChild2, newChild3);
       expect(parent.childNodes.length).to.equal(3);
       expect(parent.innerHTML).to.equal("<p>First</p><p>Second</p><p>Third</p>");
     });
@@ -658,7 +658,7 @@ describe("elements", () => {
     [ "a new value", undefined, null ].forEach((value) => {
       it(`replaces the element in the parent with the string ${value} if ${value} is passed to the function`, () => {
         span.replaceWith(value);
-        expect(parent.innerHTML.trim()).to.equal(`${value}`);
+        expect(parent.innerHTML.trim()).to.equal(String(value));
       });
     });
 
