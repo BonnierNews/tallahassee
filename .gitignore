@@ -35,8 +35,6 @@ config/_revision
 # Built service worker
 /worker.js
 
-package-lock.json
-
 # vim
 *.sw[a-z]
 
