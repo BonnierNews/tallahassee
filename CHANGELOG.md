@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## Unreleased
+
+- `Window` extends `EventTarget`
+- Fix incomplete bubbling
+- All event constructors, notably `CustomEvent`, forward options
+- Event `preventDefault()` respects `cancelable`
+
 ## 16.0.3
 
 - Add replaceWith() method to element
