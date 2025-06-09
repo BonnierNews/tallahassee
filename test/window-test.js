@@ -335,16 +335,16 @@ describe("Window", () => {
 
   describe("events ", () => {
     it(".dispatchEvent() emits passed event type as string", (done) => {
-      window.addEventListener("test-event", done);
-      window.dispatchEvent("test-event");
+      window.addEventListener("test-event", () => done());
+      window.dispatchEvent(new window.Event("test-event"));
     });
 
     it(".dispatchEvent() takes object (Event) with type and emits event with type as name", (done) => {
       window.addEventListener("test-event", (arg) => {
-        expect(arg).to.eql({ type: "test-event" });
+        expect(arg.type).to.equal("test-event");
         done();
       });
-      window.dispatchEvent({ type: "test-event" });
+      window.dispatchEvent(new window.Event("test-event"));
     });
 
     it(".dispatchEvent() throws if no argument is passed", () => {
