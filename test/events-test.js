@@ -86,4 +86,32 @@ describe("Events", () => {
       expect(interceptedEvent).to.have.property("cancelable", true);
     });
   });
+
+  describe("bubbling", () => {
+    it("bubbles from event target to window", async () => {
+      const browser = await new Browser(app).navigateTo("/");
+
+      const hits = {
+        window: 0,
+        document: 0,
+        documentElement: 0,
+        body: 0,
+      };
+      browser.window.addEventListener("myEvent", () => ++hits.window);
+      browser.window.document.addEventListener("myEvent", () => ++hits.document);
+      browser.window.document.documentElement.addEventListener("myEvent", () => ++hits.documentElement);
+      browser.window.document.body.addEventListener("myEvent", () => ++hits.body);
+
+      const target = browser.window.document.querySelector("body *");
+      expect(target).to.be.ok;
+      target.dispatchEvent(new browser.window.CustomEvent("myEvent", { bubbles: true }));
+
+      expect(hits).to.deep.equal({
+        window: 1,
+        document: 1,
+        documentElement: 1,
+        body: 1,
+      });
+    });
+  });
 });
