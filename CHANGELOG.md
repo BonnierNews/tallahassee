@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 16.0.4
 
 - `Window` extends `EventTarget`
 - Fix incomplete bubbling
