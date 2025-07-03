@@ -7,6 +7,133 @@ const { app } = require("../app/app.js");
 const Browser = require("../index.js");
 
 describe("MutationObserver", () => {
+  [
+    { attributes: true },
+    { characterData: true },
+    { childList: true },
+    { attributes: true, characterData: true, childList: true },
+    { attributes: true, subtree: true },
+    { characterData: true, subtree: true },
+    { childList: true, subtree: true },
+    { attributes: true, characterData: true, childList: true, subtree: true },
+    {},
+  ].forEach((options) => {
+    describe(`options: ${JSON.stringify(options)}`, () => {
+      const mutations = {
+        attributes: 0,
+        characterData: 0,
+        childList: 0,
+      };
+      let browser, element;
+      before(async () => {
+        browser = await new Browser().load("<html/>");
+        const observer = new browser.window.MutationObserver(recordMutations);
+        element = browser.document.body;
+        observer.observe(element, options);
+      });
+
+      it("no mutations", () => {
+        expect(mutations).to.deep.equal({
+          attributes: 0,
+          characterData: 0,
+          childList: 0,
+        });
+      });
+
+      it("attribute mutation", () => {
+        element.setAttribute("lang", "en");
+        expect(mutations).to.deep.equal({
+          attributes: options.attributes ? 1 : 0,
+          characterData: 0,
+          childList: 0,
+        });
+      });
+
+      it("character data mutation", () => {
+        element.textContent = "Welcome to…";
+        expect(mutations).to.deep.equal({
+          attributes: options.attributes ? 1 : 0,
+          characterData: options.characterData ? 1 : 0,
+          childList: 0,
+        });
+      });
+
+      let childElement;
+      it("child list mutation", () => {
+        childElement = browser.document.createElement("a");
+        element.appendChild(childElement);
+        expect(mutations).to.deep.equal({
+          attributes: options.attributes ? 1 : 0,
+          characterData: options.characterData ? 1 : 0,
+          childList: options.childList ? 1 : 0,
+        });
+      });
+
+      it("attribute mutation in subtree", () => {
+        childElement.setAttribute("href", "https://github.com/BonnierNews/tallahassee");
+        expect(mutations).to.deep.equal(
+          options.subtree ?
+            {
+              attributes: options.attributes ? 2 : 0,
+              characterData: options.characterData ? 1 : 0,
+              childList: options.childList ? 1 : 0,
+            } :
+            {
+              attributes: options.attributes ? 1 : 0,
+              characterData: options.characterData ? 1 : 0,
+              childList: options.childList ? 1 : 0,
+            }
+        );
+      });
+
+      it("character data mutation in subtree", () => {
+        childElement.textContent = "Tallahassee";
+        expect(mutations).to.deep.equal(
+          options.subtree ?
+            {
+              attributes: options.attributes ? 2 : 0,
+              characterData: options.characterData ? 2 : 0,
+              childList: options.childList ? 1 : 0,
+            } :
+            {
+              attributes: options.attributes ? 1 : 0,
+              characterData: options.characterData ? 1 : 0,
+              childList: options.childList ? 1 : 0,
+            }
+        );
+      });
+
+      it("child list mutation in subtree", () => {
+        const descendantElement = browser.document.createElement("img");
+        descendantElement.src = "/banjo+hat.jpg";
+        childElement.appendChild(descendantElement);
+        expect(mutations).to.deep.equal(
+          options.subtree ?
+            {
+              attributes: options.attributes ? 2 : 0,
+              characterData: options.characterData ? 2 : 0,
+              childList: options.childList ? 2 : 0,
+            } :
+            {
+              attributes: options.attributes ? 1 : 0,
+              characterData: options.characterData ? 1 : 0,
+              childList: options.childList ? 1 : 0,
+            }
+        );
+      });
+
+      function recordMutations(mutationsList) {
+        for (const mutation of mutationsList) {
+          if (mutation.type === "childList") {
+            mutations.childList++;
+          } else if (mutation.type === "attributes") {
+            mutations.attributes++;
+          }
+        }
+      }
+    });
+  });
+
   it("triggers when element has been inserted into the observed node using appendChild", async () => {
     const browser = await new Browser(app).navigateTo("/", { cookie: "_ga=1" });
 
