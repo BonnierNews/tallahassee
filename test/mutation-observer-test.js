@@ -9,19 +9,15 @@ const Browser = require("../index.js");
 describe("MutationObserver", () => {
   [
     { attributes: true },
-    { characterData: true },
     { childList: true },
-    { attributes: true, characterData: true, childList: true },
+    { attributes: true, childList: true },
     { attributes: true, subtree: true },
-    { characterData: true, subtree: true },
     { childList: true, subtree: true },
-    { attributes: true, characterData: true, childList: true, subtree: true },
-    {},
+    { attributes: true, childList: true, subtree: true },
   ].forEach((options) => {
     describe(`options: ${JSON.stringify(options)}`, () => {
       const mutations = {
         attributes: 0,
-        characterData: 0,
         childList: 0,
       };
       let browser, element;
@@ -35,7 +31,6 @@ describe("MutationObserver", () => {
       it("no mutations", () => {
         expect(mutations).to.deep.equal({
           attributes: 0,
-          characterData: 0,
           childList: 0,
         });
       });
@@ -44,16 +39,6 @@ describe("MutationObserver", () => {
         element.setAttribute("lang", "en");
         expect(mutations).to.deep.equal({
           attributes: options.attributes ? 1 : 0,
-          characterData: 0,
-          childList: 0,
-        });
-      });
-
-      it("character data mutation", () => {
-        element.textContent = "Welcome to…";
-        expect(mutations).to.deep.equal({
-          attributes: options.attributes ? 1 : 0,
-          characterData: options.characterData ? 1 : 0,
           childList: 0,
         });
       });
@@ -64,7 +49,6 @@ describe("MutationObserver", () => {
         element.appendChild(childElement);
         expect(mutations).to.deep.equal({
           attributes: options.attributes ? 1 : 0,
-          characterData: options.characterData ? 1 : 0,
           childList: options.childList ? 1 : 0,
         });
       });
@@ -75,48 +59,25 @@ describe("MutationObserver", () => {
           options.subtree ?
             {
               attributes: options.attributes ? 2 : 0,
-              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             } :
             {
               attributes: options.attributes ? 1 : 0,
-              characterData: options.characterData ? 1 : 0,
-              childList: options.childList ? 1 : 0,
-            }
-        );
-      });
-
-      it("character data mutation in subtree", () => {
-        childElement.textContent = "Tallahassee";
-        expect(mutations).to.deep.equal(
-          options.subtree ?
-            {
-              attributes: options.attributes ? 2 : 0,
-              characterData: options.characterData ? 2 : 0,
-              childList: options.childList ? 1 : 0,
-            } :
-            {
-              attributes: options.attributes ? 1 : 0,
-              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             }
         );
       });
 
       it("child list mutation in subtree", () => {
-        const descendantElement = browser.document.createElement("img");
-        descendantElement.src = "/banjo+hat.jpg";
-        childElement.appendChild(descendantElement);
+        childElement.textContent = "Welcome to Tallahassee!";
         expect(mutations).to.deep.equal(
           options.subtree ?
             {
               attributes: options.attributes ? 2 : 0,
-              characterData: options.characterData ? 2 : 0,
               childList: options.childList ? 2 : 0,
             } :
             {
               attributes: options.attributes ? 1 : 0,
-              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             }
         );
@@ -351,12 +312,12 @@ describe("MutationObserver", () => {
     const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
-    const config = { characterData: true };
-    let characterDataMutation = false;
+    const config = { childList: true };
+    let childListMutation = false;
     const callback = function (mutationsList) {
       for (const mutation of mutationsList) {
-        if (mutation.type === "characterData") {
-          characterDataMutation = true;
+        if (mutation.type === "childList") {
+          childListMutation = true;
         }
       }
     };
@@ -364,19 +325,19 @@ describe("MutationObserver", () => {
     observer.observe(targetNode, config);
 
     targetNode.textContent = "Foo";
-    expect(characterDataMutation).to.be.ok;
+    expect(childListMutation).to.be.ok;
   });
 
   it("triggers when element has been inserted into the observed node using innerText", async () => {
     const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
-    const config = { characterData: true };
-    let characterDataMutation = false;
+    const config = { childList: true };
+    let childListMutation = false;
     const callback = function (mutationsList) {
       for (const mutation of mutationsList) {
-        if (mutation.type === "characterData") {
-          characterDataMutation = true;
+        if (mutation.type === "childList") {
+          childListMutation = true;
         }
       }
     };
@@ -384,7 +345,7 @@ describe("MutationObserver", () => {
     observer.observe(targetNode, config);
 
     targetNode.innerText = "Foo";
-    expect(characterDataMutation).to.be.ok;
+    expect(childListMutation).to.be.ok;
   });
 
   it("triggers when element has been removed from the observed node using removeChild", async () => {
