@@ -155,7 +155,7 @@ describe("MutationObserver", () => {
     const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
-    const config = { attributes: true, childList: true };
+    const config = { childList: true, subtree: true };
     let childListMutation = false;
     const callback = function (mutationsList) {
       for (const mutation of mutationsList) {
@@ -184,7 +184,7 @@ describe("MutationObserver", () => {
     p.textContent = "some text";
     browser.document.getElementById("header-1").appendChild(p);
 
-    const config = { attributes: true, childList: true };
+    const config = { childList: true, subtree: true };
     let childListMutation = false;
     const callback = function (mutationsList) {
       for (const mutation of mutationsList) {
@@ -351,12 +351,12 @@ describe("MutationObserver", () => {
     const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
-    const config = { attributes: true, childList: true };
-    let childListMutation = false;
+    const config = { characterData: true };
+    let characterDataMutation = false;
     const callback = function (mutationsList) {
       for (const mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          childListMutation = true;
+        if (mutation.type === "characterData") {
+          characterDataMutation = true;
         }
       }
     };
@@ -364,19 +364,19 @@ describe("MutationObserver", () => {
     observer.observe(targetNode, config);
 
     targetNode.textContent = "Foo";
-    expect(childListMutation).to.be.ok;
+    expect(characterDataMutation).to.be.ok;
   });
 
   it("triggers when element has been inserted into the observed node using innerText", async () => {
     const browser = await new Browser(app).navigateTo("/");
 
     const targetNode = browser.document.getElementsByTagName("body")[0];
-    const config = { attributes: true, childList: true };
-    let childListMutation = false;
+    const config = { characterData: true };
+    let characterDataMutation = false;
     const callback = function (mutationsList) {
       for (const mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          childListMutation = true;
+        if (mutation.type === "characterData") {
+          characterDataMutation = true;
         }
       }
     };
@@ -384,7 +384,7 @@ describe("MutationObserver", () => {
     observer.observe(targetNode, config);
 
     targetNode.innerText = "Foo";
-    expect(childListMutation).to.be.ok;
+    expect(characterDataMutation).to.be.ok;
   });
 
   it("triggers when element has been removed from the observed node using removeChild", async () => {
