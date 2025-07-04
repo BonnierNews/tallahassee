@@ -49,12 +49,11 @@ describe("MutationObserver", () => {
         });
       });
 
-      it.skip("character data mutation", () => {
+      it("character data mutation", () => {
         element.textContent = "Welcome to…";
         expect(mutations).to.deep.equal({
           attributes: options.attributes ? 1 : 0,
-          // characterData: options.characterData ? 1 : 0,
-          characterData: 0,
+          characterData: options.characterData ? 1 : 0,
           childList: 0,
         });
       });
@@ -65,8 +64,7 @@ describe("MutationObserver", () => {
         element.appendChild(childElement);
         expect(mutations).to.deep.equal({
           attributes: options.attributes ? 1 : 0,
-          // characterData: options.characterData ? 1 : 0,
-          characterData: 0,
+          characterData: options.characterData ? 1 : 0,
           childList: options.childList ? 1 : 0,
         });
       });
@@ -77,33 +75,29 @@ describe("MutationObserver", () => {
           options.subtree ?
             {
               attributes: options.attributes ? 2 : 0,
-              // characterData: options.characterData ? 1 : 0,
-              characterData: 0,
+              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             } :
             {
               attributes: options.attributes ? 1 : 0,
-              // characterData: options.characterData ? 1 : 0,
-              characterData: 0,
+              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             }
         );
       });
 
-      it.skip("character data mutation in subtree", () => {
+      it("character data mutation in subtree", () => {
         childElement.textContent = "Tallahassee";
         expect(mutations).to.deep.equal(
           options.subtree ?
             {
               attributes: options.attributes ? 2 : 0,
-              // characterData: options.characterData ? 2 : 0,
-              characterData: 0,
+              characterData: options.characterData ? 2 : 0,
               childList: options.childList ? 1 : 0,
             } :
             {
               attributes: options.attributes ? 1 : 0,
-              // characterData: options.characterData ? 1 : 0,
-              characterData: 0,
+              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             }
         );
@@ -117,26 +111,20 @@ describe("MutationObserver", () => {
           options.subtree ?
             {
               attributes: options.attributes ? 2 : 0,
-              // characterData: options.characterData ? 2 : 0,
-              characterData: 0,
+              characterData: options.characterData ? 2 : 0,
               childList: options.childList ? 2 : 0,
             } :
             {
               attributes: options.attributes ? 1 : 0,
-              // characterData: options.characterData ? 1 : 0,
-              characterData: 0,
+              characterData: options.characterData ? 1 : 0,
               childList: options.childList ? 1 : 0,
             }
         );
       });
 
       function recordMutations(mutationsList) {
-        for (const mutation of mutationsList) {
-          if (mutation.type === "childList") {
-            mutations.childList++;
-          } else if (mutation.type === "attributes") {
-            mutations.attributes++;
-          }
+        for (const { type } of mutationsList) {
+          mutations[type]++;
         }
       }
     });
