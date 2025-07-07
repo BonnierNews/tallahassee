@@ -2,6 +2,7 @@
 
 const DocumentFragment = require("../lib/DocumentFragment.js");
 const Element = require("../lib/Element.js");
+const Window = require("../lib/Window.js");
 const HTMLAnchorElement = require("../lib/HTMLAnchorElement.js");
 const HTMLFormElement = require("../lib/HTMLFormElement.js");
 const { Document } = require("../lib/index.js");
@@ -406,11 +407,7 @@ describe("elements", () => {
     describe("appendChild(aChild)", () => {
       let document;
       beforeEach(() => {
-        const window = {
-          get window() {
-            return this;
-          },
-        };
+        const window = new Window({});
         document = new Document({
           text: `
             <html>
