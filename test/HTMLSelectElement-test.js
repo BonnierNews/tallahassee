@@ -327,7 +327,6 @@ describe("HTMLSelectElement", () => {
     it("should return selected option in selectedOptions", () => {
       const [ select ] = document.getElementsByTagName("select");
       select.options[1].selected = true;
-      console.log("set 2");
       select.options[2].selected = true;
       expect(select.selectedIndex).to.equal(2);
       expect(select.selectedOptions).to.have.length(1);
