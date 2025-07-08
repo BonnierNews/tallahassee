@@ -78,7 +78,7 @@ describe("HTMLCollection", () => {
   });
 
   it("result can be for looped", () => {
-    const elements = new HTMLCollection(document.body, "div", { attributes: false });
+    const elements = new HTMLCollection(document.body, "div");
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -91,7 +91,7 @@ describe("HTMLCollection", () => {
   });
 
   it("result can be for-of looped", () => {
-    const elements = new HTMLCollection(document.body, "div", { attributes: false });
+    const elements = new HTMLCollection(document.body, "div");
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -104,7 +104,7 @@ describe("HTMLCollection", () => {
   });
 
   it("result can be for-in looped", () => {
-    const elements = new HTMLCollection(document.body, "div", { attributes: false });
+    const elements = new HTMLCollection(document.body, "div");
     expect(elements.length).to.equal(3);
 
     const tags = [];
@@ -155,7 +155,7 @@ describe("HTMLCollection", () => {
     });
 
     it("mutates document tag collection", () => {
-      const elements = new HTMLCollection(document.documentElement, "div", { attributes: false });
+      const elements = new HTMLCollection(document.documentElement, "div");
       expect(elements.length).to.equal(3);
 
       const firstItem = elements[0];
@@ -175,7 +175,7 @@ describe("HTMLCollection", () => {
     });
 
     it("mutates parentNode tag collection", () => {
-      const elements = new HTMLCollection(document.body, "div", { attributes: false });
+      const elements = new HTMLCollection(document.body, "div");
       expect(elements.length).to.equal(3);
 
       const firstItem = elements[0];
@@ -185,7 +185,7 @@ describe("HTMLCollection", () => {
     });
 
     it("mutates parent parentNode tag collection", () => {
-      const elements = new HTMLCollection(document.body, "p", { attributes: false });
+      const elements = new HTMLCollection(document.body, "p");
       expect(elements.length).to.equal(1);
 
       const firstItem = elements[0];
