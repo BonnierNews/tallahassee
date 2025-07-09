@@ -7,6 +7,75 @@ const { app } = require("../app/app.js");
 const Browser = require("../index.js");
 
 describe("MutationObserver", () => {
+  it("races", async () => {
+    let a = 0;
+    const buildArticle = () => `
+      <article id="article-${a++}">
+        <b-a-d />
+        <b-a-d />
+        <b-a-d />
+      </article>
+    `;
+
+    const browser = await new Browser().load(buildArticle());
+    const BAD = fakeBAD();
+    continuousScroll();
+    expect(BAD.ads.length).to.equal(3);
+
+    for (let i = 1; i < 3; i++) {
+      const mutation = mutated(browser.document.body);
+      browser.window.scroll(0, i);
+      await mutation;
+
+      expect(BAD.ads.length).to.equal((1 + i) * 3);
+    }
+
+    function fakeBAD() {
+      const ads = [];
+      const slots = browser.document.body.getElementsByTagName("b-a-d");
+      const observer = new browser.window.MutationObserver(scan);
+      observer.observe(browser.document.body, { childList: true, subtree: true });
+      scan();
+
+      return { ads };
+
+      function scan() {
+        console.log("scan", ads.length, "/", slots.length);
+        for (const slot of slots) {
+          if (ads.includes(slot)) continue;
+          ads.push(slot);
+        }
+        console.log("done", ads.length, "/", slots.length);
+      }
+    }
+
+    function continuousScroll() {
+      browser.window.addEventListener("scroll", async () => {
+        console.log("scrolled");
+        const html = await loadArticle();
+        console.log("loaded");
+        browser.document.body.insertAdjacentHTML("beforeend", html);
+        console.log("added", browser.document.body.lastElementChild.id);
+      });
+
+      function loadArticle() {
+        return new Promise((r) => setTimeout(r, 100, buildArticle()));
+      }
+    }
+
+    function mutated(target) {
+      return new Promise((resolve) => {
+        const observer = new browser.window.MutationObserver(update);
+        observer.observe(target, { childList: true });
+
+        function update() {
+          observer.disconnect();
+          resolve();
+        }
+      });
+    }
+  });
+
   [
     { attributes: true },
     { childList: true },
