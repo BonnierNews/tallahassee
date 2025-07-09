@@ -40,22 +40,17 @@ describe("MutationObserver", () => {
       return { ads };
 
       function scan() {
-        console.log("scan", ads.length, "/", slots.length);
         for (const slot of slots) {
           if (ads.includes(slot)) continue;
           ads.push(slot);
         }
-        console.log("done", ads.length, "/", slots.length);
       }
     }
 
     function continuousScroll() {
       browser.window.addEventListener("scroll", async () => {
-        console.log("scrolled");
         const html = await loadArticle();
-        console.log("loaded");
         browser.document.body.insertAdjacentHTML("beforeend", html);
-        console.log("added", browser.document.body.lastElementChild.id);
       });
 
       function loadArticle() {
@@ -153,8 +148,8 @@ describe("MutationObserver", () => {
       });
 
       function recordMutations(mutationsList) {
-        for (const { type } of mutationsList) {
-          mutations[type]++;
+        for (const mutation of mutationsList) {
+          mutations[mutation.type]++;
         }
       }
     });
@@ -595,24 +590,6 @@ describe("MutationObserver", () => {
       expect(record).to.have.property("type", "attributes");
       expect(record).to.have.property("attributeName", "id");
       expect(record.target === browser.document.body).to.be.true;
-    });
-
-    it("observer with attributes and subtree option calls callback when element child src changes", () => {
-      const records = [];
-      const observer = new browser.window.MutationObserver((mutatedRecords) => {
-        records.push(...mutatedRecords);
-      });
-      observer.observe(browser.document.body, { attributes: true, subtree: true });
-
-      const img = browser.document.getElementsByTagName("img")[0];
-      img.src = "/images/tallahassee-2.png";
-
-      expect(records).to.have.length(1);
-
-      const record = records[0];
-      expect(record).to.have.property("type", "attributes");
-      expect(record).to.have.property("attributeName", "src");
-      expect(record.target === img).to.be.true;
     });
 
     it("observer with attributes and subtree option calls callback when element child src changes", () => {
