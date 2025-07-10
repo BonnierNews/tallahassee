@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## Unreleased
+
+- `MutationObserver`
+  - Support for `option.subtree`
+  - Replaced internal mutation events `_attributeChange`/`_insert` with `_mutation`
+
 ## 16.0.4
 
 - `Window` extends `EventTarget`
