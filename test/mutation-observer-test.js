@@ -3,13 +3,16 @@
 const Browser = require("../index.js");
 
 describe("MutationObserver", () => {
-  const mutations = {
-    count: {
-      attributes: 0,
-      childList: 0,
-    },
-    records: [],
-  };
+  let mutations;
+  beforeEach(() => {
+    mutations = {
+      count: {
+        attributes: 0,
+        childList: 0,
+      },
+      records: [],
+    };
+  });
 
   function recordMutations(mutationRecords) {
     for (const { type } of mutationRecords) {
@@ -18,15 +21,56 @@ describe("MutationObserver", () => {
     mutations.records.push(...mutationRecords);
   }
 
-  function resetMutations() {
-    for (const type of Object.keys(mutations.count)) {
-      mutations.count[type] = 0;
-    }
-    mutations.records.length = 0;
-  }
-
   describe("new MutationObserver(callback)", () => {
     describe("mutationObserver.observe(target, options)", () => {
+      it("mutationObserver.observe(targetN, optionsN)", async () => {
+        const browser = await new Browser().load("<html/>");
+        const observer = new browser.window.MutationObserver(recordMutations);
+
+        const target = browser.document.createElement("p");
+        observer.observe(target, { attributes: true });
+        observer.observe(target, { childList: true });
+
+        target.setAttribute("lang", "fl");
+        target.textContent = "Welcome to Tallahassee!";
+
+        expect(mutations.records.length).to.equal(2);
+        expect(mutations.records[0]).to.deep.include({
+          target,
+          type: "attributes",
+        });
+        expect(mutations.records[1]).to.deep.include({
+          target,
+          type: "childList",
+        });
+      });
+
+      it("mutationObserver.observe(target, optionsN)", async () => {
+        const browser = await new Browser().load("<html/>");
+        const observer = new browser.window.MutationObserver(recordMutations);
+
+        const target1 = browser.document.createElement("p");
+        observer.observe(target1, { attributes: true });
+
+        const target2 = browser.document.createElement("p");
+        observer.observe(target2, { childList: true });
+
+        for (const target of [ target1, target2 ]) {
+          target.setAttribute("lang", "fl");
+          target.textContent = "Welcome to Tallahassee!";
+        }
+
+        expect(mutations.records.length).to.equal(2);
+        expect(mutations.records[0]).to.deep.include({
+          target: target1,
+          type: "attributes",
+        });
+        expect(mutations.records[1]).to.deep.include({
+          target: target2,
+          type: "childList",
+        });
+      });
+
       [
         { attributes: true },
         { childList: true },
@@ -36,8 +80,6 @@ describe("MutationObserver", () => {
         { attributes: true, childList: true, subtree: true },
       ].forEach((options) => {
         describe(`options: ${JSON.stringify(options)}`, () => {
-          before(resetMutations);
-
           let browser, observer, element;
           before(async () => {
             browser = await new Browser().load("<html/>");
@@ -66,97 +108,31 @@ describe("MutationObserver", () => {
             childElement = browser.document.createElement("a");
             element.appendChild(childElement);
             expect(mutations.count).to.deep.equal({
-              attributes: options.attributes ? 1 : 0,
+              attributes: 0,
               childList: options.childList ? 1 : 0,
             });
           });
 
           it("attribute mutation in subtree", () => {
             childElement.setAttribute("href", "https://github.com/BonnierNews/tallahassee");
-            expect(mutations.count).to.deep.equal(
-              options.subtree ?
-                {
-                  attributes: options.attributes ? 2 : 0,
-                  childList: options.childList ? 1 : 0,
-                } :
-                {
-                  attributes: options.attributes ? 1 : 0,
-                  childList: options.childList ? 1 : 0,
-                }
-            );
+            expect(mutations.count).to.deep.equal({
+              attributes: options.attributes && options.subtree ? 1 : 0,
+              childList: 0,
+            });
           });
 
           it("child list mutation in subtree", () => {
             childElement.textContent = "Welcome to Tallahassee!";
-            expect(mutations.count).to.deep.equal(
-              options.subtree ?
-                {
-                  attributes: options.attributes ? 2 : 0,
-                  childList: options.childList ? 2 : 0,
-                } :
-                {
-                  attributes: options.attributes ? 1 : 0,
-                  childList: options.childList ? 1 : 0,
-                }
-            );
+            expect(mutations.count).to.deep.equal({
+              attributes: 0,
+              childList: options.subtree && options.childList ? 1 : 0,
+            });
           });
-        });
-      });
-
-      it("mutationObserver.observe(targetN, optionsN)", async () => {
-        resetMutations();
-        const browser = await new Browser().load("<html/>");
-        const observer = new browser.window.MutationObserver(recordMutations);
-
-        const target = browser.document.createElement("p");
-        observer.observe(target, { attributes: true });
-        observer.observe(target, { childList: true });
-
-        target.setAttribute("lang", "fl");
-        target.textContent = "Welcome to Tallahassee!";
-
-        expect(mutations.records.length).to.equal(2);
-        expect(mutations.records[0]).to.deep.include({
-          target,
-          type: "attributes",
-        });
-        expect(mutations.records[1]).to.deep.include({
-          target,
-          type: "childList",
-        });
-      });
-
-      it("mutationObserver.observe(target, optionsN)", async () => {
-        resetMutations();
-        const browser = await new Browser().load("<html/>");
-        const observer = new browser.window.MutationObserver(recordMutations);
-
-        const target1 = browser.document.createElement("p");
-        observer.observe(target1, { attributes: true });
-
-        const target2 = browser.document.createElement("p");
-        observer.observe(target2, { childList: true });
-
-        for (const target of [ target1, target2 ]) {
-          target.setAttribute("lang", "fl");
-          target.textContent = "Welcome to Tallahassee!";
-        }
-
-        expect(mutations.records.length).to.equal(2);
-        expect(mutations.records[0]).to.deep.include({
-          target: target1,
-          type: "attributes",
-        });
-        expect(mutations.records[1]).to.deep.include({
-          target: target2,
-          type: "childList",
         });
       });
     });
 
     describe("mutationObserver.disconnect()", () => {
-      before(resetMutations);
-
       it("stops listening for all mutations", async () => {
         const browser = await new Browser().load("<html/>");
         const element = browser.document.body;
@@ -190,8 +166,6 @@ describe("MutationObserver", () => {
   });
 
   describe("Mutations", () => {
-    beforeEach(resetMutations);
-
     const allOptions = { attributes: true, childList: true, subtree: true };
     let browser, observer;
     beforeEach(async () => {
