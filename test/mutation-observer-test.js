@@ -170,8 +170,8 @@ describe("MutationObserver", () => {
     let browser, observer;
     beforeEach(async () => {
       browser = await new Browser().load(`
-          <html>
-            <body>
+        <html>
+          <body>
             <h1>Welcome to Tallahassee!</h1>
           </body>
         </html>
@@ -454,6 +454,48 @@ describe("MutationObserver", () => {
             expect(mutationRecord.target).to.equal(outside ? element.parentElement : element);
           }
         });
+      });
+
+      it("is triggered by Element.remove()", () => {
+        const node = browser.document.body;
+        observer.observe(node, allOptions);
+
+        node.firstElementChild.remove();
+
+        expect(mutations.count).to.deep.equal({
+          attributes: 0,
+          childList: 1,
+        });
+
+        for (const mutationRecord of mutations.records) {
+          expect(mutationRecord.target).to.equal(node);
+        }
+      });
+
+      it("is triggered by Element.replaceChildren()", () => {
+        const node = browser.document.body;
+        observer.observe(node, allOptions);
+
+        node.replaceChildren();
+
+        expect(mutations.count).to.deep.equal({
+          attributes: 0,
+          childList: 1,
+        });
+
+        node.replaceChildren(
+          browser.document.createElement("p"),
+          browser.document.createElement("p")
+        );
+
+        expect(mutations.count).to.deep.equal({
+          attributes: 0,
+          childList: 2,
+        });
+
+        for (const mutationRecord of mutations.records) {
+          expect(mutationRecord.target).to.equal(node);
+        }
       });
 
       it("is triggered by HTMLElement.innerText = text", () => {
