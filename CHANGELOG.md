@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## 16.0.5
+## Unreleased
+
+- Bubble mutation events with loop instead of event emitters
+
+## 16.0.5 [YANKED]
 
 - `MutationObserver`
   - Support for `option.subtree`
