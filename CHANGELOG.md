@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 16.0.5
 
 - `MutationObserver`
   - Support for `option.subtree`
