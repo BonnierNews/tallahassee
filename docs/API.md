@@ -14,6 +14,10 @@
   - [`browser.scrollToBottomOfElement()`](#browserscrolltobottomofelement)
   - [`browser.stickElementToTop()`](#browserstickelementtotop)
   - [`browser.unstickElementFromTop()`](#browserunstickelementfromtop)
+- [Drag and drop](#drag-and-drop)
+  - [`browser.dragStart(el)`](#browserdragstartel)
+  - [`browser.drag(el[, x, y])`](#browserdragel-x-y)
+  - [`browser.dragEnd()`](#browserdragend)
 - [IntersectionObserver](#intersectionobserver)
 - [iframe scope](#iframe-scope)
 
@@ -126,6 +130,20 @@ Set element sticky by fixating element to top.
 ## `browser.unstickElementFromTop()`
 
 Resets element top to wherever it was before sticked.
+
+# Drag and drop
+
+## `browser.dragStart(el)`
+
+Sets what element you're currently dragging.
+
+## `browser.drag(el[, x, y])`
+
+Drag to element or to coordinates.
+
+## `browser.dragEnd()`
+
+End current element dragging interaction.
 
 # IntersectionObserver
 
