@@ -3,7 +3,8 @@ Changelog
 
 ## 16.0.6
 
-- Bubble mutation events with loop instead of event emitters
+- Resolve weird issue with mutation observer callback occurring after disconnect
+- Reduce heavy loads on call stack size from mutations
 
 ## 16.0.5 [YANKED]
 
