@@ -114,4 +114,37 @@ describe("Events", () => {
       });
     });
   });
+
+  describe("MessageEvent", () => {
+    it("creates an object with the expected properties", async () => {
+      const browser = await new Browser(app).navigateTo("/");
+
+      let interceptedEvent;
+      browser.window.addEventListener("message", (event) => {
+        interceptedEvent = event;
+      });
+
+      browser.window.dispatchEvent(
+        new browser.window.MessageEvent("message")
+      );
+
+      expect(interceptedEvent).to.be.ok;
+      expect(interceptedEvent).to.have.property("type", "message");
+      expect(interceptedEvent).to.have.property("data", null);
+      expect(interceptedEvent).to.have.property("origin", "");
+
+      browser.window.dispatchEvent(
+        new browser.window.MessageEvent("foo", {
+          data: "fooBar",
+          origin: "http://foo.bar",
+        })
+      );
+
+      expect(interceptedEvent).to.be.ok;
+      expect(interceptedEvent).to.have.property("type", "message");
+      expect(interceptedEvent).to.have.property("data", "fooBar");
+      expect(interceptedEvent).to.have.property("origin", "http://foo.bar");
+    });
+  });
+
 });
