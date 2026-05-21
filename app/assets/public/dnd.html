@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="sv" class="no-js">
+  <head>
+    <title>Zombie killer drag and drop</title>
+    <script>
+    (function IIFE() {
+      document.documentElement.classList.remove("no-js");
+    })();
+    </script>
+  </head>
+  <body>
+    <div draggable="true">draggable</div>
+    <div>droppable</div>
+    <script>
+      (function IIFE() {
+        window.scriptsAreExecutedInBody = true;
+      })();
+    </script>
+  </body>
+</html>
