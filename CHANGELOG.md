@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 16.1.0
+
+- Add partial support for `MessageEvent`
+
 ## 16.0.6
 
 - Resolve weird issue with mutation observer callback occurring after disconnect
